@@ -1,0 +1,127 @@
+# 创建命名空间 flowing
+apiVersion: v1
+kind: Namespace
+metadata:
+  name: flowing
+---
+# 创建镜像拉取密钥
+kind: Secret
+apiVersion: v1
+metadata:
+  name: aliyun-docker-secret
+  namespace: flowing
+data:
+  .dockerconfigjson: >-
+    eyJhdXRocyI6eyJyZWdpc3RyeS5jbi1oYW5nemhvdS5hbGl5dW5jcy5jb20iOnsidXNlcm5hbWUiOiJoYW5zaW5AMTcwOTc4NDEzMDAwOTU4MCIsInBhc3N3b3JkIjoibGI4NDU2MTI1MDAiLCJhdXRoIjoiYUdGdWMybHVRREUzTURrM09EUXhNekF3TURrMU9EQTZiR0k0TkRVMk1USTFNREE9In19fQ==
+type: kubernetes.io/dockerconfigjson
+---
+# 创建 flowing-service 配置文件
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: flowing-service-config
+  namespace: flowing
+data:
+  application.yaml:
+---
+# 创建 Deployment
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: flowing-service
+  namespace: flowing
+  labels:
+    app: flowing-service
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: flowing-service
+  template:
+    metadata:
+      labels:
+        app: flowing-service
+    spec:
+      dnsPolicy: ClusterFirst
+      imagePullSecrets:
+        - name: aliyun-docker-secret
+      containers:
+        - name: flowing-service
+          image: ${SERVICE_IMAGE}
+          livenessProbe:
+            failureThreshold: 3
+            httpGet:
+              path: /actuator/health
+              port: 8080
+              scheme: HTTP
+            initialDelaySeconds: 10
+            periodSeconds: 70
+            successThreshold: 1
+            timeoutSeconds: 1
+          readinessProbe:
+            failureThreshold: 1
+            httpGet:
+              path: /actuator/health
+              port: 8080
+              scheme: HTTP
+            initialDelaySeconds: 10
+            periodSeconds: 10
+            successThreshold: 1
+            timeoutSeconds: 1
+          ports:
+            - containerPort: 8080
+              name: http
+          volumeMounts:
+            - name: config
+              mountPath: /application.yaml
+              subPath: application.yaml
+      initContainers:
+        - name: init-database
+          image: busybox
+          imagePullPolicy: IfNotPresent
+          command: ['sh', '-c', "until nc -z database-mongodb.database 27017; do echo waiting for mongodb; sleep 2; done"]
+        - name: init-mq
+          image: busybox
+          imagePullPolicy: IfNotPresent
+          command: ['sh', '-c', "until nc -z rabbit-mq.default 5672; do echo waiting for rabbitmq; sleep 2; done"]
+      volumes:
+        - name: config
+          configMap:
+            name: flowing-service-config
+            items:
+              - key: application.yaml
+                path: application.yaml
+---
+# 创建服务
+apiVersion: v1
+kind: Service
+metadata:
+  name: flowing-service
+  namespace: flowing
+  labels:
+    app: flowing-service
+spec:
+  ports:
+    - port: 80
+      targetPort: 8080
+      name: http
+  selector:
+    app: flowing-service
+  type: ClusterIP
+---
+# 创建 Ingress
+apiVersion: networking.k8s.io/v1beta1
+kind: Ingress
+metadata:
+  name: flowing-service
+  namespace: flowing
+spec:
+  ingressClassName: nginx
+  rules:
+    - http:
+        paths:
+          - path: /
+            backend:
+              serviceName: flowing-service
+              servicePort: 80
+      host: api.flowing.wgv

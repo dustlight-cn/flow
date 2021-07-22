@@ -1,0 +1,38 @@
+# OAuth 配置
+plus:
+  oauth2:
+    client:
+      client-id: 877ce1dd5030000
+      client-secret: 1283d148237af330152929cfe05ec045b0a4e92d
+      api-endpoint: http://api.wgv
+      token-uri: http://api.wgv/v1/oauth/token
+    resource-server:
+      jwk-set-uri: http://api.wgv/v1/jwk
+      client-secret: none
+      client-id: none
+      uri: http://api.wgv/v1/token/validity
+      token-type: jwt
+# SpringDoc 配置
+springdoc:
+  api-docs:
+    enabled: on
+    path: /doc
+  swagger-ui:
+    path: /doc.html
+    oauth:
+      client-id: 86c3e34e2030000
+      additional-query-string-params:
+        jwt: true
+
+spring:
+  rabbitmq:
+    addresses: rabbitmq.svc
+    port: 5672
+
+  data:
+    mongodb:
+      host: mongodb.svc
+      username: my-user
+      password: MTIzNDU2
+      authentication-database: admin
+      database: messenger
