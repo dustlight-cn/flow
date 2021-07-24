@@ -1,14 +1,13 @@
 package plus.flow.core.events;
 
-import reactor.core.publisher.Mono;
-
 public interface EventSource {
 
-    String getName();
+    String getEventType();
 
     String getTitle();
 
     String getDescription();
 
-    Mono<Void> handle(Object event);
+    void register(EventListener eventHandler);
+
 }

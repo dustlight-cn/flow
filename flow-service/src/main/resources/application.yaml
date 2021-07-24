@@ -35,4 +35,4 @@ spring:
       username: my-user
       password: MTIzNDU2
       authentication-database: admin
-      database: messenger
+      database: flow

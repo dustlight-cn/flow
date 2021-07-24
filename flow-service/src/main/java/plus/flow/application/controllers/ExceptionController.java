@@ -9,9 +9,9 @@ import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 import org.springframework.web.server.ServerWebExchange;
-import plus.flow.core.ErrorDetails;
-import plus.flow.core.ErrorEnum;
-import plus.flow.core.FlowException;
+import plus.flow.core.exceptions.ErrorDetails;
+import plus.flow.core.exceptions.ErrorEnum;
+import plus.flow.core.exceptions.FlowException;
 import reactor.core.publisher.Mono;
 
 @RestControllerAdvice

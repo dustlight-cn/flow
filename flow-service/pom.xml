@@ -81,6 +81,14 @@
             <artifactId>flow-datacenter</artifactId>
         </dependency>
         <dependency>
+            <groupId>plus.flow</groupId>
+            <artifactId>flow-mongo</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>plus.flow</groupId>
+            <artifactId>flow-rabbitmq</artifactId>
+        </dependency>
+        <dependency>
             <groupId>plus.datacenter</groupId>
             <artifactId>datacenter-core</artifactId>
         </dependency>

@@ -2,11 +2,9 @@ package plus.flow.datacenter;
 
 import org.springframework.amqp.rabbit.connection.ConnectionFactory;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.autoconfigure.condition.ConditionalOnBean;
 import org.springframework.boot.context.properties.EnableConfigurationProperties;
 import org.springframework.context.annotation.Bean;
-import plus.flow.core.flows.FlowsService;
-import plus.flow.core.flows.TaskService;
+import plus.flow.core.events.BasicEventSource;
 import plus.flow.datacenter.events.*;
 
 @EnableConfigurationProperties(FlowDatacenterProperties.class)
@@ -14,35 +12,41 @@ public class FlowDatacenterConfiguration {
 
     @Bean
     public FromEventListener fromEventListener(@Autowired ConnectionFactory connectionFactory,
-                                               @Autowired FormRecordCreatedEventSource createdEventSource,
-                                               @Autowired FormRecordUpdatedEventSource updatedEventSource,
-                                               @Autowired FormRecordDeletedEventSource deletedEventSource,
+                                               @Autowired BasicEventSource createdRecordEvent,
+                                               @Autowired BasicEventSource updateRecordEvent,
+                                               @Autowired BasicEventSource deleteRecordEvent,
                                                @Autowired FlowDatacenterProperties properties) {
         return new FromEventListener(connectionFactory,
-                createdEventSource,
-                updatedEventSource,
-                deletedEventSource,
+                createdRecordEvent,
+                updateRecordEvent,
+                deleteRecordEvent,
                 properties.getExchange());
     }
 
     @Bean
-    @ConditionalOnBean(FlowsService.class)
-    public FormRecordCreatedEventSource formRecordCreatedEventSource(@Autowired FlowsService flowsService,
-                                                                     @Autowired TaskService taskService) {
-        return new FormRecordCreatedEventSource(flowsService, taskService);
+    public BasicEventSource createdRecordEvent() {
+        BasicEventSource eventSource = new BasicEventSource();
+        eventSource.setEventType("CREATE_RECORD");
+        eventSource.setTitle("提交表单");
+        eventSource.setDescription("当表单提交时触发。");
+        return eventSource;
     }
 
     @Bean
-    @ConditionalOnBean(FlowsService.class)
-    public FormRecordUpdatedEventSource formRecordUpdatedEventSource(@Autowired FlowsService flowsService,
-                                                                     @Autowired TaskService taskService) {
-        return new FormRecordUpdatedEventSource(flowsService, taskService);
+    public BasicEventSource updateRecordEvent() {
+        BasicEventSource eventSource = new BasicEventSource();
+        eventSource.setEventType("UPDATE_RECORD");
+        eventSource.setTitle("更新表单记录");
+        eventSource.setDescription("当表单记录更新时触发。");
+        return eventSource;
     }
 
     @Bean
-    @ConditionalOnBean(FlowsService.class)
-    public FormRecordDeletedEventSource formRecordDeletedEventSource(@Autowired FlowsService flowsService,
-                                                                     @Autowired TaskService taskService) {
-        return new FormRecordDeletedEventSource(flowsService, taskService);
+    public BasicEventSource deleteRecordEvent() {
+        BasicEventSource eventSource = new BasicEventSource();
+        eventSource.setEventType("DELETE_RECORD");
+        eventSource.setTitle("删除表单记录");
+        eventSource.setDescription("当表单记录删除时触发。");
+        return eventSource;
     }
 }

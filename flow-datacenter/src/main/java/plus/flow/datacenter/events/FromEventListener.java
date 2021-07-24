@@ -14,6 +14,7 @@ import org.springframework.amqp.rabbit.listener.SimpleMessageListenerContainer;
 import org.springframework.amqp.rabbit.listener.api.ChannelAwareMessageListener;
 import org.springframework.boot.ApplicationArguments;
 import org.springframework.boot.ApplicationRunner;
+import plus.flow.core.events.BasicEventSource;
 
 @Getter
 @Setter
@@ -24,9 +25,9 @@ public class FromEventListener implements ApplicationRunner {
 
     private ConnectionFactory factory;
 
-    private FormRecordCreatedEventSource formRecordCreatedEventSource;
-    private FormRecordUpdatedEventSource formRecordUpdatedEventSource;
-    private FormRecordDeletedEventSource formRecordDeletedEventSource;
+    private BasicEventSource formRecordCreatedEventSource;
+    private BasicEventSource formRecordUpdatedEventSource;
+    private BasicEventSource formRecordDeletedEventSource;
 
     private String exchange;
 
@@ -55,15 +56,18 @@ public class FromEventListener implements ApplicationRunner {
 
         simpleMessageListenerContainer.setupMessageListener((ChannelAwareMessageListener) (message, channel) -> {
             try {
-                Exception e;
-                FormEvent formEvent = FormEvent.from(message.getBody());
-                switch (formEvent.getEventData().getType()) {
+                Exception e = null;
+                RecordMessage recordMessage = RecordMessage.from(message.getBody());
+                switch (recordMessage.getType()) {
                     case CREATED:
-                        formRecordCreatedEventSource.handle(formEvent);
+                        formRecordCreatedEventSource.publishEvent(recordMessage.getFormName(), recordMessage);
+                        break;
                     case UPDATED:
-                        formRecordUpdatedEventSource.handle(formEvent);
+                        formRecordUpdatedEventSource.publishEvent(recordMessage.getFormName(), recordMessage);
+                        break;
                     case DELETED:
-                        formRecordCreatedEventSource.handle(formEvent);
+                        formRecordDeletedEventSource.publishEvent(recordMessage.getFormName(), recordMessage);
+                        break;
                     default:
                         e = new Exception("Form event type not found!");
                 }
