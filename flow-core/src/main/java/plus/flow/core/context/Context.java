@@ -6,7 +6,6 @@ import lombok.Setter;
 import plus.flow.core.events.Event;
 
 import java.io.Serializable;
-import java.util.Collection;
 import java.util.Map;
 
 @Getter
@@ -16,7 +15,7 @@ public class Context implements Serializable {
 
     private Event event;
 
-    private Collection<Collection<Map<String, Object>>> outputs;
+    private Map<String, Object> outputs;
 
     @Override
     public String toString() {

@@ -29,6 +29,7 @@ public abstract class Node implements Executable, Serializable {
             return onExecute(input, context)
                     .onErrorMap(e -> transformException(e, this));
         } catch (Throwable e) {
+            e.printStackTrace();
             return Mono.error(transformException(e, this));
         }
     }
@@ -39,8 +40,8 @@ public abstract class Node implements Executable, Serializable {
         return e instanceof ExecutingException ?
                 (ExecutingException) e :
                 (function == null ?
-                        new ExecutingException(String.format("Fail to execute function cause: %s", e.getMessage()), e) :
-                        new ExecutingException(String.format("Fail to execute function '%s (%s)' cause: %s", function.title, function.type, e.getMessage()), e)
+                        new ExecutingException(String.format("Fail to execute node cause: %s", e.getMessage()), e) :
+                        new ExecutingException(String.format("Fail to execute node '%s (%s)' cause: %s", function.title, function.type, e.getMessage()), e)
                 );
     }
 

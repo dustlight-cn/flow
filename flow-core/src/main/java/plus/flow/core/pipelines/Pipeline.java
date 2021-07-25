@@ -2,7 +2,9 @@ package plus.flow.core.pipelines;
 
 import lombok.Getter;
 import lombok.Setter;
+import plus.flow.core.AccessControlList;
 import plus.flow.core.events.Event;
+import plus.flow.core.nodes.Node;
 
 import java.io.Serializable;
 import java.time.Instant;
@@ -27,4 +29,9 @@ public class Pipeline implements Serializable {
     private Instant updatedAt;
 
     private Collection<Event> trigger;
+
+    private Node[] onSuccess;
+    private Node[] onFailed;
+
+    private AccessControlList acl;
 }
