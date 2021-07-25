@@ -11,11 +11,21 @@ public interface PipelineService extends Serializable {
 
     Mono<Pipeline> createPipeline(Pipeline pipeline);
 
-    Mono<Pipeline> getPipeline(Event event);
+    Mono<Pipeline> getPipeline(String id);
+
+    Mono<Void> deletePipeline(String id);
+
+    Mono<Pipeline> updatePipeline(String id, Pipeline pipeline);
 
     Flux<Pipeline> getPipelines(Event event);
 
-    Flux<PipelineInstance> createPipelineInstances(Collection<PipelineInstance> instances);
+    Flux<PipelineInstance> createInstances(Collection<PipelineInstance> instances);
+
+    Flux<PipelineInstance> getInstancesByRecord(Event event, String clientId, String recordId);
+
+    Mono<PipelineInstance> getInstance(String id);
+
+    Mono<PipelineInstance> updateInstance(String id, PipelineInstance instance);
 
     Flux<PipelineInstance> updateInstances(Collection<PipelineInstance> instances);
 

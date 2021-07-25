@@ -6,7 +6,7 @@ import org.springframework.boot.autoconfigure.condition.ConditionalOnBean;
 import org.springframework.boot.context.properties.EnableConfigurationProperties;
 import org.springframework.context.annotation.Bean;
 import org.springframework.data.mongodb.core.ReactiveMongoOperations;
-import plus.flow.mongo.functions.MongoPipelineService;
+import plus.flow.mongo.services.MongoPipelineService;
 
 @EnableConfigurationProperties(FlowMongoProperties.class)
 public class FlowMongoConfiguration {

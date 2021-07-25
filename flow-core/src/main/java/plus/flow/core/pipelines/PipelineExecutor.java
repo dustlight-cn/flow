@@ -9,10 +9,13 @@ import plus.flow.core.context.Context;
 import plus.flow.core.events.Event;
 import plus.flow.core.events.EventListener;
 import plus.flow.core.events.EventSource;
+import plus.flow.core.exceptions.ErrorEnum;
 import plus.flow.core.nodes.ExecuteLog;
 import plus.flow.core.nodes.ExecutingException;
 import plus.flow.core.nodes.Node;
 import plus.flow.core.nodes.Result;
+import reactor.core.publisher.Flux;
+import reactor.core.publisher.Mono;
 
 import java.util.*;
 
@@ -85,7 +88,72 @@ public class PipelineExecutor implements EventListener {
                 log(String.format("%s-ON_FAILED", instance.getPipeline()), results);
             }
         }
-        pipelineService.createPipelineInstances(instances).collectList().block();
+        pipelineService.createInstances(instances).collectList().block();
+    }
+
+    public Mono<Void> onCheckpoint(String instanceId, boolean confirm, Map<String, Object> inputs) {
+        return pipelineService.getInstance(instanceId)
+                .flatMap(instance -> {
+                    if (instance.getStatus() != StatusType.BLOCKING)
+                        return Mono.error(ErrorEnum.INSTANCE_NOT_BLOCKING.getException());
+                    Context context = instance.getContext();
+                    if (context.getOutputs() == null)
+                        context.setOutputs(new HashMap<>());
+
+                    if (confirm) {
+
+                        Integer current = instance.getCurrent();
+                        if (current == null)
+                            return Mono.error(ErrorEnum.UNKNOWN.details("current is null").getException());
+
+                        instance.setStatus(StatusType.RUNNING);
+                        Stage[] stages = instance.getStages();
+
+                        for (int i = current, len = stages.length; i < len; i++) {
+                            instance.setCurrent(i);
+                            Stage stage = stages[i];
+                            if (i != current) {
+                                Node[] before = stage.getBefore();
+                                Collection<Result> results1 = executeNodes(before, context, inputs);
+                                context.getOutputs().putAll(collectOutputs(results1));
+                                log(String.format("%s:%s", instance.getPipeline(), stage.getTitle()), results1);
+                                Check check = stage.getCheck();
+                                if (check != null) {
+                                    instance.setStatus(StatusType.BLOCKING);
+                                    break;
+                                }
+                            }
+
+
+                            Node[] when = stage.getWhen();
+                            Collection<Result> results2 = executeNodes(when, context, inputs);
+                            context.getOutputs().putAll(collectOutputs(results2));
+                            if (!log(String.format("%s:%s", instance.getPipeline(), stage.getTitle()), results2)) {
+                                instance.setStatus(StatusType.FAILED);
+                                break;
+                            }
+
+                            Node[] after = stage.getAfter();
+                            Collection<Result> results3 = executeNodes(after, context, inputs);
+                            context.getOutputs().putAll(collectOutputs(results3));
+                            log(String.format("%s:%s", instance.getPipeline(), stage.getTitle()), results3);
+                        }
+                    } else {
+                        instance.setStatus(StatusType.FAILED);
+                    }
+                    if (instance.getStatus() == StatusType.RUNNING) {
+                        Node[] onSuccessNodes = instance.getOnSuccess();
+                        Collection<Result> results = executeNodes(onSuccessNodes, context, inputs);
+                        log(String.format("%s-ON_SUCCESS", instance.getPipeline()), results);
+                        instance.setStatus(StatusType.SUCCESS);
+                    } else if (instance.getStatus() == StatusType.FAILED) {
+                        Node[] onFailedNodes = instance.getOnFailed();
+                        Collection<Result> results = executeNodes(onFailedNodes, context, inputs);
+                        log(String.format("%s-ON_FAILED", instance.getPipeline()), results);
+                    }
+
+                    return pipelineService.updateInstance(instanceId, (instance)).then();
+                });
     }
 
     protected Collection<Result> executeNodes(Node[] nodes, Context context, Map<String, Object> inputs) {
@@ -104,6 +172,39 @@ public class PipelineExecutor implements EventListener {
             }
         }
         return results;
+    }
+
+    protected Flux<Result> executeNodesReactive(Node[] nodes, Context context, Map<String, Object> inputs) {
+        if (nodes == null)
+            return Flux.empty();
+        return Flux.create(sink -> {
+            sink.onRequest(value -> {
+                Mono<Result> tmp = null;
+                for (Node node : nodes) {
+                    if (tmp == null)
+                        tmp = node.execute(inputs, context)
+                                .flatMap(result -> {
+                                    sink.next(result);
+                                    return Mono.just(result);
+                                });
+                    else
+                        tmp = tmp.flatMap(result -> node.execute(inputs, context)
+                                .flatMap(result1 -> {
+                                    sink.next(result1);
+                                    return Mono.just(result1);
+                                })
+                        );
+                    tmp.onErrorResume(throwable -> {
+                        sink.error(throwable);
+                        return Mono.error(throwable);
+                    });
+                }
+                tmp.flatMap(result -> {
+                    sink.complete();
+                    return Mono.just(result);
+                });
+            });
+        });
     }
 
     protected boolean log(String name, Collection<Result> results) {

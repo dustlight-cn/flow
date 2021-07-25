@@ -14,9 +14,9 @@ import java.util.HashMap;
 @Setter
 public class AccessControlList extends HashMap<String, String> implements Serializable {
 
-    Log logger = LogFactory.getLog(getClass());
+    private final static Log logger = LogFactory.getLog(AccessControlList.class);
 
-    public Collection<String> getPermissions(AuthUser user){
+    public Collection<String> getPermissions(AuthUser user) {
 
         return user.getAuthorities();
     }

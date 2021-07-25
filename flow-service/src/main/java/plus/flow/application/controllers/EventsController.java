@@ -11,7 +11,7 @@ import plus.flow.core.events.EventSource;
 import plus.flow.core.pipelines.PipelineExecutor;
 import reactor.core.publisher.Flux;
 
-@Tag(name = "Events", description = "事件源")
+@Tag(name = "Event", description = "事件")
 @RestController
 @RequestMapping("/v1/events")
 @SecurityRequirement(name = "auth")

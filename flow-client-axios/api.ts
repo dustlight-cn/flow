@@ -95,10 +95,10 @@ export interface Check {
     require?: ItemGroup;
     /**
      * 
-     * @type {Array<string>}
+     * @type {{ [key: string]: string; }}
      * @memberof Check
      */
-    users?: Array<string>;
+    acl?: { [key: string]: string; };
 }
 /**
  * 
@@ -114,10 +114,10 @@ export interface Context {
     event?: Event;
     /**
      * 
-     * @type {Array<Array<{ [key: string]: object; }>>}
+     * @type {{ [key: string]: object; }}
      * @memberof Context
      */
-    outputs?: Array<Array<{ [key: string]: object; }>>;
+    outputs?: { [key: string]: object; };
 }
 /**
  * 
@@ -287,6 +287,12 @@ export interface EventSource {
      * @type {string}
      * @memberof EventSource
      */
+    title?: string;
+    /**
+     * 
+     * @type {string}
+     * @memberof EventSource
+     */
     description?: string;
     /**
      * 
@@ -294,12 +300,6 @@ export interface EventSource {
      * @memberof EventSource
      */
     eventType?: string;
-    /**
-     * 
-     * @type {string}
-     * @memberof EventSource
-     */
-    title?: string;
 }
 /**
  * 
@@ -602,6 +602,24 @@ export interface Pipeline {
      * @memberof Pipeline
      */
     trigger?: Array<Event>;
+    /**
+     * 
+     * @type {Array<Node>}
+     * @memberof Pipeline
+     */
+    onSuccess?: Array<Node>;
+    /**
+     * 
+     * @type {Array<Node>}
+     * @memberof Pipeline
+     */
+    onFailed?: Array<Node>;
+    /**
+     * 
+     * @type {{ [key: string]: string; }}
+     * @memberof Pipeline
+     */
+    acl?: { [key: string]: string; };
 }
 /**
  * 
@@ -671,6 +689,24 @@ export interface PipelineInstance {
     trigger?: Array<Event>;
     /**
      * 
+     * @type {Array<Node>}
+     * @memberof PipelineInstance
+     */
+    onSuccess?: Array<Node>;
+    /**
+     * 
+     * @type {Array<Node>}
+     * @memberof PipelineInstance
+     */
+    onFailed?: Array<Node>;
+    /**
+     * 
+     * @type {{ [key: string]: string; }}
+     * @memberof PipelineInstance
+     */
+    acl?: { [key: string]: string; };
+    /**
+     * 
      * @type {string}
      * @memberof PipelineInstance
      */
@@ -695,16 +731,16 @@ export interface PipelineInstance {
     context?: Context;
     /**
      * 
-     * @type {boolean}
-     * @memberof PipelineInstance
-     */
-    done?: boolean;
-    /**
-     * 
      * @type {string}
      * @memberof PipelineInstance
      */
     currentStage?: string;
+    /**
+     * 
+     * @type {boolean}
+     * @memberof PipelineInstance
+     */
+    done?: boolean;
 }
 
 /**
@@ -1088,10 +1124,10 @@ export enum UserItemTypeEnum {
 
 
 /**
- * EventsApi - axios parameter creator
+ * EventApi - axios parameter creator
  * @export
  */
-export const EventsApiAxiosParamCreator = function (configuration?: Configuration) {
+export const EventApiAxiosParamCreator = function (configuration?: Configuration) {
     return {
         /**
          * 
@@ -1130,11 +1166,11 @@ export const EventsApiAxiosParamCreator = function (configuration?: Configuratio
 };
 
 /**
- * EventsApi - functional programming interface
+ * EventApi - functional programming interface
  * @export
  */
-export const EventsApiFp = function(configuration?: Configuration) {
-    const localVarAxiosParamCreator = EventsApiAxiosParamCreator(configuration)
+export const EventApiFp = function(configuration?: Configuration) {
+    const localVarAxiosParamCreator = EventApiAxiosParamCreator(configuration)
     return {
         /**
          * 
@@ -1149,11 +1185,11 @@ export const EventsApiFp = function(configuration?: Configuration) {
 };
 
 /**
- * EventsApi - factory interface
+ * EventApi - factory interface
  * @export
  */
-export const EventsApiFactory = function (configuration?: Configuration, basePath?: string, axios?: AxiosInstance) {
-    const localVarFp = EventsApiFp(configuration)
+export const EventApiFactory = function (configuration?: Configuration, basePath?: string, axios?: AxiosInstance) {
+    const localVarFp = EventApiFp(configuration)
     return {
         /**
          * 
@@ -1167,32 +1203,387 @@ export const EventsApiFactory = function (configuration?: Configuration, basePat
 };
 
 /**
- * EventsApi - object-oriented interface
+ * EventApi - object-oriented interface
  * @export
- * @class EventsApi
+ * @class EventApi
  * @extends {BaseAPI}
  */
-export class EventsApi extends BaseAPI {
+export class EventApi extends BaseAPI {
     /**
      * 
      * @param {*} [options] Override http request option.
      * @throws {RequiredError}
-     * @memberof EventsApi
+     * @memberof EventApi
      */
     public getSources(options?: any) {
-        return EventsApiFp(this.configuration).getSources(options).then((request) => request(this.axios, this.basePath));
+        return EventApiFp(this.configuration).getSources(options).then((request) => request(this.axios, this.basePath));
     }
 }
 
 
 /**
- * PipelinesApi - axios parameter creator
+ * InstanceApi - axios parameter creator
  * @export
  */
-export const PipelinesApiAxiosParamCreator = function (configuration?: Configuration) {
+export const InstanceApiAxiosParamCreator = function (configuration?: Configuration) {
     return {
         /**
          * 
+         * @summary 确认检查点
+         * @param {string} id 
+         * @param {object} [body] 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        confirmCheckpoint: async (id: string, body?: object, options: any = {}): Promise<RequestArgs> => {
+            // verify required parameter 'id' is not null or undefined
+            assertParamExists('confirmCheckpoint', 'id', id)
+            const localVarPath = `/v1/instances/{id}/checkpoint`
+                .replace(`{${"id"}}`, encodeURIComponent(String(id)));
+            // use dummy base URL string because the URL constructor only accepts absolute URLs.
+            const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL);
+            let baseOptions;
+            if (configuration) {
+                baseOptions = configuration.baseOptions;
+            }
+
+            const localVarRequestOptions = { method: 'POST', ...baseOptions, ...options};
+            const localVarHeaderParameter = {} as any;
+            const localVarQueryParameter = {} as any;
+
+            // authentication auth required
+            // oauth required
+            await setOAuthToObject(localVarHeaderParameter, "auth", [], configuration)
+
+
+    
+            localVarHeaderParameter['Content-Type'] = 'application/json';
+
+            setSearchParams(localVarUrlObj, localVarQueryParameter, options.query);
+            let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {};
+            localVarRequestOptions.headers = {...localVarHeaderParameter, ...headersFromBaseOptions, ...options.headers};
+            localVarRequestOptions.data = serializeDataIfNeeded(body, localVarRequestOptions, configuration)
+
+            return {
+                url: toPathString(localVarUrlObj),
+                options: localVarRequestOptions,
+            };
+        },
+        /**
+         * 
+         * @summary 否认检查点
+         * @param {string} id 
+         * @param {object} [body] 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        denyCheckpoint: async (id: string, body?: object, options: any = {}): Promise<RequestArgs> => {
+            // verify required parameter 'id' is not null or undefined
+            assertParamExists('denyCheckpoint', 'id', id)
+            const localVarPath = `/v1/instances/{id}/checkpoint`
+                .replace(`{${"id"}}`, encodeURIComponent(String(id)));
+            // use dummy base URL string because the URL constructor only accepts absolute URLs.
+            const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL);
+            let baseOptions;
+            if (configuration) {
+                baseOptions = configuration.baseOptions;
+            }
+
+            const localVarRequestOptions = { method: 'DELETE', ...baseOptions, ...options};
+            const localVarHeaderParameter = {} as any;
+            const localVarQueryParameter = {} as any;
+
+            // authentication auth required
+            // oauth required
+            await setOAuthToObject(localVarHeaderParameter, "auth", [], configuration)
+
+
+    
+            localVarHeaderParameter['Content-Type'] = 'application/json';
+
+            setSearchParams(localVarUrlObj, localVarQueryParameter, options.query);
+            let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {};
+            localVarRequestOptions.headers = {...localVarHeaderParameter, ...headersFromBaseOptions, ...options.headers};
+            localVarRequestOptions.data = serializeDataIfNeeded(body, localVarRequestOptions, configuration)
+
+            return {
+                url: toPathString(localVarUrlObj),
+                options: localVarRequestOptions,
+            };
+        },
+        /**
+         * 
+         * @summary 获取流水线实例
+         * @param {string} id 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        getInstance: async (id: string, options: any = {}): Promise<RequestArgs> => {
+            // verify required parameter 'id' is not null or undefined
+            assertParamExists('getInstance', 'id', id)
+            const localVarPath = `/v1/instances/{id}`
+                .replace(`{${"id"}}`, encodeURIComponent(String(id)));
+            // use dummy base URL string because the URL constructor only accepts absolute URLs.
+            const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL);
+            let baseOptions;
+            if (configuration) {
+                baseOptions = configuration.baseOptions;
+            }
+
+            const localVarRequestOptions = { method: 'GET', ...baseOptions, ...options};
+            const localVarHeaderParameter = {} as any;
+            const localVarQueryParameter = {} as any;
+
+            // authentication auth required
+            // oauth required
+            await setOAuthToObject(localVarHeaderParameter, "auth", [], configuration)
+
+
+    
+            setSearchParams(localVarUrlObj, localVarQueryParameter, options.query);
+            let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {};
+            localVarRequestOptions.headers = {...localVarHeaderParameter, ...headersFromBaseOptions, ...options.headers};
+
+            return {
+                url: toPathString(localVarUrlObj),
+                options: localVarRequestOptions,
+            };
+        },
+        /**
+         * 
+         * @summary 查找记录流水线实例
+         * @param {string} recordId 
+         * @param {string} eventKey 
+         * @param {string} [eventType] 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        getInstancesByRecord: async (recordId: string, eventKey: string, eventType?: string, options: any = {}): Promise<RequestArgs> => {
+            // verify required parameter 'recordId' is not null or undefined
+            assertParamExists('getInstancesByRecord', 'recordId', recordId)
+            // verify required parameter 'eventKey' is not null or undefined
+            assertParamExists('getInstancesByRecord', 'eventKey', eventKey)
+            const localVarPath = `/v1/record/{recordId}/instances`
+                .replace(`{${"recordId"}}`, encodeURIComponent(String(recordId)));
+            // use dummy base URL string because the URL constructor only accepts absolute URLs.
+            const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL);
+            let baseOptions;
+            if (configuration) {
+                baseOptions = configuration.baseOptions;
+            }
+
+            const localVarRequestOptions = { method: 'GET', ...baseOptions, ...options};
+            const localVarHeaderParameter = {} as any;
+            const localVarQueryParameter = {} as any;
+
+            // authentication auth required
+            // oauth required
+            await setOAuthToObject(localVarHeaderParameter, "auth", [], configuration)
+
+            if (eventKey !== undefined) {
+                localVarQueryParameter['eventKey'] = eventKey;
+            }
+
+            if (eventType !== undefined) {
+                localVarQueryParameter['eventType'] = eventType;
+            }
+
+
+    
+            setSearchParams(localVarUrlObj, localVarQueryParameter, options.query);
+            let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {};
+            localVarRequestOptions.headers = {...localVarHeaderParameter, ...headersFromBaseOptions, ...options.headers};
+
+            return {
+                url: toPathString(localVarUrlObj),
+                options: localVarRequestOptions,
+            };
+        },
+    }
+};
+
+/**
+ * InstanceApi - functional programming interface
+ * @export
+ */
+export const InstanceApiFp = function(configuration?: Configuration) {
+    const localVarAxiosParamCreator = InstanceApiAxiosParamCreator(configuration)
+    return {
+        /**
+         * 
+         * @summary 确认检查点
+         * @param {string} id 
+         * @param {object} [body] 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        async confirmCheckpoint(id: string, body?: object, options?: any): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<void>> {
+            const localVarAxiosArgs = await localVarAxiosParamCreator.confirmCheckpoint(id, body, options);
+            return createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration);
+        },
+        /**
+         * 
+         * @summary 否认检查点
+         * @param {string} id 
+         * @param {object} [body] 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        async denyCheckpoint(id: string, body?: object, options?: any): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<void>> {
+            const localVarAxiosArgs = await localVarAxiosParamCreator.denyCheckpoint(id, body, options);
+            return createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration);
+        },
+        /**
+         * 
+         * @summary 获取流水线实例
+         * @param {string} id 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        async getInstance(id: string, options?: any): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<PipelineInstance>> {
+            const localVarAxiosArgs = await localVarAxiosParamCreator.getInstance(id, options);
+            return createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration);
+        },
+        /**
+         * 
+         * @summary 查找记录流水线实例
+         * @param {string} recordId 
+         * @param {string} eventKey 
+         * @param {string} [eventType] 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        async getInstancesByRecord(recordId: string, eventKey: string, eventType?: string, options?: any): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<Array<PipelineInstance>>> {
+            const localVarAxiosArgs = await localVarAxiosParamCreator.getInstancesByRecord(recordId, eventKey, eventType, options);
+            return createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration);
+        },
+    }
+};
+
+/**
+ * InstanceApi - factory interface
+ * @export
+ */
+export const InstanceApiFactory = function (configuration?: Configuration, basePath?: string, axios?: AxiosInstance) {
+    const localVarFp = InstanceApiFp(configuration)
+    return {
+        /**
+         * 
+         * @summary 确认检查点
+         * @param {string} id 
+         * @param {object} [body] 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        confirmCheckpoint(id: string, body?: object, options?: any): AxiosPromise<void> {
+            return localVarFp.confirmCheckpoint(id, body, options).then((request) => request(axios, basePath));
+        },
+        /**
+         * 
+         * @summary 否认检查点
+         * @param {string} id 
+         * @param {object} [body] 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        denyCheckpoint(id: string, body?: object, options?: any): AxiosPromise<void> {
+            return localVarFp.denyCheckpoint(id, body, options).then((request) => request(axios, basePath));
+        },
+        /**
+         * 
+         * @summary 获取流水线实例
+         * @param {string} id 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        getInstance(id: string, options?: any): AxiosPromise<PipelineInstance> {
+            return localVarFp.getInstance(id, options).then((request) => request(axios, basePath));
+        },
+        /**
+         * 
+         * @summary 查找记录流水线实例
+         * @param {string} recordId 
+         * @param {string} eventKey 
+         * @param {string} [eventType] 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        getInstancesByRecord(recordId: string, eventKey: string, eventType?: string, options?: any): AxiosPromise<Array<PipelineInstance>> {
+            return localVarFp.getInstancesByRecord(recordId, eventKey, eventType, options).then((request) => request(axios, basePath));
+        },
+    };
+};
+
+/**
+ * InstanceApi - object-oriented interface
+ * @export
+ * @class InstanceApi
+ * @extends {BaseAPI}
+ */
+export class InstanceApi extends BaseAPI {
+    /**
+     * 
+     * @summary 确认检查点
+     * @param {string} id 
+     * @param {object} [body] 
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     * @memberof InstanceApi
+     */
+    public confirmCheckpoint(id: string, body?: object, options?: any) {
+        return InstanceApiFp(this.configuration).confirmCheckpoint(id, body, options).then((request) => request(this.axios, this.basePath));
+    }
+
+    /**
+     * 
+     * @summary 否认检查点
+     * @param {string} id 
+     * @param {object} [body] 
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     * @memberof InstanceApi
+     */
+    public denyCheckpoint(id: string, body?: object, options?: any) {
+        return InstanceApiFp(this.configuration).denyCheckpoint(id, body, options).then((request) => request(this.axios, this.basePath));
+    }
+
+    /**
+     * 
+     * @summary 获取流水线实例
+     * @param {string} id 
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     * @memberof InstanceApi
+     */
+    public getInstance(id: string, options?: any) {
+        return InstanceApiFp(this.configuration).getInstance(id, options).then((request) => request(this.axios, this.basePath));
+    }
+
+    /**
+     * 
+     * @summary 查找记录流水线实例
+     * @param {string} recordId 
+     * @param {string} eventKey 
+     * @param {string} [eventType] 
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     * @memberof InstanceApi
+     */
+    public getInstancesByRecord(recordId: string, eventKey: string, eventType?: string, options?: any) {
+        return InstanceApiFp(this.configuration).getInstancesByRecord(recordId, eventKey, eventType, options).then((request) => request(this.axios, this.basePath));
+    }
+}
+
+
+/**
+ * PipelineApi - axios parameter creator
+ * @export
+ */
+export const PipelineApiAxiosParamCreator = function (configuration?: Configuration) {
+    return {
+        /**
+         * 
+         * @summary 创建流水线
          * @param {Pipeline} pipeline 
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
@@ -1232,14 +1623,55 @@ export const PipelinesApiAxiosParamCreator = function (configuration?: Configura
         },
         /**
          * 
-         * @param {Pipeline} pipeline 
+         * @summary 删除流水线
+         * @param {string} id 
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
-        get: async (pipeline: Pipeline, options: any = {}): Promise<RequestArgs> => {
-            // verify required parameter 'pipeline' is not null or undefined
-            assertParamExists('get', 'pipeline', pipeline)
-            const localVarPath = `/v1/pipelines`;
+        deletePipeline: async (id: string, options: any = {}): Promise<RequestArgs> => {
+            // verify required parameter 'id' is not null or undefined
+            assertParamExists('deletePipeline', 'id', id)
+            const localVarPath = `/v1/pipelines/{id}`
+                .replace(`{${"id"}}`, encodeURIComponent(String(id)));
+            // use dummy base URL string because the URL constructor only accepts absolute URLs.
+            const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL);
+            let baseOptions;
+            if (configuration) {
+                baseOptions = configuration.baseOptions;
+            }
+
+            const localVarRequestOptions = { method: 'DELETE', ...baseOptions, ...options};
+            const localVarHeaderParameter = {} as any;
+            const localVarQueryParameter = {} as any;
+
+            // authentication auth required
+            // oauth required
+            await setOAuthToObject(localVarHeaderParameter, "auth", [], configuration)
+
+
+    
+            setSearchParams(localVarUrlObj, localVarQueryParameter, options.query);
+            let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {};
+            localVarRequestOptions.headers = {...localVarHeaderParameter, ...headersFromBaseOptions, ...options.headers};
+
+            return {
+                url: toPathString(localVarUrlObj),
+                options: localVarRequestOptions,
+            };
+        },
+        /**
+         * 
+         * @summary 查找表单流水线
+         * @param {string} formName 
+         * @param {string} [eventType] 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        getFormPipelines: async (formName: string, eventType?: string, options: any = {}): Promise<RequestArgs> => {
+            // verify required parameter 'formName' is not null or undefined
+            assertParamExists('getFormPipelines', 'formName', formName)
+            const localVarPath = `/v1/forms/{formName}/instances`
+                .replace(`{${"formName"}}`, encodeURIComponent(String(formName)));
             // use dummy base URL string because the URL constructor only accepts absolute URLs.
             const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL);
             let baseOptions;
@@ -1255,8 +1687,8 @@ export const PipelinesApiAxiosParamCreator = function (configuration?: Configura
             // oauth required
             await setOAuthToObject(localVarHeaderParameter, "auth", [], configuration)
 
-            if (pipeline !== undefined) {
-                localVarQueryParameter['pipeline'] = pipeline;
+            if (eventType !== undefined) {
+                localVarQueryParameter['eventType'] = eventType;
             }
 
 
@@ -1270,18 +1702,101 @@ export const PipelinesApiAxiosParamCreator = function (configuration?: Configura
                 options: localVarRequestOptions,
             };
         },
+        /**
+         * 
+         * @summary 获取流水线
+         * @param {string} id 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        getPipeline: async (id: string, options: any = {}): Promise<RequestArgs> => {
+            // verify required parameter 'id' is not null or undefined
+            assertParamExists('getPipeline', 'id', id)
+            const localVarPath = `/v1/pipelines/{id}`
+                .replace(`{${"id"}}`, encodeURIComponent(String(id)));
+            // use dummy base URL string because the URL constructor only accepts absolute URLs.
+            const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL);
+            let baseOptions;
+            if (configuration) {
+                baseOptions = configuration.baseOptions;
+            }
+
+            const localVarRequestOptions = { method: 'GET', ...baseOptions, ...options};
+            const localVarHeaderParameter = {} as any;
+            const localVarQueryParameter = {} as any;
+
+            // authentication auth required
+            // oauth required
+            await setOAuthToObject(localVarHeaderParameter, "auth", [], configuration)
+
+
+    
+            setSearchParams(localVarUrlObj, localVarQueryParameter, options.query);
+            let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {};
+            localVarRequestOptions.headers = {...localVarHeaderParameter, ...headersFromBaseOptions, ...options.headers};
+
+            return {
+                url: toPathString(localVarUrlObj),
+                options: localVarRequestOptions,
+            };
+        },
+        /**
+         * 
+         * @summary 更新流水线
+         * @param {string} id 
+         * @param {Pipeline} pipeline 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        updatePipeline: async (id: string, pipeline: Pipeline, options: any = {}): Promise<RequestArgs> => {
+            // verify required parameter 'id' is not null or undefined
+            assertParamExists('updatePipeline', 'id', id)
+            // verify required parameter 'pipeline' is not null or undefined
+            assertParamExists('updatePipeline', 'pipeline', pipeline)
+            const localVarPath = `/v1/pipelines/{id}`
+                .replace(`{${"id"}}`, encodeURIComponent(String(id)));
+            // use dummy base URL string because the URL constructor only accepts absolute URLs.
+            const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL);
+            let baseOptions;
+            if (configuration) {
+                baseOptions = configuration.baseOptions;
+            }
+
+            const localVarRequestOptions = { method: 'PUT', ...baseOptions, ...options};
+            const localVarHeaderParameter = {} as any;
+            const localVarQueryParameter = {} as any;
+
+            // authentication auth required
+            // oauth required
+            await setOAuthToObject(localVarHeaderParameter, "auth", [], configuration)
+
+
+    
+            localVarHeaderParameter['Content-Type'] = 'application/json';
+
+            setSearchParams(localVarUrlObj, localVarQueryParameter, options.query);
+            let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {};
+            localVarRequestOptions.headers = {...localVarHeaderParameter, ...headersFromBaseOptions, ...options.headers};
+            localVarRequestOptions.data = serializeDataIfNeeded(pipeline, localVarRequestOptions, configuration)
+
+            return {
+                url: toPathString(localVarUrlObj),
+                options: localVarRequestOptions,
+            };
+        },
     }
 };
 
 /**
- * PipelinesApi - functional programming interface
+ * PipelineApi - functional programming interface
  * @export
  */
-export const PipelinesApiFp = function(configuration?: Configuration) {
-    const localVarAxiosParamCreator = PipelinesApiAxiosParamCreator(configuration)
+export const PipelineApiFp = function(configuration?: Configuration) {
+    const localVarAxiosParamCreator = PipelineApiAxiosParamCreator(configuration)
     return {
         /**
          * 
+         * @summary 创建流水线
          * @param {Pipeline} pipeline 
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
@@ -1292,26 +1807,63 @@ export const PipelinesApiFp = function(configuration?: Configuration) {
         },
         /**
          * 
+         * @summary 删除流水线
+         * @param {string} id 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        async deletePipeline(id: string, options?: any): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<void>> {
+            const localVarAxiosArgs = await localVarAxiosParamCreator.deletePipeline(id, options);
+            return createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration);
+        },
+        /**
+         * 
+         * @summary 查找表单流水线
+         * @param {string} formName 
+         * @param {string} [eventType] 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        async getFormPipelines(formName: string, eventType?: string, options?: any): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<Array<Pipeline>>> {
+            const localVarAxiosArgs = await localVarAxiosParamCreator.getFormPipelines(formName, eventType, options);
+            return createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration);
+        },
+        /**
+         * 
+         * @summary 获取流水线
+         * @param {string} id 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        async getPipeline(id: string, options?: any): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<Pipeline>> {
+            const localVarAxiosArgs = await localVarAxiosParamCreator.getPipeline(id, options);
+            return createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration);
+        },
+        /**
+         * 
+         * @summary 更新流水线
+         * @param {string} id 
          * @param {Pipeline} pipeline 
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
-        async get(pipeline: Pipeline, options?: any): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<PipelineInstance>> {
-            const localVarAxiosArgs = await localVarAxiosParamCreator.get(pipeline, options);
+        async updatePipeline(id: string, pipeline: Pipeline, options?: any): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<Pipeline>> {
+            const localVarAxiosArgs = await localVarAxiosParamCreator.updatePipeline(id, pipeline, options);
             return createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration);
         },
     }
 };
 
 /**
- * PipelinesApi - factory interface
+ * PipelineApi - factory interface
  * @export
  */
-export const PipelinesApiFactory = function (configuration?: Configuration, basePath?: string, axios?: AxiosInstance) {
-    const localVarFp = PipelinesApiFp(configuration)
+export const PipelineApiFactory = function (configuration?: Configuration, basePath?: string, axios?: AxiosInstance) {
+    const localVarFp = PipelineApiFp(configuration)
     return {
         /**
          * 
+         * @summary 创建流水线
          * @param {Pipeline} pipeline 
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
@@ -1321,43 +1873,116 @@ export const PipelinesApiFactory = function (configuration?: Configuration, base
         },
         /**
          * 
+         * @summary 删除流水线
+         * @param {string} id 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        deletePipeline(id: string, options?: any): AxiosPromise<void> {
+            return localVarFp.deletePipeline(id, options).then((request) => request(axios, basePath));
+        },
+        /**
+         * 
+         * @summary 查找表单流水线
+         * @param {string} formName 
+         * @param {string} [eventType] 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        getFormPipelines(formName: string, eventType?: string, options?: any): AxiosPromise<Array<Pipeline>> {
+            return localVarFp.getFormPipelines(formName, eventType, options).then((request) => request(axios, basePath));
+        },
+        /**
+         * 
+         * @summary 获取流水线
+         * @param {string} id 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        getPipeline(id: string, options?: any): AxiosPromise<Pipeline> {
+            return localVarFp.getPipeline(id, options).then((request) => request(axios, basePath));
+        },
+        /**
+         * 
+         * @summary 更新流水线
+         * @param {string} id 
          * @param {Pipeline} pipeline 
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
-        get(pipeline: Pipeline, options?: any): AxiosPromise<PipelineInstance> {
-            return localVarFp.get(pipeline, options).then((request) => request(axios, basePath));
+        updatePipeline(id: string, pipeline: Pipeline, options?: any): AxiosPromise<Pipeline> {
+            return localVarFp.updatePipeline(id, pipeline, options).then((request) => request(axios, basePath));
         },
     };
 };
 
 /**
- * PipelinesApi - object-oriented interface
+ * PipelineApi - object-oriented interface
  * @export
- * @class PipelinesApi
+ * @class PipelineApi
  * @extends {BaseAPI}
  */
-export class PipelinesApi extends BaseAPI {
+export class PipelineApi extends BaseAPI {
     /**
      * 
+     * @summary 创建流水线
      * @param {Pipeline} pipeline 
      * @param {*} [options] Override http request option.
      * @throws {RequiredError}
-     * @memberof PipelinesApi
+     * @memberof PipelineApi
      */
     public createPipeline(pipeline: Pipeline, options?: any) {
-        return PipelinesApiFp(this.configuration).createPipeline(pipeline, options).then((request) => request(this.axios, this.basePath));
+        return PipelineApiFp(this.configuration).createPipeline(pipeline, options).then((request) => request(this.axios, this.basePath));
     }
 
     /**
      * 
+     * @summary 删除流水线
+     * @param {string} id 
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     * @memberof PipelineApi
+     */
+    public deletePipeline(id: string, options?: any) {
+        return PipelineApiFp(this.configuration).deletePipeline(id, options).then((request) => request(this.axios, this.basePath));
+    }
+
+    /**
+     * 
+     * @summary 查找表单流水线
+     * @param {string} formName 
+     * @param {string} [eventType] 
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     * @memberof PipelineApi
+     */
+    public getFormPipelines(formName: string, eventType?: string, options?: any) {
+        return PipelineApiFp(this.configuration).getFormPipelines(formName, eventType, options).then((request) => request(this.axios, this.basePath));
+    }
+
+    /**
+     * 
+     * @summary 获取流水线
+     * @param {string} id 
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     * @memberof PipelineApi
+     */
+    public getPipeline(id: string, options?: any) {
+        return PipelineApiFp(this.configuration).getPipeline(id, options).then((request) => request(this.axios, this.basePath));
+    }
+
+    /**
+     * 
+     * @summary 更新流水线
+     * @param {string} id 
      * @param {Pipeline} pipeline 
      * @param {*} [options] Override http request option.
      * @throws {RequiredError}
-     * @memberof PipelinesApi
+     * @memberof PipelineApi
      */
-    public get(pipeline: Pipeline, options?: any) {
-        return PipelinesApiFp(this.configuration).get(pipeline, options).then((request) => request(this.axios, this.basePath));
+    public updatePipeline(id: string, pipeline: Pipeline, options?: any) {
+        return PipelineApiFp(this.configuration).updatePipeline(id, pipeline, options).then((request) => request(this.axios, this.basePath));
     }
 }
 
