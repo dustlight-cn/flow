@@ -50,7 +50,7 @@ public class InstanceController {
                                         @RequestBody(required = false) Map<String, Object> data,
                                         AbstractOAuth2TokenAuthenticationToken token) {
         AuthPrincipal principal = AuthPrincipalUtil.getAuthPrincipal(token);
-        return executor.onCheckpoint(id, true, data);
+        return executor.onCheckpoint(id, true, data, token.getToken().getTokenValue());
     }
 
     @Operation(summary = "否认检查点",
@@ -63,7 +63,7 @@ public class InstanceController {
                                      @RequestBody(required = false) Map<String, Object> data,
                                      AbstractOAuth2TokenAuthenticationToken token) {
         AuthPrincipal principal = AuthPrincipalUtil.getAuthPrincipal(token);
-        return executor.onCheckpoint(id, false, data);
+        return executor.onCheckpoint(id, false, data, token.getToken().getTokenValue());
     }
 
     @Operation(summary = "查找记录流水线实例")

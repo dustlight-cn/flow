@@ -91,12 +91,13 @@ public class PipelineExecutor implements EventListener {
         pipelineService.createInstances(instances).collectList().block();
     }
 
-    public Mono<Void> onCheckpoint(String instanceId, boolean confirm, Map<String, Object> inputs) {
+    public Mono<Void> onCheckpoint(String instanceId, boolean confirm, Map<String, Object> inputs, String token) {
         return pipelineService.getInstance(instanceId)
                 .flatMap(instance -> {
                     if (instance.getStatus() != StatusType.BLOCKING)
                         return Mono.error(ErrorEnum.INSTANCE_NOT_BLOCKING.getException());
                     Context context = instance.getContext();
+                    context.setToken(token);
                     if (context.getOutputs() == null)
                         context.setOutputs(new HashMap<>());
 
