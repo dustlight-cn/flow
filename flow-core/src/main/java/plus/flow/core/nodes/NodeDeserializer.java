@@ -36,7 +36,6 @@ public class NodeDeserializer extends StdScalarDeserializer<Node> {
 
     @Override
     public Node deserialize(JsonParser jsonParser, DeserializationContext deserializationContext) throws IOException, JsonProcessingException {
-
         HashMap tmp = jsonParser.readValueAs(HashMap.class);
         if (tmp == null)
             return null;

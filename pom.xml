@@ -5,7 +5,7 @@
     <packaging>pom</packaging>
     <groupId>plus.flow</groupId>
     <artifactId>flow-parent</artifactId>
-    <version>0.0.2-SNAPSHOT</version>
+    <version>0.0.3-SNAPSHOT</version>
     <description>PLUS 流程服务</description>
 
     <properties>
@@ -20,6 +20,7 @@
 
         <spring-boot.version>2.5.2</spring-boot.version>
         <spring-native.version>0.10.1</spring-native.version>
+        <spring-cloud-kubernetes.version>2.0.3</spring-cloud-kubernetes.version>
         <springdoc.version>1.5.9</springdoc.version>
 
         <auth.version>1.1.0-alpha-1-SNAPSHOT</auth.version>
@@ -43,6 +44,15 @@
                 <type>pom</type>
                 <scope>import</scope>
             </dependency>
+
+            <dependency>
+                <groupId>org.springframework.cloud</groupId>
+                <artifactId>spring-cloud-kubernetes-dependencies</artifactId>
+                <version>${spring-cloud-kubernetes.version}</version>
+                <type>pom</type>
+                <scope>import</scope>
+            </dependency>
+
             <dependency>
                 <groupId>plus.flow</groupId>
                 <artifactId>flow-core</artifactId>

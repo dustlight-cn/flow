@@ -8,24 +8,25 @@ import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
-import plus.flow.core.events.EventSource;
-import plus.flow.core.pipelines.PipelineExecutor;
-import reactor.core.publisher.Flux;
+import plus.flow.core.nodes.impls.ServerlessNode;
+import reactor.core.publisher.Mono;
 
-@Tag(name = "Event", description = "事件")
+import java.util.Collection;
+
+@Tag(name = "Serverless", description = "无服务资源")
 @RestController
-@RequestMapping("/v1/events")
+@RequestMapping("/v1/serverless")
 @SecurityRequirement(name = "auth")
 @CrossOrigin
-public class EventsController {
+public class FunctionController {
 
     @Autowired
-    PipelineExecutor executor;
+    ServerlessNode.FunctionService functionService;
 
-    @Operation(summary = "获取全部事件源")
-    @GetMapping("/sources")
-    public Flux<EventSource> getSources() {
-        return Flux.fromIterable(executor.getSources());
+    @Operation(summary = "获取全部函数")
+    @GetMapping("/functions")
+    public Mono<Collection<String>> getSources() {
+        return functionService.getFunctionNames();
     }
 
 }

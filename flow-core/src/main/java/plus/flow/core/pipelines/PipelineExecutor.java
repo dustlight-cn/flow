@@ -4,6 +4,7 @@ import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.Setter;
 import org.apache.commons.logging.LogFactory;
+import org.springframework.context.ApplicationContext;
 import org.springframework.util.StringUtils;
 import plus.flow.core.context.Context;
 import plus.flow.core.events.Event;
@@ -26,6 +27,7 @@ public class PipelineExecutor implements EventListener {
 
     private Collection<EventSource> sources;
     private PipelineService pipelineService;
+    private ApplicationContext applicationContext;
 
     @Override
     public void onEvent(Event event) {
@@ -163,7 +165,7 @@ public class PipelineExecutor implements EventListener {
             return results;
         for (Node node : nodes) {
             try {
-                Result result = node.execute(inputs, context).block();
+                Result result = node.execute(inputs, context, applicationContext).block();
                 results.add(result);
             } catch (Throwable e) {
                 Result result = new Result();
@@ -183,13 +185,13 @@ public class PipelineExecutor implements EventListener {
                 Mono<Result> tmp = null;
                 for (Node node : nodes) {
                     if (tmp == null)
-                        tmp = node.execute(inputs, context)
+                        tmp = node.execute(inputs, context, applicationContext)
                                 .flatMap(result -> {
                                     sink.next(result);
                                     return Mono.just(result);
                                 });
                     else
-                        tmp = tmp.flatMap(result -> node.execute(inputs, context)
+                        tmp = tmp.flatMap(result -> node.execute(inputs, context, applicationContext)
                                 .flatMap(result1 -> {
                                     sink.next(result1);
                                     return Mono.just(result1);

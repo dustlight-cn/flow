@@ -5,6 +5,7 @@ import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.Setter;
+import org.springframework.context.ApplicationContext;
 import plus.flow.core.context.Context;
 import plus.flow.core.nodes.ExecuteLog;
 import plus.flow.core.nodes.NodeType;
@@ -30,7 +31,7 @@ public class ScriptNode extends Node {
     private String main;
 
     @Override
-    public Mono<Result> onExecute(Map<String, Object> input, Context context) throws Throwable {
+    public Mono<Result> onExecute(Map<String, Object> input, Context context, ApplicationContext applicationContext) throws Throwable {
         ScriptEngineManager manager = new ScriptEngineManager();
         ScriptEngine engine = manager.getEngineByName(language);
         Invocable inv = (Invocable) engine;

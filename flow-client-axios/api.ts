@@ -287,7 +287,7 @@ export interface EventSource {
      * @type {string}
      * @memberof EventSource
      */
-    title?: string;
+    eventType?: string;
     /**
      * 
      * @type {string}
@@ -299,7 +299,7 @@ export interface EventSource {
      * @type {string}
      * @memberof EventSource
      */
-    eventType?: string;
+    title?: string;
 }
 /**
  * 
@@ -534,7 +534,7 @@ export interface ItemGroup {
  * @type Node
  * @export
  */
-export type Node = ScriptNode;
+export type Node = ScriptNode | ServerlessNode;
 
 /**
  * 
@@ -731,16 +731,16 @@ export interface PipelineInstance {
     context?: Context;
     /**
      * 
-     * @type {string}
-     * @memberof PipelineInstance
-     */
-    currentStage?: string;
-    /**
-     * 
      * @type {boolean}
      * @memberof PipelineInstance
      */
     done?: boolean;
+    /**
+     * 
+     * @type {string}
+     * @memberof PipelineInstance
+     */
+    currentStage?: string;
 }
 
 /**
@@ -872,7 +872,8 @@ export interface ScriptNode {
     * @enum {string}
     */
 export enum ScriptNodeTypeEnum {
-    Script = 'SCRIPT'
+    Script = 'SCRIPT',
+    Serverless = 'SERVERLESS'
 }
 
 /**
@@ -945,6 +946,41 @@ export enum SelectItemTypeEnum {
     File = 'FILE',
     Select = 'SELECT',
     User = 'USER'
+}
+
+/**
+ * 
+ * @export
+ * @interface ServerlessNode
+ */
+export interface ServerlessNode {
+    /**
+     * 
+     * @type {string}
+     * @memberof ServerlessNode
+     */
+    title?: string;
+    /**
+     * 
+     * @type {string}
+     * @memberof ServerlessNode
+     */
+    type?: ServerlessNodeTypeEnum;
+    /**
+     * 
+     * @type {string}
+     * @memberof ServerlessNode
+     */
+    _function?: string;
+}
+
+/**
+    * @export
+    * @enum {string}
+    */
+export enum ServerlessNodeTypeEnum {
+    Script = 'SCRIPT',
+    Serverless = 'SERVERLESS'
 }
 
 /**
@@ -1131,10 +1167,11 @@ export const EventApiAxiosParamCreator = function (configuration?: Configuration
     return {
         /**
          * 
+         * @summary 获取全部事件源
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
-        getSources: async (options: any = {}): Promise<RequestArgs> => {
+        getSources1: async (options: any = {}): Promise<RequestArgs> => {
             const localVarPath = `/v1/events/sources`;
             // use dummy base URL string because the URL constructor only accepts absolute URLs.
             const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL);
@@ -1174,11 +1211,12 @@ export const EventApiFp = function(configuration?: Configuration) {
     return {
         /**
          * 
+         * @summary 获取全部事件源
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
-        async getSources(options?: any): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<Array<EventSource>>> {
-            const localVarAxiosArgs = await localVarAxiosParamCreator.getSources(options);
+        async getSources1(options?: any): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<Array<EventSource>>> {
+            const localVarAxiosArgs = await localVarAxiosParamCreator.getSources1(options);
             return createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration);
         },
     }
@@ -1193,11 +1231,12 @@ export const EventApiFactory = function (configuration?: Configuration, basePath
     return {
         /**
          * 
+         * @summary 获取全部事件源
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
-        getSources(options?: any): AxiosPromise<Array<EventSource>> {
-            return localVarFp.getSources(options).then((request) => request(axios, basePath));
+        getSources1(options?: any): AxiosPromise<Array<EventSource>> {
+            return localVarFp.getSources1(options).then((request) => request(axios, basePath));
         },
     };
 };
@@ -1211,12 +1250,13 @@ export const EventApiFactory = function (configuration?: Configuration, basePath
 export class EventApi extends BaseAPI {
     /**
      * 
+     * @summary 获取全部事件源
      * @param {*} [options] Override http request option.
      * @throws {RequiredError}
      * @memberof EventApi
      */
-    public getSources(options?: any) {
-        return EventApiFp(this.configuration).getSources(options).then((request) => request(this.axios, this.basePath));
+    public getSources1(options?: any) {
+        return EventApiFp(this.configuration).getSources1(options).then((request) => request(this.axios, this.basePath));
     }
 }
 
@@ -1983,6 +2023,108 @@ export class PipelineApi extends BaseAPI {
      */
     public updatePipeline(id: string, pipeline: Pipeline, options?: any) {
         return PipelineApiFp(this.configuration).updatePipeline(id, pipeline, options).then((request) => request(this.axios, this.basePath));
+    }
+}
+
+
+/**
+ * ServerlessApi - axios parameter creator
+ * @export
+ */
+export const ServerlessApiAxiosParamCreator = function (configuration?: Configuration) {
+    return {
+        /**
+         * 
+         * @summary 获取全部函数
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        getSources: async (options: any = {}): Promise<RequestArgs> => {
+            const localVarPath = `/v1/serverless/functions`;
+            // use dummy base URL string because the URL constructor only accepts absolute URLs.
+            const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL);
+            let baseOptions;
+            if (configuration) {
+                baseOptions = configuration.baseOptions;
+            }
+
+            const localVarRequestOptions = { method: 'GET', ...baseOptions, ...options};
+            const localVarHeaderParameter = {} as any;
+            const localVarQueryParameter = {} as any;
+
+            // authentication auth required
+            // oauth required
+            await setOAuthToObject(localVarHeaderParameter, "auth", [], configuration)
+
+
+    
+            setSearchParams(localVarUrlObj, localVarQueryParameter, options.query);
+            let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {};
+            localVarRequestOptions.headers = {...localVarHeaderParameter, ...headersFromBaseOptions, ...options.headers};
+
+            return {
+                url: toPathString(localVarUrlObj),
+                options: localVarRequestOptions,
+            };
+        },
+    }
+};
+
+/**
+ * ServerlessApi - functional programming interface
+ * @export
+ */
+export const ServerlessApiFp = function(configuration?: Configuration) {
+    const localVarAxiosParamCreator = ServerlessApiAxiosParamCreator(configuration)
+    return {
+        /**
+         * 
+         * @summary 获取全部函数
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        async getSources(options?: any): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<Array<string>>> {
+            const localVarAxiosArgs = await localVarAxiosParamCreator.getSources(options);
+            return createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration);
+        },
+    }
+};
+
+/**
+ * ServerlessApi - factory interface
+ * @export
+ */
+export const ServerlessApiFactory = function (configuration?: Configuration, basePath?: string, axios?: AxiosInstance) {
+    const localVarFp = ServerlessApiFp(configuration)
+    return {
+        /**
+         * 
+         * @summary 获取全部函数
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        getSources(options?: any): AxiosPromise<Array<string>> {
+            return localVarFp.getSources(options).then((request) => request(axios, basePath));
+        },
+    };
+};
+
+/**
+ * ServerlessApi - object-oriented interface
+ * @export
+ * @class ServerlessApi
+ * @extends {BaseAPI}
+ */
+export class ServerlessApi extends BaseAPI {
+    /**
+     * 
+     * @summary 获取全部函数
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     * @memberof ServerlessApi
+     */
+    public getSources(options?: any) {
+        return ServerlessApiFp(this.configuration).getSources(options).then((request) => request(this.axios, this.basePath));
     }
 }
 

@@ -1,26 +1,26 @@
-# 创建命名空间 flowing
+# 创建命名空间 flow
 apiVersion: v1
 kind: Namespace
 metadata:
-  name: flowing
+  name: flow
 ---
 # 创建镜像拉取密钥
 kind: Secret
 apiVersion: v1
 metadata:
   name: aliyun-docker-secret
-  namespace: flowing
+  namespace: flow
 data:
   .dockerconfigjson: >-
     eyJhdXRocyI6eyJyZWdpc3RyeS5jbi1oYW5nemhvdS5hbGl5dW5jcy5jb20iOnsidXNlcm5hbWUiOiJoYW5zaW5AMTcwOTc4NDEzMDAwOTU4MCIsInBhc3N3b3JkIjoibGI4NDU2MTI1MDAiLCJhdXRoIjoiYUdGdWMybHVRREUzTURrM09EUXhNekF3TURrMU9EQTZiR0k0TkRVMk1USTFNREE9In19fQ==
 type: kubernetes.io/dockerconfigjson
 ---
-# 创建 flowing-service 配置文件
+# 创建 flow-service 配置文件
 apiVersion: v1
 kind: ConfigMap
 metadata:
-  name: flowing-service-config
-  namespace: flowing
+  name: flow-service-config
+  namespace: flow
 data:
   application.yaml: |-
     # OAuth 配置
@@ -37,6 +37,9 @@ data:
           client-id: none
           uri: http://auth-service.auth/v1/token/validity
           token-type: jwt
+      flow:
+        serverless:
+          endpoint: "http://{name}.functions:8080"
     # SpringDoc 配置
     springdoc:
       api-docs:
@@ -59,30 +62,35 @@ data:
           password: MTIzNDU2
           authentication-database: admin
           database: flow
+      cloud:
+        kubernetes:
+          client:
+            namespace: functions
+            master-url: https://kubernetes.default.svc
 ---
 # 创建 Deployment
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: flowing-service
-  namespace: flowing
+  name: flow-service
+  namespace: flow
   labels:
-    app: flowing-service
+    app: flow-service
 spec:
   replicas: 1
   selector:
     matchLabels:
-      app: flowing-service
+      app: flow-service
   template:
     metadata:
       labels:
-        app: flowing-service
+        app: flow-service
     spec:
       dnsPolicy: ClusterFirst
       imagePullSecrets:
         - name: aliyun-docker-secret
       containers:
-        - name: flowing-service
+        - name: flow-service
           image: ${SERVICE_IMAGE}
           livenessProbe:
             failureThreshold: 3
@@ -123,7 +131,7 @@ spec:
       volumes:
         - name: config
           configMap:
-            name: flowing-service-config
+            name: flow-service-config
             items:
               - key: application.yaml
                 path: application.yaml
@@ -132,25 +140,25 @@ spec:
 apiVersion: v1
 kind: Service
 metadata:
-  name: flowing-service
-  namespace: flowing
+  name: flow-service
+  namespace: flow
   labels:
-    app: flowing-service
+    app: flow-service
 spec:
   ports:
     - port: 80
       targetPort: 8080
       name: http
   selector:
-    app: flowing-service
+    app: flow-service
   type: ClusterIP
 ---
 # 创建 Ingress
 apiVersion: networking.k8s.io/v1beta1
 kind: Ingress
 metadata:
-  name: flowing-service
-  namespace: flowing
+  name: flow-service
+  namespace: flow
 spec:
   ingressClassName: nginx
   rules:
@@ -158,6 +166,6 @@ spec:
         paths:
           - path: /
             backend:
-              serviceName: flowing-service
+              serviceName: flow-service
               servicePort: 80
       host: api.flow.wgv.show

@@ -1,1 +1,2 @@
-org.springframework.boot.autoconfigure.EnableAutoConfiguration=plus.flow.core.pipelines.PipelineConfiguration
+org.springframework.boot.autoconfigure.EnableAutoConfiguration=plus.flow.core.configurations.PipelineConfiguration,\
+  plus.flow.core.configurations.FlowConfiguration

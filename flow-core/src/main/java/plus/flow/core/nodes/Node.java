@@ -1,19 +1,21 @@
 package plus.flow.core.nodes;
 
-
 import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.Getter;
 import lombok.Setter;
+import org.springframework.context.ApplicationContext;
 import plus.flow.core.context.Context;
 import plus.flow.core.nodes.impls.ScriptNode;
+import plus.flow.core.nodes.impls.ServerlessNode;
 import reactor.core.publisher.Mono;
 
 import java.io.Serializable;
 import java.util.Map;
 
 @Schema(oneOf = {
-        ScriptNode.class
+        ScriptNode.class,
+        ServerlessNode.class
 })
 @Getter
 @Setter
@@ -24,9 +26,9 @@ public abstract class Node implements Executable, Serializable {
     private NodeType type;
 
     @Override
-    public Mono<Result> execute(Map<String, Object> input, Context context) throws ExecutingException {
+    public Mono<Result> execute(Map<String, Object> input, Context context, ApplicationContext applicationContext) throws ExecutingException {
         try {
-            return onExecute(input, context)
+            return onExecute(input, context, applicationContext)
                     .onErrorMap(e -> transformException(e, this));
         } catch (Throwable e) {
             e.printStackTrace();
@@ -34,7 +36,7 @@ public abstract class Node implements Executable, Serializable {
         }
     }
 
-    protected abstract Mono<Result> onExecute(Map<String, Object> input, Context context) throws Throwable;
+    protected abstract Mono<Result> onExecute(Map<String, Object> input, Context context, ApplicationContext applicationContext) throws Throwable;
 
     public static ExecutingException transformException(Throwable e, Node function) {
         return e instanceof ExecutingException ?
