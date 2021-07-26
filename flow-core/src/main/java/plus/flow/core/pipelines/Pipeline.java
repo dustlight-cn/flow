@@ -9,6 +9,7 @@ import plus.flow.core.nodes.Node;
 import java.io.Serializable;
 import java.time.Instant;
 import java.util.Collection;
+import java.util.Map;
 
 @Getter
 @Setter
@@ -32,6 +33,8 @@ public class Pipeline implements Serializable {
 
     private Node[] onSuccess;
     private Node[] onFailed;
+
+    private Map<String, String> env;
 
     private AccessControlList acl;
 }

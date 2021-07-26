@@ -1,8 +1,11 @@
 package plus.flow.core.pipelines;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.Getter;
 import lombok.Setter;
 import plus.flow.core.context.Context;
+
+import java.util.Map;
 
 @Getter
 @Setter
@@ -37,9 +40,14 @@ public class PipelineInstance extends Pipeline {
         instance.setTitle(pipeline.getTitle());
         instance.setDescription(pipeline.getDescription());
         instance.setStages(pipeline.getStages());
-
         instance.setPipeline(pipeline.getId());
 
         return instance;
+    }
+
+    @JsonIgnore
+    @Override
+    public Map<String, String> getEnv() {
+        return super.getEnv();
     }
 }

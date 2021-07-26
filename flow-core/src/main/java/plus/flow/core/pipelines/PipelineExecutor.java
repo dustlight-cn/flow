@@ -36,7 +36,7 @@ public class PipelineExecutor implements EventListener {
             return;
         Collection<PipelineInstance> instances = new HashSet<>();
         for (Pipeline line : lines) {
-            Context context = new Context(event, new HashMap<>());
+            Context context = new Context(event, new HashMap<>(), line.getEnv());
 
             PipelineInstance instance = PipelineInstance.from(line);
             instances.add(instance);

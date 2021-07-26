@@ -47,6 +47,7 @@ public class ScriptNode extends Node {
         Logger logger = new Logger(new PrintStream(info), new PrintStream(error));
         bindings.put("logger", logger);
         bindings.put("console", logger);
+        bindings.put("parameters", getParameters());
 
         scriptContext.setBindings(bindings, ScriptContext.GLOBAL_SCOPE);
 

@@ -34,7 +34,7 @@ public class ServerlessNode extends Node {
         Assert.notNull(properties, "ServerlessProperties can not be null");
         return client.post().uri(properties.getEndpoint(), function)
                 .contentType(MediaType.APPLICATION_JSON)
-                .bodyValue(new ServerlessData(input, context).toJson())
+                .bodyValue(new ServerlessData(input, context, getParameters()).toJson())
                 .exchangeToMono(clientResponse -> {
                     if (clientResponse.headers().contentType().isPresent() &&
                             clientResponse.headers().contentType().get().isCompatibleWith(MediaType.APPLICATION_JSON))
@@ -64,6 +64,7 @@ public class ServerlessNode extends Node {
 
         private Map<String, Object> input;
         private Context context;
+        private Map<String, String> parameters;
 
         private final static ObjectMapper mapper = new ObjectMapper();
 

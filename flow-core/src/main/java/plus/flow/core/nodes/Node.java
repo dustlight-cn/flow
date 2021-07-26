@@ -25,6 +25,8 @@ public abstract class Node implements Executable, Serializable {
     private String title;
     private NodeType type;
 
+    private Map<String, String> parameters;
+
     @Override
     public Mono<Result> execute(Map<String, Object> input, Context context, ApplicationContext applicationContext) throws ExecutingException {
         try {

@@ -20,6 +20,8 @@ public class Context implements Serializable {
 
     private Map<String, Object> outputs;
 
+    private Map<String, String> env;
+
     @JsonIgnore
     private String token;
 
@@ -30,6 +32,12 @@ public class Context implements Serializable {
     public Context(Event event, Map<String, Object> outputs) {
         this.event = event;
         this.outputs = outputs;
+    }
+
+    public Context(Event event, Map<String, Object> outputs, Map<String, String> env) {
+        this.event = event;
+        this.outputs = outputs;
+        this.env = env;
     }
 
     @Override
