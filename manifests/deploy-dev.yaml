@@ -87,6 +87,8 @@ data:
           additional-query-string-params:
             jwt: true
     spring:
+      profiles:
+        active: default
       rabbitmq:
         addresses: rabbit-mq.default
         port: 5672

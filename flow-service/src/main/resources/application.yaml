@@ -29,6 +29,8 @@ springdoc:
         jwt: true
 
 spring:
+  profiles:
+    active: default
   rabbitmq:
     addresses: rabbitmq.svc
     port: 5672
