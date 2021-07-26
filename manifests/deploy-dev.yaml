@@ -87,8 +87,6 @@ data:
           additional-query-string-params:
             jwt: true
     spring:
-      profiles:
-        active: default
       rabbitmq:
         addresses: rabbit-mq.default
         port: 5672
@@ -104,8 +102,6 @@ data:
           client:
             namespace: functions
             master-url: https://kubernetes.default.svc
-          config:
-            enabled: false
 ---
 # 创建 Deployment
 apiVersion: apps/v1
@@ -131,7 +127,10 @@ spec:
         - name: aliyun-docker-secret
       containers:
         - name: flow-service
-          image: ${SERVICE_IMAGE} # registry.cn-hangzhou.aliyuncs.com/wgv-test/flow-service:2021-07-26-14-44-29
+          image: ${SERVICE_IMAGE}
+          env:
+            - name: "spring.cloud.kubernetes.client.namespace"
+              value: "functions"
           livenessProbe:
             failureThreshold: 3
             httpGet:
