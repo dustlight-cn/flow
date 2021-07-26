@@ -77,6 +77,10 @@ public class ServerlessNode extends Node {
                         , e);
             }
         }
+
+        public String getToken() {
+            return context != null ? context.getToken() : null;
+        }
     }
 
     public interface FunctionService {
