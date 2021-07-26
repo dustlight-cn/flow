@@ -1,3 +1,4 @@
+
 # OAuth 配置
 plus:
   oauth2:
@@ -44,4 +45,7 @@ spring:
         namespace: functions
         oauth-token: eyJhbGciOiJSUzI1NiIsImtpZCI6ImVheUVPM2ZNUjZWMW1sWlJJV3VRazBSSERXRzRJM1EtVWhMWU1SLVlZSFUifQ.eyJpc3MiOiJrdWJlcm5ldGVzL3NlcnZpY2VhY2NvdW50Iiwia3ViZXJuZXRlcy5pby9zZXJ2aWNlYWNjb3VudC9uYW1lc3BhY2UiOiJrdWJlLXN5c3RlbSIsImt1YmVybmV0ZXMuaW8vc2VydmljZWFjY291bnQvc2VjcmV0Lm5hbWUiOiJhZG1pbi10b2tlbi14YnJncyIsImt1YmVybmV0ZXMuaW8vc2VydmljZWFjY291bnQvc2VydmljZS1hY2NvdW50Lm5hbWUiOiJhZG1pbiIsImt1YmVybmV0ZXMuaW8vc2VydmljZWFjY291bnQvc2VydmljZS1hY2NvdW50LnVpZCI6IjEyMDU5MmU5LTI1NWEtNGE4Ni1iOTE1LWQ3Mzg0NmNjZjk5NSIsInN1YiI6InN5c3RlbTpzZXJ2aWNlYWNjb3VudDprdWJlLXN5c3RlbTphZG1pbiJ9.XnaAzyDYz_57iwkIZblYmLQMVIw7QGRPvfrMyow2QvXz9Ut1ZscZMk9ZGt82fI202_sqAsnvfg5inJQeMvn5RqwClhUkxTa2viPcfQ3c2KTj8tCWYcBjwcy5cHJzPxNG_EkSnsBM_G0dkcUzwS62WdiO4BEfoNRfMnLf-4x4ocC4pTn3jDF5T_62JhQmHSkUAJ5GeKYwXgZx2vVJMOWeThyFbCaXeRuE6haWR0Se1pGYkPGRiRzauN3ZGopUj_Xq4esev6TPN7MIX4TH0UhcZv0X53OeF2Z2HJrfcGzMtKJlAdaq7NtDy0actBw755isQnN1ZrjPPkz48QoJfTMAiA
         master-url: https://cls-2cv6bh98.ccs.tencent-cloud.com
+      config:
+        enabled: false
+
 
