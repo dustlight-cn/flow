@@ -25,6 +25,7 @@
 
         <auth.version>1.1.0-alpha-2-SNAPSHOT</auth.version>
         <plus-datacenter.version>0.0.3-alpha-1-SNAPSHOT</plus-datacenter.version>
+        <plus-messenger.version>0.0.2-SNAPSHOT</plus-messenger.version>
     </properties>
 
     <modules>
@@ -91,6 +92,14 @@
                 <groupId>plus.datacenter</groupId>
                 <artifactId>datacenter-parent</artifactId>
                 <version>${plus-datacenter.version}</version>
+                <type>pom</type>
+                <scope>import</scope>
+            </dependency>
+
+            <dependency>
+                <groupId>plus.messenger</groupId>
+                <artifactId>messenger-parent</artifactId>
+                <version>${plus-messenger.version}</version>
                 <type>pom</type>
                 <scope>import</scope>
             </dependency>

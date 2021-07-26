@@ -75,6 +75,12 @@ data:
       flow:
         serverless:
           endpoint: "http://{name}.functions:8080"
+      messenger:
+        client:
+          token-uri: http://auth-service.auth/v1/jws
+          api-endpoint: http://messenger-service.messenger
+          client-id: 8906c510dc30000
+          client-secret: dc09dbd5abeba019afbd678325961b05b1bfdbf0
     # SpringDoc 配置
     springdoc:
       api-docs:

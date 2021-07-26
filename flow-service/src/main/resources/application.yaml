@@ -16,6 +16,10 @@ plus:
   flow:
     serverless:
       endpoint: "http://functions.wgv/{name}"
+  messenger:
+    client:
+      client-id: 8906c510dc30000
+      client-secret: dc09dbd5abeba019afbd678325961b05b1bfdbf0
 # SpringDoc 配置
 springdoc:
   api-docs:

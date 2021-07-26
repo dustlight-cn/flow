@@ -15,6 +15,9 @@ import plus.flow.core.nodes.ExecuteLog;
 import plus.flow.core.nodes.ExecutingException;
 import plus.flow.core.nodes.Node;
 import plus.flow.core.nodes.Result;
+import plus.messenger.client.ReactiveMessengerClient;
+import plus.messenger.core.entities.BasicChannel;
+import plus.messenger.core.entities.Channel;
 import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
 
@@ -28,6 +31,7 @@ public class PipelineExecutor implements EventListener {
     private Collection<EventSource> sources;
     private PipelineService pipelineService;
     private ApplicationContext applicationContext;
+    private ReactiveMessengerClient messengerClient;
 
     @Override
     public void onEvent(Event event) {
@@ -36,7 +40,19 @@ public class PipelineExecutor implements EventListener {
             return;
         Collection<PipelineInstance> instances = new HashSet<>();
         for (Pipeline line : lines) {
+
             Context context = new Context(event, new HashMap<>(), line.getEnv());
+
+            try {
+                BasicChannel basicChannel = new BasicChannel();
+                basicChannel.setName(String.format("Pipeline-%s", line.getId()));
+                basicChannel.setOwner(line.getOwner());
+                basicChannel.setMembers(line.getMembers());
+                Channel channel = messengerClient.createChannel(basicChannel).block();
+                context.setChannelId(channel.getId());
+            } catch (Throwable e) {
+                LogFactory.getLog(getClass()).error(String.format("Fail to create channel (pipeline: %s), cause: %s", line.getId(), e.getMessage()), e);
+            }
 
             PipelineInstance instance = PipelineInstance.from(line);
             instances.add(instance);

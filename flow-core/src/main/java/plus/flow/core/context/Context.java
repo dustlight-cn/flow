@@ -22,6 +22,8 @@ public class Context implements Serializable {
 
     private Map<String, String> env;
 
+    private String channelId;
+
     @JsonIgnore
     private String token;
 

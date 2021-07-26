@@ -42,6 +42,10 @@
             <groupId>plus.datacenter</groupId>
             <artifactId>datacenter-core</artifactId>
         </dependency>
+        <dependency>
+            <groupId>plus.messenger</groupId>
+            <artifactId>reactive-messenger-client</artifactId>
+        </dependency>
     </dependencies>
 
     <build>
