@@ -203,15 +203,16 @@ public class PipelineExecutor implements EventListener {
         return Flux.create(sink -> {
             sink.onRequest(value -> {
                 Mono<Result> tmp = null;
-                for (Node node : nodes) {
+                for (int i = 0, len = nodes.length; i < len; i++) {
+                    int index = i;
                     if (tmp == null)
-                        tmp = node.execute(inputs, context, applicationContext)
+                        tmp = nodes[index].execute(inputs, context, applicationContext)
                                 .flatMap(result -> {
                                     sink.next(result);
                                     return Mono.just(result);
                                 });
                     else
-                        tmp = tmp.flatMap(result -> node.execute(inputs, context, applicationContext)
+                        tmp = tmp.flatMap(result -> nodes[index].execute(inputs, context, applicationContext)
                                 .flatMap(result1 -> {
                                     sink.next(result1);
                                     return Mono.just(result1);
