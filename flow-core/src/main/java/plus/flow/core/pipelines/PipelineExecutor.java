@@ -40,8 +40,8 @@ public class PipelineExecutor implements EventListener {
             return;
         Collection<PipelineInstance> instances = new HashSet<>();
         for (Pipeline line : lines) {
-
-            Context context = new Context(event, new HashMap<>(), line.getEnv());
+            Map<String, Map<String, Object>> outputs = new HashMap<>();
+            Context context = new Context(event, outputs, line.getEnv());
 
             try {
                 BasicChannel basicChannel = new BasicChannel();
@@ -74,7 +74,7 @@ public class PipelineExecutor implements EventListener {
 
                 Node[] before = stage.getBefore();
                 Collection<Result> results1 = executeNodes(before, context, null);
-                context.getOutputs().putAll(collectOutputs(results1));
+                collectOutputs(results1, stage.getTitle(), context.getOutputs());
                 log(String.format("%s:%s", instance.getPipeline(), stage.getTitle()), results1);
                 Check check = stage.getCheck();
                 if (check != null) {
@@ -84,7 +84,7 @@ public class PipelineExecutor implements EventListener {
 
                 Node[] when = stage.getWhen();
                 Collection<Result> results2 = executeNodes(when, context, null);
-                context.getOutputs().putAll(collectOutputs(results2));
+                collectOutputs(results2, stage.getTitle(), context.getOutputs());
                 if (!log(String.format("%s:%s", instance.getPipeline(), stage.getTitle()), results2)) {
                     instance.setStatus(StatusType.FAILED);
                     break;
@@ -92,7 +92,7 @@ public class PipelineExecutor implements EventListener {
 
                 Node[] after = stage.getAfter();
                 Collection<Result> results3 = executeNodes(after, context, null);
-                context.getOutputs().putAll(collectOutputs(results3));
+                collectOutputs(results3, stage.getTitle(), context.getOutputs());
                 log(String.format("%s:%s", instance.getPipeline(), stage.getTitle()), results3);
             }
             if (instance.getStatus() == StatusType.RUNNING) {
@@ -115,6 +115,10 @@ public class PipelineExecutor implements EventListener {
                     if (instance.getStatus() != StatusType.BLOCKING)
                         return Mono.error(ErrorEnum.INSTANCE_NOT_BLOCKING.getException());
                     Context context = instance.getContext();
+                    if (context == null) {
+                        context = new Context();
+                        instance.setContext(context);
+                    }
                     context.setToken(token);
                     if (context.getOutputs() == null)
                         context.setOutputs(new HashMap<>());
@@ -134,7 +138,7 @@ public class PipelineExecutor implements EventListener {
                             if (i != current) {
                                 Node[] before = stage.getBefore();
                                 Collection<Result> results1 = executeNodes(before, context, inputs);
-                                context.getOutputs().putAll(collectOutputs(results1));
+                                collectOutputs(results1, stage.getTitle(), context.getOutputs());
                                 log(String.format("%s:%s", instance.getPipeline(), stage.getTitle()), results1);
                                 Check check = stage.getCheck();
                                 if (check != null) {
@@ -146,7 +150,7 @@ public class PipelineExecutor implements EventListener {
 
                             Node[] when = stage.getWhen();
                             Collection<Result> results2 = executeNodes(when, context, inputs);
-                            context.getOutputs().putAll(collectOutputs(results2));
+                            collectOutputs(results2, stage.getTitle(), context.getOutputs());
                             if (!log(String.format("%s:%s", instance.getPipeline(), stage.getTitle()), results2)) {
                                 instance.setStatus(StatusType.FAILED);
                                 break;
@@ -154,7 +158,7 @@ public class PipelineExecutor implements EventListener {
 
                             Node[] after = stage.getAfter();
                             Collection<Result> results3 = executeNodes(after, context, inputs);
-                            context.getOutputs().putAll(collectOutputs(results3));
+                            collectOutputs(results3, stage.getTitle(), context.getOutputs());
                             log(String.format("%s:%s", instance.getPipeline(), stage.getTitle()), results3);
                         }
                     } else {
@@ -248,12 +252,16 @@ public class PipelineExecutor implements EventListener {
         return success;
     }
 
-    protected Map<String, Object> collectOutputs(Collection<Result> results) {
-        HashMap<String, Object> result = new HashMap<>();
+    protected Map<String, Object> collectOutputs(Collection<Result> results, String name, Map<String, Map<String, Object>> container) {
+        HashMap<String, Object> result = new LinkedHashMap<>();
         for (Result result1 : results) {
             if (result1.getOutput() != null)
                 result.putAll(result1.getOutput());
         }
+        if (container.containsKey(name) && container.get(name) != null)
+            container.get(name).putAll(result);
+        else
+            container.put(name, new HashMap<>());
         return result;
     }
 }

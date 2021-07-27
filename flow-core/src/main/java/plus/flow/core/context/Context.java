@@ -18,7 +18,7 @@ public class Context implements Serializable {
 
     private Event event;
 
-    private Map<String, Object> outputs;
+    private Map<String, Map<String, Object>> outputs;
 
     private Map<String, String> env;
 
@@ -31,12 +31,12 @@ public class Context implements Serializable {
         this.event = event;
     }
 
-    public Context(Event event, Map<String, Object> outputs) {
+    public Context(Event event, Map<String, Map<String, Object>> outputs) {
         this.event = event;
         this.outputs = outputs;
     }
 
-    public Context(Event event, Map<String, Object> outputs, Map<String, String> env) {
+    public Context(Event event, Map<String, Map<String, Object>> outputs, Map<String, String> env) {
         this.event = event;
         this.outputs = outputs;
         this.env = env;

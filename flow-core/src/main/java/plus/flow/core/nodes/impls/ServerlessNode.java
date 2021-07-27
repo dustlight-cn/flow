@@ -35,13 +35,14 @@ public class ServerlessNode extends Node {
         return client.post().uri(properties.getEndpoint(), function)
                 .contentType(MediaType.APPLICATION_JSON)
                 .bodyValue(new ServerlessData(input, context, getParameters()).toJson())
-                .exchangeToMono(clientResponse -> {
-                    if (clientResponse.headers().contentType().isPresent() &&
-                            clientResponse.headers().contentType().get().isCompatibleWith(MediaType.APPLICATION_JSON))
-                        return clientResponse.bodyToMono(Map.class);
-                    return clientResponse.bodyToMono(String.class);
-                })
-                .map(r -> {
+                .exchangeToMono(clientResponse -> clientResponse.bodyToMono(String.class))
+                .map(str -> {
+                    Object r = null;
+                    try {
+                        r = ServerlessData.mapper.readValue(str, Map.class);
+                    } catch (Throwable e) {
+                        r = str;
+                    }
                     Result result = new Result();
                     if (r != null) {
                         if (r instanceof Map)
