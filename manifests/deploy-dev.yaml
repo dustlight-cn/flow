@@ -213,4 +213,4 @@ spec:
             backend:
               serviceName: flow-service
               servicePort: 80
-      host: api.flow.wgv.show
+      host: api.flow.wgv
