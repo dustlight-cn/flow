@@ -7,18 +7,24 @@ import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.core.io.ClassPathResource;
+import plus.flow.zeebe.services.ZeebeInstanceService;
 import plus.flow.zeebe.services.ZeebeProcessService;
 
 import java.io.BufferedInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.util.Base64;
+import java.util.HashMap;
+import java.util.Map;
 
 @SpringBootTest
 public class ZeebeProcessServiceTest {
 
     @Autowired
     ZeebeProcessService zeebeProcessService;
+
+    @Autowired
+    ZeebeInstanceService zeebeInstanceService;
 
     Log logger = LogFactory.getLog(getClass());
 
@@ -46,6 +52,11 @@ public class ZeebeProcessServiceTest {
                     return stringProcess;
                 })
                 .block();
+        Map<String, Object> variables = new HashMap<>();
+        variables.put("orderId", "123456");
+        variables.put("orderValue", "500");
+        variables.put("gg", "hello world");
+        zeebeInstanceService.start("demo", "order-demo", variables).block();
     }
 
 }

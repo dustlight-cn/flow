@@ -12,6 +12,7 @@ import org.springframework.context.ApplicationContext;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import plus.flow.zeebe.services.MultiTenantAdapter;
+import plus.flow.zeebe.services.ZeebeInstanceService;
 import plus.flow.zeebe.services.ZeebeProcessAdapter;
 import plus.flow.zeebe.services.ZeebeProcessService;
 
@@ -52,4 +53,8 @@ public class FlowZeebeConfiguration {
                 Set.copyOf(context.getBeansOfType(ZeebeProcessAdapter.class).values()));
     }
 
+    @Bean
+    public ZeebeInstanceService zeebeInstanceService(@Autowired ZeebeClient zeebeClient) {
+        return new ZeebeInstanceService(zeebeClient);
+    }
 }
