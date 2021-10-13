@@ -11,5 +11,6 @@ public class ZeebeProperties {
 
     private String address = "localhost:26500";
     private boolean plaintext = true;
+    private boolean multiTenant = true;
 
 }
