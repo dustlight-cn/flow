@@ -5,7 +5,7 @@
     <parent>
         <groupId>plus.flow</groupId>
         <artifactId>flow-parent</artifactId>
-        <version>0.0.3-SNAPSHOT</version>
+        <version>0.1.0-SNAPSHOT</version>
         <relativePath>../pom.xml</relativePath>
     </parent>
     <artifactId>flow-service</artifactId>
@@ -16,12 +16,6 @@
             <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-starter-actuator</artifactId>
         </dependency>
-
-        <dependency>
-            <groupId>org.springframework.boot</groupId>
-            <artifactId>spring-boot-starter-data-mongodb-reactive</artifactId>
-        </dependency>
-
         <dependency>
             <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-starter-webflux</artifactId>
@@ -53,12 +47,6 @@
             <scope>test</scope>
         </dependency>
         <dependency>
-            <groupId>org.springframework.amqp</groupId>
-            <artifactId>spring-rabbit-test</artifactId>
-            <scope>test</scope>
-        </dependency>
-
-        <dependency>
             <groupId>org.springdoc</groupId>
             <artifactId>springdoc-openapi-webflux-ui</artifactId>
         </dependency>
@@ -79,18 +67,6 @@
         <dependency>
             <groupId>plus.flow</groupId>
             <artifactId>flow-datacenter</artifactId>
-        </dependency>
-        <dependency>
-            <groupId>plus.flow</groupId>
-            <artifactId>flow-mongo</artifactId>
-        </dependency>
-        <dependency>
-            <groupId>plus.flow</groupId>
-            <artifactId>flow-rabbitmq</artifactId>
-        </dependency>
-        <dependency>
-            <groupId>plus.datacenter</groupId>
-            <artifactId>datacenter-core</artifactId>
         </dependency>
     </dependencies>
 

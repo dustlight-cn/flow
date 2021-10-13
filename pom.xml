@@ -5,7 +5,7 @@
     <packaging>pom</packaging>
     <groupId>plus.flow</groupId>
     <artifactId>flow-parent</artifactId>
-    <version>0.0.3-SNAPSHOT</version>
+    <version>0.1.0-SNAPSHOT</version>
     <description>PLUS 流程服务</description>
 
     <properties>
@@ -23,15 +23,14 @@
         <spring-cloud-kubernetes.version>2.0.3</spring-cloud-kubernetes.version>
         <springdoc.version>1.5.9</springdoc.version>
 
-        <auth.version>1.1.0-alpha-2-SNAPSHOT</auth.version>
-        <plus-datacenter.version>0.0.3-alpha-1-SNAPSHOT</plus-datacenter.version>
+        <auth.version>1.1.1-alpha-SNAPSHOT</auth.version>
+        <plus-datacenter.version>0.0.6-alpha-SNAPSHOT</plus-datacenter.version>
         <plus-messenger.version>0.0.2-SNAPSHOT</plus-messenger.version>
     </properties>
 
     <modules>
         <module>flow-core</module>
-        <module>flow-mongo</module>
-        <module>flow-rabbitmq</module>
+        <module>flow-zeebe</module>
         <module>flow-datacenter</module>
         <module>flow-service</module>
     </modules>
@@ -61,17 +60,12 @@
             </dependency>
             <dependency>
                 <groupId>plus.flow</groupId>
+                <artifactId>flow-zeebe</artifactId>
+                <version>${project.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>plus.flow</groupId>
                 <artifactId>flow-datacenter</artifactId>
-                <version>${project.version}</version>
-            </dependency>
-            <dependency>
-                <groupId>plus.flow</groupId>
-                <artifactId>flow-mongo</artifactId>
-                <version>${project.version}</version>
-            </dependency>
-            <dependency>
-                <groupId>plus.flow</groupId>
-                <artifactId>flow-rabbitmq</artifactId>
                 <version>${project.version}</version>
             </dependency>
             <dependency>
