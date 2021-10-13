@@ -23,6 +23,8 @@
         <spring-cloud-kubernetes.version>2.0.3</spring-cloud-kubernetes.version>
         <springdoc.version>1.5.9</springdoc.version>
 
+        <zeebe.version>1.2.0</zeebe.version>
+
         <auth.version>1.1.1-alpha-SNAPSHOT</auth.version>
         <plus-datacenter.version>0.0.6-alpha-SNAPSHOT</plus-datacenter.version>
         <plus-messenger.version>0.0.2-SNAPSHOT</plus-messenger.version>
@@ -102,6 +104,13 @@
                 <groupId>org.springdoc</groupId>
                 <artifactId>springdoc-openapi-webflux-ui</artifactId>
                 <version>${springdoc.version}</version>
+            </dependency>
+
+
+            <dependency>
+                <groupId>io.camunda</groupId>
+                <artifactId>zeebe-client-java</artifactId>
+                <version>${zeebe.version}</version>
             </dependency>
         </dependencies>
     </dependencyManagement>

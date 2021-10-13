@@ -36,6 +36,12 @@
             <artifactId>reactor-test</artifactId>
             <scope>test</scope>
         </dependency>
+
+        <dependency>
+            <groupId>io.camunda</groupId>
+            <artifactId>zeebe-client-java</artifactId>
+        </dependency>
+
         <dependency>
             <groupId>plus.flow</groupId>
             <artifactId>flow-core</artifactId>

@@ -8,18 +8,13 @@ public interface ProcessService<T> {
     /**
      * 创建过程
      *
-     * @param process
+     * @param clientId
+     * @param owner
+     * @param name
+     * @param processData
      * @return
      */
-    Mono<Process<T>> createProcess(Process<T> process);
-
-    /**
-     * 更新过程
-     *
-     * @param process
-     * @return
-     */
-    Mono<Void> updateProcess(Process<T> process);
+    Mono<Process<T>> createProcess(String clientId, String owner, String name, T processData);
 
     /**
      * 删除过程

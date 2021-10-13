@@ -1,15 +1,17 @@
 package plus.flow.core.flow;
 
-import plus.flow.core.Datable;
+import java.time.Instant;
 
 /**
  * 过程服务
  *
  * @param <T>
  */
-public interface Process<T> extends Datable {
+public interface Process<T> {
 
     Integer getVersion();
+
+    Long getId();
 
     String getProcessName();
 
@@ -18,4 +20,6 @@ public interface Process<T> extends Datable {
     String getProcessOwner();
 
     T getProcess();
+
+    Instant getCreatedAt();
 }
