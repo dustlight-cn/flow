@@ -1,1 +1,0 @@
-org.springframework.boot.autoconfigure.EnableAutoConfiguration=plus.flow.mongo.FlowMongoConfiguration

@@ -7,6 +7,7 @@ public class ErrorDetails {
     private String message;
     private int code;
     private String details;
+
     @JsonIgnore
     private transient FlowException exception;
 
@@ -14,6 +15,14 @@ public class ErrorDetails {
         this.code = code;
         this.message = message;
         exception = new FlowException(this);
+    }
+
+    public ErrorDetails(int code, String message, Throwable throwable) {
+        this.code = code;
+        this.message = message;
+        if (throwable != null)
+            this.details = throwable.getMessage();
+        exception = new FlowException(this, throwable);
     }
 
     public int getCode() {
@@ -38,6 +47,13 @@ public class ErrorDetails {
 
     public void setDetails(String details) {
         this.details = details;
+    }
+
+    public void setDetails(Throwable throwable) {
+        if (throwable == null)
+            return;
+        this.details = throwable.getMessage();
+        this.exception.setStackTrace(throwable.getStackTrace());
     }
 
     public ErrorDetails message(String message) {

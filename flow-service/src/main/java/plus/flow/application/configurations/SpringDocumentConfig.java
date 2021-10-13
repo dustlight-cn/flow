@@ -30,7 +30,7 @@ import org.springframework.context.annotation.Configuration;
         scheme = "Bearer",
         flows =  @OAuthFlows(
                 implicit = @OAuthFlow(
-                        authorizationUrl="http://accounts.wgv/authorize")
+                        authorizationUrl="${plus.flow.authorization-endpoint}")
         )
 )
 )
