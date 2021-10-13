@@ -41,8 +41,8 @@ public class FlowZeebeConfiguration {
 
     @Bean
     @ConditionalOnProperty(prefix = "plus.flow.zeebe", name = "multi-tenant", matchIfMissing = true)
-    public MultiTenantAdapter multiTenantAdapter() {
-        return new MultiTenantAdapter();
+    public MultiTenantAdapter multiTenantAdapter(@Autowired ZeebeProperties properties) {
+        return new MultiTenantAdapter(properties.getSystemPrefix());
     }
 
     @Bean
