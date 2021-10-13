@@ -10,24 +10,19 @@ public enum ErrorEnum {
     INPUT_INVALID(1000, "Input invalid"),
 
     RESOURCE_NOT_FOUND(2000, "Resource not found"),
-    FORM_NOT_FOUND(2001, "Form not found"),
-    RECORD_NOT_FOUND(2002, "Record not found"),
+    PROCESS_NOT_FOUND(2001, "Process not found"),
 
     RESOURCE_EXISTS(3000, "Resource already exists"),
-    FORM_EXISTS(3001, "Form already exists"),
-    RECORD_EXISTS(3002, "Record already exists"),
+    PROCESS_EXISTS(3001, "Process already exists"),
 
     CREATE_RESOURCE_FAILED(4000, "Fail to create resource"),
-    CREATE_FORM_FAILED(4001, "Fail to create form"),
-    CREATE_RECORD_FAILED(4002, "Fail to create record"),
+    CREATE_PROCESS_FAILED(4001, "Fail to create process"),
 
     UPDATE_RESOURCE_FAILED(5000, "Fail to update resource"),
-    UPDATE_FORM_FAILED(5001, "Fail to update form"),
-    UPDATE_RECORD_FAILED(5002, "Fail to update record"),
+    UPDATE_PROCESS_FAILED(5001, "Fail to update process"),
 
     DELETE_RESOURCE_FAILED(6000, "Fail to delete resource"),
-    DELETE_FORM_FAILED(6001, "Fail to delete form"),
-    DELETE_RECORD_FAILED(6002, "Fail to delete record");
+    DELETE_PROCESS_FAILED(6001, "Fail to delete process");
 
     private ErrorDetails details;
 
