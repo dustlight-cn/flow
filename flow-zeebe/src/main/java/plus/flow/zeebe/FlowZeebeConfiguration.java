@@ -50,10 +50,13 @@ public class FlowZeebeConfiguration {
     @Bean
     public ZeebeProcessService zeebeProcessService(@Autowired ZeebeClient zeebeClient,
                                                    @Autowired ReactiveElasticsearchOperations elasticsearchOperations,
-                                                   @Autowired ApplicationContext context) {
-        return new ZeebeProcessService(zeebeClient,
+                                                   @Autowired ApplicationContext context,
+                                                   @Autowired ZeebeProperties properties) {
+        ZeebeProcessService service = new ZeebeProcessService(zeebeClient,
                 elasticsearchOperations,
                 Set.copyOf(context.getBeansOfType(ZeebeProcessAdapter.class).values()));
+        service.setProcessIndex(properties.getProcessIndex());
+        return service;
     }
 
     @Bean

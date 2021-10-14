@@ -4,6 +4,8 @@ import io.camunda.zeebe.client.ZeebeClient;
 import io.camunda.zeebe.client.api.response.DeploymentEvent;
 import io.camunda.zeebe.model.bpmn.Bpmn;
 import io.camunda.zeebe.model.bpmn.BpmnModelInstance;
+import lombok.Getter;
+import lombok.Setter;
 import org.elasticsearch.index.query.*;
 import org.elasticsearch.search.sort.FieldSortBuilder;
 import org.springframework.core.Ordered;
@@ -37,6 +39,8 @@ public class ZeebeProcessService implements ProcessService<String> {
 
     private List<ZeebeProcessAdapter> adapters;
 
+    @Getter
+    @Setter
     private String processIndex = "zeebe-record-process";
 
     private static final String prefix = "%s.%s";

@@ -19,7 +19,7 @@ public class ZeebeInstanceService implements InstanceService {
         return Mono.create(sink ->
                 sink.onRequest(unused ->
                         zeebeClient.newCreateInstanceCommand()
-                                .bpmnProcessId(String.format("%s.%s", clientId, name))
+                                .bpmnProcessId(String.format("_%s.%s", clientId, name))
                                 .latestVersion()
                                 .variables(variables)
                                 .send()
@@ -37,7 +37,7 @@ public class ZeebeInstanceService implements InstanceService {
         return Mono.create(sink ->
                 sink.onRequest(unused ->
                         zeebeClient.newPublishMessageCommand()
-                                .messageName(String.format("%s.%s", clientId, messageName))
+                                .messageName(String.format("_%s.%s", clientId, messageName))
                                 .correlationKey(key)
                                 .send()
                                 .whenComplete(((publishMessageResponse, throwable) -> {
