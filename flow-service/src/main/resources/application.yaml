@@ -1,4 +1,3 @@
-
 # OAuth 配置
 plus:
   oauth2:
@@ -21,7 +20,12 @@ plus:
         queue: flow-test
         dead-letter-queue: flow-dead-test
   flow:
-    authorization-endpoint: "http://accounts.wgv/authorize"
+    authorization-endpoint: "http://accounts.wgv.ink/authorize"
+    zeebe:
+      address: zeebe.svc:26500
+      plaintext: true
+      system-prefix:
+        - "system."
   messenger:
     client:
       client-id: 8906c510dc30000
@@ -43,4 +47,9 @@ spring:
     port: 5672
     username: flow-test
     password: flow-test
-
+  data:
+    elasticsearch:
+      client:
+        reactive:
+          endpoints:
+            - elasticsearch.zeebe.svc

@@ -9,10 +9,13 @@ import plus.flow.zeebe.services.AdapterContext;
 @Getter
 @Setter
 @AllArgsConstructor
-public class DefaultAdapterContext implements AdapterContext {
+public class DefaultAdapterContext implements AdapterContext, Cloneable {
 
     private String clientId;
     private String owner;
-    private String name;
 
+    @Override
+    public DefaultAdapterContext clone() throws CloneNotSupportedException {
+        return (DefaultAdapterContext) super.clone();
+    }
 }

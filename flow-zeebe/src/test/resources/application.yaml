@@ -1,7 +1,0 @@
-plus:
-  flow:
-    zeebe:
-      address: zeebe.svc:26500
-      plaintext: true
-      system-prefix:
-        - "system.hello"

@@ -1,19 +1,21 @@
-package plus.flow.zeebe;
+package plus.flow.application;
 
-import com.google.gson.Gson;
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.core.io.ClassPathResource;
-import plus.flow.zeebe.services.ZeebeInstanceService;
-import plus.flow.zeebe.services.ZeebeProcessService;
+import plus.flow.core.flow.InstanceService;
+import plus.flow.core.flow.ProcessService;
 
 import java.io.BufferedInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.util.Base64;
+import java.util.Collection;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -21,14 +23,15 @@ import java.util.Map;
 public class ZeebeProcessServiceTest {
 
     @Autowired
-    ZeebeProcessService zeebeProcessService;
+    ProcessService processService;
 
     @Autowired
-    ZeebeInstanceService zeebeInstanceService;
+    InstanceService instanceService;
 
     Log logger = LogFactory.getLog(getClass());
 
-    Gson gson = new Gson();
+    @Autowired
+    ObjectMapper mapper;
 
     byte[] getBpmnBytes(String resourceName) throws IOException {
         ClassPathResource classPathResource = new ClassPathResource(resourceName);
@@ -46,17 +49,34 @@ public class ZeebeProcessServiceTest {
     @Test
     public void test() throws IOException {
         String processData = Base64.getEncoder().encodeToString(getBpmnBytes("order.bpmn"));
-        zeebeProcessService.createProcess("demo", "ggboy", "order-ggboy", processData)
-                .map(stringProcess -> {
-                    logger.info(gson.toJson(stringProcess));
-                    return stringProcess;
+        processService.createProcess("demo", "ggboy", processData)
+                .map(p -> {
+                    try {
+                        logger.info(mapper.writeValueAsString(p));
+                    } catch (JsonProcessingException e) {
+                        e.printStackTrace();
+                    }
+                    return p;
                 })
                 .block();
         Map<String, Object> variables = new HashMap<>();
         variables.put("orderId", "123456");
         variables.put("orderValue", "500");
         variables.put("gg", "hello world");
-        zeebeInstanceService.start("demo", "order-demo", variables).block();
+        instanceService.start("demo", "order-demo", variables).block();
     }
 
+    @Test
+    public void getProcess() throws JsonProcessingException {
+        Object process = processService.getProcess("demo", "order-demo", null).block();
+        logger.info(mapper.writeValueAsString(process));
+    }
+
+    @Test
+    public void findProcess() throws JsonProcessingException {
+        Collection list = (Collection) processService.findProcess("demo", "", 0, 10).collectList().block();
+        for (Object obj : list) {
+            logger.info(mapper.writeValueAsString(obj));
+        }
+    }
 }

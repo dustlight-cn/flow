@@ -9,6 +9,4 @@ public interface AdapterContext {
 
     String getOwner();
 
-    String getName();
-
 }
