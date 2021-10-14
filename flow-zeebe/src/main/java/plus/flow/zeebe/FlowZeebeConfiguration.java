@@ -11,6 +11,7 @@ import org.springframework.boot.context.properties.EnableConfigurationProperties
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.data.elasticsearch.core.ReactiveElasticsearchOperations;
 import plus.flow.zeebe.services.MultiTenantAdapter;
 import plus.flow.zeebe.services.ZeebeInstanceService;
 import plus.flow.zeebe.services.ZeebeProcessAdapter;
@@ -48,8 +49,10 @@ public class FlowZeebeConfiguration {
 
     @Bean
     public ZeebeProcessService zeebeProcessService(@Autowired ZeebeClient zeebeClient,
+                                                   @Autowired ReactiveElasticsearchOperations elasticsearchOperations,
                                                    @Autowired ApplicationContext context) {
         return new ZeebeProcessService(zeebeClient,
+                elasticsearchOperations,
                 Set.copyOf(context.getBeansOfType(ZeebeProcessAdapter.class).values()));
     }
 

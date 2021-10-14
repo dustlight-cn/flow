@@ -7,7 +7,7 @@ import java.io.Serializable;
 
 @Getter
 @Setter
-public class ZeebeProcessEntity implements Serializable {
+public class ZeebeProcessEntity implements Serializable, Cloneable {
 
     private Long key;
     private Long timestamp;
@@ -20,5 +20,10 @@ public class ZeebeProcessEntity implements Serializable {
         private Integer version;
         private String resourceName;
         private String bpmnProcessId;
+    }
+
+    @Override
+    public ZeebeProcessEntity clone() throws CloneNotSupportedException {
+        return (ZeebeProcessEntity) super.clone();
     }
 }

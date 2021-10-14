@@ -1,5 +1,8 @@
 package plus.flow.core.flow;
 
+import com.fasterxml.jackson.databind.annotation.JsonSerialize;
+import com.fasterxml.jackson.databind.ser.std.ToStringSerializer;
+
 import java.time.Instant;
 
 /**
@@ -11,15 +14,16 @@ public interface Process<T> {
 
     Integer getVersion();
 
+    @JsonSerialize(using = ToStringSerializer.class)
     Long getId();
 
-    String getProcessName();
+    String getName();
 
-    String getProcessClientId();
+    String getClientId();
 
-    String getProcessOwner();
+    String getOwner();
 
-    T getProcess();
+    T getData();
 
     Instant getCreatedAt();
 }

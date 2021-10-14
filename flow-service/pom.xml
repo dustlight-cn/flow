@@ -68,6 +68,10 @@
             <groupId>plus.flow</groupId>
             <artifactId>flow-datacenter</artifactId>
         </dependency>
+        <dependency>
+            <groupId>plus.flow</groupId>
+            <artifactId>flow-zeebe</artifactId>
+        </dependency>
     </dependencies>
 
     <build>

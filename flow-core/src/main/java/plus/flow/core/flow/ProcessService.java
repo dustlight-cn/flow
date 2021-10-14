@@ -10,11 +10,10 @@ public interface ProcessService<T> {
      *
      * @param clientId
      * @param owner
-     * @param name
      * @param processData
      * @return
      */
-    Mono<Process<T>> createProcess(String clientId, String owner, String name, T processData);
+    Mono<Process<T>> createProcess(String clientId, String owner, T processData);
 
     /**
      * 删除过程

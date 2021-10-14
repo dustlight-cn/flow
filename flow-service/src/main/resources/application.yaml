@@ -43,4 +43,9 @@ spring:
     port: 5672
     username: flow-test
     password: flow-test
-
+  data:
+    elasticsearch:
+      client:
+        reactive:
+          endpoints:
+            - 192.168.200.211
