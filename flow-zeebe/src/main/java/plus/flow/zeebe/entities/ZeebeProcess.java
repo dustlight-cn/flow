@@ -47,7 +47,10 @@ public class ZeebeProcess implements Process<String>, Cloneable {
         String str = value.getBpmnProcessId();
         if (!StringUtils.hasText(str) || !StringUtils.hasText((str = value.getResourceName())))
             return null;
-        return getPrefix(str, '.');
+        String prefix = getPrefix(str, '.');
+        if (prefix == null)
+            return null;
+        return prefix.startsWith("_") ? prefix.substring(1) : prefix;
     }
 
     @Override

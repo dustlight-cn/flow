@@ -24,7 +24,7 @@ public class MultiTenantAdapter extends AbstractZeebeProcessAdapter {
 
     @Override
     public void adapt(BpmnModelInstance instance, AdapterContext context) throws Exception {
-        String prefix = String.format("%s.", context.getClientId());
+        String prefix = String.format("_%s.", context.getClientId());
 
         instance.getDefinitions().getBpmDiagrams().forEach(bpmnDiagram -> {
             BaseElement elem = bpmnDiagram.getBpmnPlane().getBpmnElement();
@@ -58,7 +58,7 @@ public class MultiTenantAdapter extends AbstractZeebeProcessAdapter {
 
     @Override
     public void reverse(BpmnModelInstance instance, AdapterContext context) throws Exception {
-        String prefix = String.format("%s.", context.getClientId());
+        String prefix = String.format("_%s.", context.getClientId());
 
         instance.getDefinitions().getBpmDiagrams().forEach(bpmnDiagram -> {
             BaseElement elem = bpmnDiagram.getBpmnPlane().getBpmnElement();

@@ -39,20 +39,20 @@ public interface ProcessService<T> {
      *
      * @param clientId
      * @param keyword
-     * @param offset
-     * @param limit
+     * @param page
+     * @param size
      * @return
      */
-    Flux<Process<T>> findProcess(String clientId, String keyword, int offset, int limit);
+    Flux<Process<T>> findProcess(String clientId, String keyword, int page, int size);
 
     /**
      * 查找最新版本过程
      *
      * @param clientId
      * @param keyword
-     * @param offset
-     * @param limit
+     * @param page
+     * @param size
      * @return
      */
-    Flux<Process<T>> findProcessLatest(String clientId, String keyword, int offset, int limit);
+    Flux<Process<T>> findProcessLatest(String clientId, String keyword, int page, int size);
 }

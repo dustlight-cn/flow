@@ -90,7 +90,7 @@ public class ZeebeProcessService implements ProcessService<String> {
     @Override
     public Mono<Process<String>> getProcess(String clientId, String name, Integer version) {
         BoolQueryBuilder boolQueryBuilder = new BoolQueryBuilder()
-                .must(new TermQueryBuilder("value.bpmnProcessId", String.format("%s.%s", clientId, name)));
+                .must(new TermQueryBuilder("value.bpmnProcessId", String.format("_%s.%s", clientId, name)));
         if (version != null)
             boolQueryBuilder.filter(new MatchQueryBuilder("value.version", version));
         NativeSearchQuery q = new NativeSearchQueryBuilder().withQuery(boolQueryBuilder)
@@ -108,15 +108,15 @@ public class ZeebeProcessService implements ProcessService<String> {
     }
 
     @Override
-    public Flux<Process<String>> findProcess(String clientId, String keyword, int offset, int limit) {
+    public Flux<Process<String>> findProcess(String clientId, String keyword, int page, int size) {
         BoolQueryBuilder boolQueryBuilder = new BoolQueryBuilder()
                 .must(StringUtils.hasText(keyword) ? new MatchQueryBuilder("value.bpmnProcessId", keyword) :
                         new MatchAllQueryBuilder())
-                .filter(new PrefixQueryBuilder("value.bpmnProcessId", String.format("%s.", clientId)));
+                .filter(new PrefixQueryBuilder("value.bpmnProcessId", String.format("_%s.", clientId)));
 
         NativeSearchQuery q = new NativeSearchQueryBuilder().withQuery(boolQueryBuilder)
                 .withSort(new FieldSortBuilder("timestamp"))
-                .withPageable(Pageable.ofSize(limit).withPage(offset / limit))
+                .withPageable(Pageable.ofSize(size).withPage(page))
                 .build();
         return operations.search(q,
                         ZeebeProcessEntity.class,
@@ -127,7 +127,7 @@ public class ZeebeProcessService implements ProcessService<String> {
     }
 
     @Override
-    public Flux<Process<String>> findProcessLatest(String clientId, String keyword, int offset, int limit) {
+    public Flux<Process<String>> findProcessLatest(String clientId, String keyword, int page, int size) {
         return null;
     }
 
