@@ -2,6 +2,7 @@ package plus.flow.zeebe.services;
 
 import io.camunda.zeebe.model.bpmn.BpmnModelInstance;
 import io.camunda.zeebe.model.bpmn.instance.*;
+import io.camunda.zeebe.model.bpmn.instance.Process;
 import io.camunda.zeebe.model.bpmn.instance.zeebe.ZeebeTaskDefinition;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -26,10 +27,9 @@ public class MultiTenantAdapter extends AbstractZeebeProcessAdapter {
     public void adapt(BpmnModelInstance instance, AdapterContext context) throws Exception {
         String prefix = String.format("_%s.", context.getClientId());
 
-        instance.getDefinitions().getBpmDiagrams().forEach(bpmnDiagram -> {
-            BaseElement elem = bpmnDiagram.getBpmnPlane().getBpmnElement();
-            elem.setId(String.format("%s%s", prefix, elem.getId()));
-        });
+        Collection<Process> processes = instance.getModelElementsByType(Process.class);
+        if (processes != null)
+            processes.forEach(process -> process.setId(String.format("%s%s", prefix, process.getId())));
 
         Collection<ZeebeTaskDefinition> zeebeTaskDefinitions = instance.getModelElementsByType(ZeebeTaskDefinition.class);
         if (zeebeTaskDefinitions != null)
@@ -50,9 +50,7 @@ public class MultiTenantAdapter extends AbstractZeebeProcessAdapter {
 
         Collection<Message> messages = instance.getModelElementsByType(Message.class);
         if (messages != null)
-            messages.forEach(message -> {
-                message.setName(String.format("%s%s", prefix, message.getName()));
-            });
+            messages.forEach(message -> message.setName(String.format("%s%s", prefix, message.getName())));
     }
 
 
@@ -60,11 +58,12 @@ public class MultiTenantAdapter extends AbstractZeebeProcessAdapter {
     public void reverse(BpmnModelInstance instance, AdapterContext context) throws Exception {
         String prefix = String.format("_%s.", context.getClientId());
 
-        instance.getDefinitions().getBpmDiagrams().forEach(bpmnDiagram -> {
-            BaseElement elem = bpmnDiagram.getBpmnPlane().getBpmnElement();
-            if (elem.getId().startsWith(prefix))
-                elem.setId(elem.getId().substring(prefix.length()));
-        });
+        Collection<Process> processes = instance.getModelElementsByType(Process.class);
+        if (processes != null)
+            processes.forEach(process -> {
+                if (process.getId().startsWith(prefix))
+                    process.setId(process.getId().substring(prefix.length()));
+            });
 
         Collection<ZeebeTaskDefinition> zeebeTaskDefinitions = instance.getModelElementsByType(ZeebeTaskDefinition.class);
         if (zeebeTaskDefinitions != null)
