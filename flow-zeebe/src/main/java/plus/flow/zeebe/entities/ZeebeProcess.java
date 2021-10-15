@@ -36,7 +36,7 @@ public class ZeebeProcess implements Process<String>, Cloneable {
         String str = value.getBpmnProcessId();
         if (!StringUtils.hasText(str))
             return null;
-        return getSuffix(str, '.');
+        return getSuffix(str, '-');
     }
 
     @Override
@@ -47,10 +47,10 @@ public class ZeebeProcess implements Process<String>, Cloneable {
         String str = value.getBpmnProcessId();
         if (!StringUtils.hasText(str) || !StringUtils.hasText((str = value.getResourceName())))
             return null;
-        String prefix = getPrefix(str, '.');
+        String prefix = getPrefix(str, '-');
         if (prefix == null)
             return null;
-        return prefix.startsWith("_") ? prefix.substring(1) : prefix;
+        return prefix.startsWith("c") ? prefix.substring(1) : prefix;
     }
 
     @Override
