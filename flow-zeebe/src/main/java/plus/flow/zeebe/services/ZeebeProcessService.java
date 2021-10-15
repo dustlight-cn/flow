@@ -43,7 +43,7 @@ public class ZeebeProcessService implements ProcessService<String> {
     @Setter
     private String processIndex = "zeebe-record-process";
 
-    private static final String prefix = "%s.%s";
+    private static final String ownerPlaceholder = "%s-%s";
 
     private static final ZeebeProcess zeebeProcessTemplate = new ZeebeProcess();
 
@@ -69,7 +69,7 @@ public class ZeebeProcessService implements ProcessService<String> {
         return adapt(clientId, owner, processData)
                 .flatMap(s -> Mono.create((Consumer<MonoSink<DeploymentEvent>>) sink ->
                                 sink.onRequest(unused -> zeebeClient.newDeployCommand()
-                                        .addResourceBytes(Base64.getDecoder().decode(s), computePrefix(clientId, owner))
+                                        .addResourceBytes(Base64.getDecoder().decode(s), computeOwner(clientId, owner))
                                         .send()
                                         .whenComplete((d, e) -> {
                                             if (e == null)
@@ -94,7 +94,7 @@ public class ZeebeProcessService implements ProcessService<String> {
     @Override
     public Mono<Process<String>> getProcess(String clientId, String name, Integer version) {
         BoolQueryBuilder boolQueryBuilder = new BoolQueryBuilder()
-                .must(new TermQueryBuilder("value.bpmnProcessId", String.format("_%s.%s", clientId, name)));
+                .must(new TermQueryBuilder("value.bpmnProcessId", String.format("c%s-%s", clientId, name)));
         if (version != null)
             boolQueryBuilder.filter(new MatchQueryBuilder("value.version", version));
         NativeSearchQuery q = new NativeSearchQueryBuilder().withQuery(boolQueryBuilder)
@@ -116,7 +116,7 @@ public class ZeebeProcessService implements ProcessService<String> {
         BoolQueryBuilder boolQueryBuilder = new BoolQueryBuilder()
                 .must(StringUtils.hasText(keyword) ? new MatchQueryBuilder("value.bpmnProcessId", keyword) :
                         new MatchAllQueryBuilder())
-                .filter(new PrefixQueryBuilder("value.bpmnProcessId", String.format("_%s.", clientId)));
+                .filter(new PrefixQueryBuilder("value.bpmnProcessId", String.format("c%s-", clientId)));
 
         NativeSearchQuery q = new NativeSearchQueryBuilder().withQuery(boolQueryBuilder)
                 .withSort(new FieldSortBuilder("timestamp"))
@@ -135,8 +135,8 @@ public class ZeebeProcessService implements ProcessService<String> {
         return null;
     }
 
-    protected String computePrefix(String clientId, String val) {
-        return String.format(prefix, clientId, val);
+    protected String computeOwner(String clientId, String val) {
+        return String.format(ownerPlaceholder, clientId, val);
     }
 
     protected Mono<String> adapt(String clientId, String owner, String processData) {
