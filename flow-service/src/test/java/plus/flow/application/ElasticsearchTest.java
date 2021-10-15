@@ -23,11 +23,13 @@ import org.springframework.data.elasticsearch.core.ReactiveElasticsearchOperatio
 import org.springframework.data.elasticsearch.core.mapping.IndexCoordinates;
 import org.springframework.data.elasticsearch.core.query.NativeSearchQuery;
 import org.springframework.data.elasticsearch.core.query.NativeSearchQueryBuilder;
+import plus.flow.zeebe.entities.ZeebeInstanceEntity;
 import plus.flow.zeebe.entities.ZeebeProcess;
 import plus.flow.zeebe.entities.ZeebeProcessEntity;
 import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
 
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -64,17 +66,17 @@ public class ElasticsearchTest {
     public void test2() throws JsonProcessingException {
         TermQueryBuilder processId = new TermQueryBuilder("value.bpmnProcessId", "c86c3e34e2030000-order-demo");
         TermQueryBuilder valueType = new TermQueryBuilder("value.bpmnElementType", "PROCESS");
-        BoolQueryBuilder boolQueryBuilder = new BoolQueryBuilder().filter(processId).filter(valueType);
+        BoolQueryBuilder boolQueryBuilder = new BoolQueryBuilder().filter(processId);
 
         AbstractAggregationBuilder aggregationBuilder = new TermsAggregationBuilder("process")
-                .field("key")
+                .field("value.processInstanceKey")
                 .subAggregation(new TopHitsAggregationBuilder("current")
                         .size(1)
                         .sort("position", SortOrder.DESC));
 
         NativeSearchQuery query = new NativeSearchQueryBuilder().withQuery(boolQueryBuilder).addAggregation(aggregationBuilder).build();
 
-        List results = operations.aggregate(query, Map.class, IndexCoordinates.of("zeebe-record-process-instance"))
+        List<ZeebeInstanceEntity> results = operations.aggregate(query, ZeebeInstanceEntity.class, IndexCoordinates.of("zeebe-record-process-instance","zeebe-record-incident"))
                 .cast(ParsedLongTerms.class)
                 .singleOrEmpty()
                 .flatMapMany(parsedLongTerms -> Flux.fromIterable(parsedLongTerms.getBuckets()))
@@ -83,7 +85,13 @@ public class ElasticsearchTest {
                 .cast(ParsedTopHits.class)
                 .filter(parsedTopHits -> parsedTopHits.getHits().getHits().length > 0)
                 .map(parsedTopHits -> parsedTopHits.getHits().getAt(0))
-                .map(documentFields -> documentFields.getSourceAsMap())
+                .flatMap(documentFields -> {
+                    try {
+                        return Mono.just(mapper.readValue(documentFields.getSourceRef().streamInput(), ZeebeInstanceEntity.class));
+                    } catch (IOException e) {
+                        return Mono.error(e);
+                    }
+                })
                 .collectList()
                 .block();
 
