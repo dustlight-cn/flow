@@ -33,4 +33,16 @@ public class InstanceController {
                 .flatMap(cid -> instanceService.start(cid, name, variables))
                 .then();
     }
+
+    @Operation(summary = "发布消息")
+    @PostMapping(value = "/message")
+    public Mono<Void> createMessage(@RequestParam(name = "name") String name,
+                                    @RequestParam(name = "key") String key,
+                                    @RequestParam(name = "cid", required = false) String clientId,
+                                    ReactiveAuthClient reactiveAuthClient,
+                                    AuthPrincipal principal) {
+        return ClientUtils.obtainClientId(reactiveAuthClient, clientId, principal)
+                .flatMap(cid -> instanceService.publishMessage(cid, name, key))
+                .then();
+    }
 }
