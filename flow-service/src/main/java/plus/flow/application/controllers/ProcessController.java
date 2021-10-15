@@ -28,7 +28,7 @@ public class ProcessController {
 
     @Operation(summary = "创建流程")
     @PostMapping(value = "/process"
-            , consumes = {"text/plain; charset: utf-8", "text/xml; charset: utf-8", "application/xml"}
+            , consumes = {"application/xml", "text/plain; charset: utf-8", "text/xml; charset: utf-8"}
             , produces = MediaType.APPLICATION_JSON_VALUE)
     public Mono<Void> createProcess(@RequestParam(name = "cid", required = false) String clientId,
                                     @RequestParam(name = "base64", required = false, defaultValue = "false") boolean isBase64,
