@@ -2,12 +2,12 @@ package plus.flow.zeebe.services;
 
 import io.camunda.zeebe.model.bpmn.BpmnModelInstance;
 import io.camunda.zeebe.model.bpmn.instance.*;
-import io.camunda.zeebe.model.bpmn.instance.Process;
 import io.camunda.zeebe.model.bpmn.instance.zeebe.ZeebeTaskDefinition;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
+import org.springframework.util.StringUtils;
 
 import java.util.Collection;
 import java.util.Set;
@@ -27,9 +27,12 @@ public class MultiTenantAdapter extends AbstractZeebeProcessAdapter {
     public void adapt(BpmnModelInstance instance, AdapterContext context) throws Exception {
         String prefix = String.format("c%s-", context.getClientId());
 
-        Collection<Process> processes = instance.getModelElementsByType(Process.class);
-        if (processes != null)
-            processes.forEach(process -> process.setId(String.format("%s%s", prefix, process.getId())));
+        Collection<BaseElement> baseElements = instance.getModelElementsByType(BaseElement.class);
+        if (baseElements != null)
+            for (BaseElement baseElement : baseElements) {
+                if (baseElement.getId() != null)
+                    baseElement.setId(String.format("%s%s", prefix, baseElement.getId()));
+            }
 
         Collection<ZeebeTaskDefinition> zeebeTaskDefinitions = instance.getModelElementsByType(ZeebeTaskDefinition.class);
         if (zeebeTaskDefinitions != null)
@@ -50,7 +53,10 @@ public class MultiTenantAdapter extends AbstractZeebeProcessAdapter {
 
         Collection<Message> messages = instance.getModelElementsByType(Message.class);
         if (messages != null)
-            messages.forEach(message -> message.setName(String.format("%s%s", prefix, message.getName())));
+            messages.forEach(message -> {
+                if (message.getName() != null)
+                    message.setName(String.format("%s%s", prefix, message.getName()));
+            });
     }
 
 
@@ -58,24 +64,24 @@ public class MultiTenantAdapter extends AbstractZeebeProcessAdapter {
     public void reverse(BpmnModelInstance instance, AdapterContext context) throws Exception {
         String prefix = String.format("c%s-", context.getClientId());
 
-        Collection<Process> processes = instance.getModelElementsByType(Process.class);
-        if (processes != null)
-            processes.forEach(process -> {
-                if (process.getId().startsWith(prefix))
-                    process.setId(process.getId().substring(prefix.length()));
+        Collection<BaseElement> baseElements = instance.getModelElementsByType(BaseElement.class);
+        if (baseElements != null)
+            baseElements.forEach(baseElement -> {
+                if (StringUtils.hasText(baseElement.getId()) && baseElement.getId().startsWith(prefix))
+                    baseElement.setId(baseElement.getId().substring(prefix.length()));
             });
 
         Collection<ZeebeTaskDefinition> zeebeTaskDefinitions = instance.getModelElementsByType(ZeebeTaskDefinition.class);
         if (zeebeTaskDefinitions != null)
             zeebeTaskDefinitions.forEach(zeebeTaskDefinition -> {
-                if (zeebeTaskDefinition.getType().startsWith(prefix))
+                if (StringUtils.hasText(zeebeTaskDefinition.getType()) && zeebeTaskDefinition.getType().startsWith(prefix))
                     zeebeTaskDefinition.setType(zeebeTaskDefinition.getType().substring(prefix.length()));
             });
 
         Collection<Message> messages = instance.getModelElementsByType(Message.class);
         if (messages != null)
             messages.forEach(message -> {
-                if (message.getName().startsWith(prefix))
+                if (StringUtils.hasText(message.getName()) && message.getName().startsWith(prefix))
                     message.setName(message.getName().substring(prefix.length()));
             });
     }
