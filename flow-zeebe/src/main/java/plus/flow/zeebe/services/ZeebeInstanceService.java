@@ -14,6 +14,7 @@ import org.springframework.data.elasticsearch.core.query.NativeSearchQueryBuilde
 import org.springframework.util.StringUtils;
 import plus.flow.core.exceptions.ErrorEnum;
 import plus.flow.core.flow.Instance;
+import plus.flow.core.flow.InstanceEvent;
 import plus.flow.core.flow.InstanceService;
 import plus.flow.zeebe.entities.ZeebeInstance;
 import plus.flow.zeebe.entities.ZeebeInstanceEntity;
@@ -22,6 +23,7 @@ import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
 
 import java.util.Map;
+import java.util.Set;
 
 public class ZeebeInstanceService implements InstanceService {
 
@@ -92,7 +94,7 @@ public class ZeebeInstanceService implements InstanceService {
     public Flux<Instance> listInstance(String clientId,
                                        String name,
                                        Integer version,
-                                       Instance.Status status,
+                                       Set<Instance.Status> statuses,
                                        int page,
                                        int size) {
 
@@ -103,7 +105,10 @@ public class ZeebeInstanceService implements InstanceService {
         BoolQueryBuilder boolQueryBuilder = new BoolQueryBuilder()
                 .filter(processId);
 
-        if (status != null) {
+        if (version != null) {
+            boolQueryBuilder.filter(new TermQueryBuilder("value.version", version));
+        }
+        if (statuses != null && !statuses.isEmpty()) {
 
         }
 
