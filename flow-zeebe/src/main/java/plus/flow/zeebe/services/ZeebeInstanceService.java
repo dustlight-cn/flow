@@ -65,6 +65,8 @@ public class ZeebeInstanceService implements InstanceService {
                 .filter(new TermQueryBuilder("value.processInstanceKey", id));
         NativeSearchQuery query = new NativeSearchQueryBuilder()
                 .withQuery(boolQueryBuilder)
+                .withSort(new FieldSortBuilder("timestamp").order(SortOrder.ASC))
+                .withSort(new FieldSortBuilder("position").order(SortOrder.ASC))
                 .build();
         query.setCollapseBuilder(new CollapseBuilder("value.processInstanceKey")
                 .setInnerHits(new InnerHitBuilder()
@@ -104,6 +106,8 @@ public class ZeebeInstanceService implements InstanceService {
 
         NativeSearchQuery query = new NativeSearchQueryBuilder()
                 .withQuery(boolQueryBuilder)
+                .withSort(new FieldSortBuilder("timestamp").order(SortOrder.ASC))
+                .withSort(new FieldSortBuilder("position").order(SortOrder.ASC))
                 .withPageable(Pageable.ofSize(size).withPage(page))
                 .build();
 
