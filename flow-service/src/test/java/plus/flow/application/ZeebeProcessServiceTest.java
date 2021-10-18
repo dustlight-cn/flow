@@ -8,6 +8,7 @@ import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.core.io.ClassPathResource;
+import plus.flow.core.flow.Instance;
 import plus.flow.core.flow.InstanceService;
 import plus.flow.core.flow.ProcessService;
 
@@ -49,7 +50,7 @@ public class ZeebeProcessServiceTest {
     @Test
     public void test() throws IOException {
         String processData = Base64.getEncoder().encodeToString(getBpmnBytes("order.bpmn"));
-        processService.createProcess("demo", "ggboy", processData)
+        processService.createProcess("86c3e34e2030000", "ggboy", processData)
                 .map(p -> {
                     try {
                         logger.info(mapper.writeValueAsString(p));
@@ -63,19 +64,34 @@ public class ZeebeProcessServiceTest {
         variables.put("orderId", "123456");
         variables.put("orderValue", "500");
         variables.put("gg", "hello world");
-        instanceService.start("demo", "order-demo", variables).block();
+        instanceService.start("86c3e34e2030000", "order-demo", variables).block();
     }
 
     @Test
     public void getProcess() throws JsonProcessingException {
-        Object process = processService.getProcess("demo", "order-demo", null).block();
+        Object process = processService.getProcess("86c3e34e2030000", "order-demo", null).block();
         logger.info(mapper.writeValueAsString(process));
     }
 
     @Test
     public void findProcess() throws JsonProcessingException {
-        Collection list = (Collection) processService.findProcess("demo", "", 0, 10).collectList().block();
+        Collection list = (Collection) processService.findProcess("86c3e34e2030000", "", 0, 10).collectList().block();
         for (Object obj : list) {
+            logger.info(mapper.writeValueAsString(obj));
+        }
+    }
+
+    @Test
+    public void findInstance() throws JsonProcessingException {
+        Collection<Instance> list = instanceService.listInstance("86c3e34e2030000",
+                "",
+                null,
+                null,
+                1,
+                10)
+                .collectList()
+                .block();
+        for (Instance obj : list) {
             logger.info(mapper.writeValueAsString(obj));
         }
     }

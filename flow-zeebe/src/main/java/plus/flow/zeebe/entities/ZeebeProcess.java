@@ -64,7 +64,7 @@ public class ZeebeProcess implements Process<String>, Cloneable {
         String clientId = getClientId();
         if (!StringUtils.hasText(clientId))
             return str;
-        return str.startsWith(clientId) ? str.substring(clientId.length() + 1) : str;
+        return str.startsWith(clientId) ? str.substring(clientId.length() + 2) : str;
     }
 
     @Override
@@ -81,7 +81,7 @@ public class ZeebeProcess implements Process<String>, Cloneable {
         value.setResource(data);
     }
 
-    private static String getPrefix(String target, char split) {
+    protected static String getPrefix(String target, char split) {
         if (target == null)
             return null;
         int index = target.indexOf(split);
@@ -90,7 +90,7 @@ public class ZeebeProcess implements Process<String>, Cloneable {
         return target.substring(0, index);
     }
 
-    private static String getSuffix(String target, char split) {
+    protected static String getSuffix(String target, char split) {
         if (target == null)
             return null;
         int index = target.indexOf(split);

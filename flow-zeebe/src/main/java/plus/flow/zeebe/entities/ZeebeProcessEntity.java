@@ -15,15 +15,23 @@ public class ZeebeProcessEntity implements Serializable, Cloneable {
 
     @Getter
     @Setter
-    public static class Value {
+    public static class Value implements Serializable, Cloneable {
+
         private String resource;
         private Integer version;
         private String resourceName;
         private String bpmnProcessId;
+
+        @Override
+        protected Value clone() throws CloneNotSupportedException {
+            return (Value) super.clone();
+        }
     }
 
     @Override
     public ZeebeProcessEntity clone() throws CloneNotSupportedException {
-        return (ZeebeProcessEntity) super.clone();
+        ZeebeProcessEntity instance = (ZeebeProcessEntity) super.clone();
+        instance.setValue(this.value == null ? null : this.value.clone());
+        return instance;
     }
 }

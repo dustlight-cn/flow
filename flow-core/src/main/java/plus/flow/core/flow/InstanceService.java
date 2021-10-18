@@ -1,5 +1,6 @@
 package plus.flow.core.flow;
 
+import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
 
 import java.util.Map;
@@ -17,7 +18,19 @@ public interface InstanceService {
      * @param variables
      * @return
      */
-    Mono<Void> start(String clientId, String name, Map<String, Object> variables);
+    Mono<Instance> start(String clientId,
+                         String name,
+                         Map<String, Object> variables);
+
+    Mono<Instance> getInstance(String clientId,
+                               Long id);
+
+    Flux<Instance> listInstance(String clientId,
+                                String name,
+                                Integer version,
+                                Instance.Status status,
+                                int page,
+                                int size);
 
     /**
      * 发布消息
