@@ -1,5 +1,6 @@
 package plus.flow.zeebe;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
 import io.camunda.zeebe.client.CredentialsProvider;
 import io.camunda.zeebe.client.ZeebeClient;
 import io.camunda.zeebe.client.ZeebeClientBuilder;
@@ -58,7 +59,8 @@ public class FlowZeebeConfiguration {
     }
 
     @Bean
-    public ZeebeInstanceService zeebeInstanceService(@Autowired ZeebeClient zeebeClient) {
-        return new ZeebeInstanceService(zeebeClient);
+    public ZeebeInstanceService zeebeInstanceService(@Autowired ZeebeClient zeebeClient,
+                                                     @Autowired ReactiveElasticsearchOperations operations) {
+        return new ZeebeInstanceService(zeebeClient, operations);
     }
 }
