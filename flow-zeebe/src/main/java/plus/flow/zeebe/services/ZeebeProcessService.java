@@ -12,6 +12,7 @@ import org.springframework.core.Ordered;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.elasticsearch.core.ReactiveElasticsearchOperations;
 import org.springframework.data.elasticsearch.core.mapping.IndexCoordinates;
+import org.springframework.data.elasticsearch.core.query.FetchSourceFilterBuilder;
 import org.springframework.data.elasticsearch.core.query.NativeSearchQuery;
 import org.springframework.data.elasticsearch.core.query.NativeSearchQueryBuilder;
 import org.springframework.util.StringUtils;
@@ -119,6 +120,7 @@ public class ZeebeProcessService implements ProcessService<String> {
                 .filter(new PrefixQueryBuilder("value.bpmnProcessId", String.format("c%s-", clientId)));
 
         NativeSearchQuery q = new NativeSearchQueryBuilder().withQuery(boolQueryBuilder)
+                .withSourceFilter(new FetchSourceFilterBuilder().withExcludes("value.resource").build())
                 .withSort(new FieldSortBuilder("position"))
                 .withPageable(Pageable.ofSize(size).withPage(page))
                 .build();
@@ -140,6 +142,8 @@ public class ZeebeProcessService implements ProcessService<String> {
     }
 
     protected Mono<String> adapt(String clientId, String owner, String processData) {
+        if (!StringUtils.hasText(processData))
+            return Mono.empty();
         if (adapters == null || adapters.size() == 0)
             return Mono.just(processData);
         DefaultAdapterContext context = new DefaultAdapterContext(clientId, owner);
@@ -165,7 +169,7 @@ public class ZeebeProcessService implements ProcessService<String> {
     }
 
     protected Mono<ZeebeProcess> reverse(ZeebeProcess zeebeProcess) {
-        if (adapters == null || adapters.size() == 0)
+        if (adapters == null || adapters.size() == 0 || !StringUtils.hasText(zeebeProcess.getData()))
             return Mono.just(zeebeProcess);
         DefaultAdapterContext context = new DefaultAdapterContext(zeebeProcess.getClientId(), zeebeProcess.getOwner());
         Mono<BpmnModelInstance> result = Mono.just(Bpmn.readModelFromStream(new ByteArrayInputStream(Base64.getDecoder().decode(zeebeProcess.getData()))));

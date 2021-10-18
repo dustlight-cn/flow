@@ -2,15 +2,12 @@ package plus.flow.application;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import org.elasticsearch.common.bytes.BytesReference;
+import org.elasticsearch.common.collect.Tuple;
 import org.elasticsearch.index.query.BoolQueryBuilder;
 import org.elasticsearch.index.query.MatchAllQueryBuilder;
 import org.elasticsearch.index.query.TermQueryBuilder;
 import org.elasticsearch.search.aggregations.AbstractAggregationBuilder;
-import org.elasticsearch.search.aggregations.AggregationBuilder;
-import org.elasticsearch.search.aggregations.Aggregations;
-import org.elasticsearch.search.aggregations.bucket.MultiBucketsAggregation;
-import org.elasticsearch.search.aggregations.bucket.adjacency.AdjacencyMatrix;
-import org.elasticsearch.search.aggregations.bucket.adjacency.AdjacencyMatrixAggregationBuilder;
 import org.elasticsearch.search.aggregations.bucket.terms.ParsedLongTerms;
 import org.elasticsearch.search.aggregations.bucket.terms.TermsAggregationBuilder;
 import org.elasticsearch.search.aggregations.metrics.ParsedTopHits;
@@ -19,21 +16,19 @@ import org.elasticsearch.search.sort.SortOrder;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.data.elasticsearch.core.ReactiveElasticsearchOperations;
 import org.springframework.data.elasticsearch.core.mapping.IndexCoordinates;
+import org.springframework.data.elasticsearch.core.query.FetchSourceFilterBuilder;
 import org.springframework.data.elasticsearch.core.query.NativeSearchQuery;
 import org.springframework.data.elasticsearch.core.query.NativeSearchQueryBuilder;
-import plus.flow.zeebe.entities.ZeebeInstanceEntity;
-import plus.flow.zeebe.entities.ZeebeProcess;
-import plus.flow.zeebe.entities.ZeebeProcessEntity;
+import plus.flow.zeebe.entities.*;
 import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
 
 import java.io.IOException;
-import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
+import java.util.function.Function;
 
 @SpringBootTest
 public class ElasticsearchTest {
@@ -46,7 +41,9 @@ public class ElasticsearchTest {
 
     @Test
     public void test() {
-        NativeSearchQuery query = new NativeSearchQueryBuilder().withQuery(new MatchAllQueryBuilder()).build();
+        NativeSearchQuery query = new NativeSearchQueryBuilder()
+                .withSourceFilter(new FetchSourceFilterBuilder().withExcludes("value.resource").build())
+                .withQuery(new MatchAllQueryBuilder()).withPageable(Pageable.ofSize(10)).build();
 
         operations.searchForPage(query, ZeebeProcessEntity.class, IndexCoordinates.of("zeebe-record-process"))
                 .map(searchHits -> {
@@ -65,36 +62,45 @@ public class ElasticsearchTest {
     @Test
     public void test2() throws JsonProcessingException {
         TermQueryBuilder processId = new TermQueryBuilder("value.bpmnProcessId", "c86c3e34e2030000-order-demo");
-        TermQueryBuilder valueType = new TermQueryBuilder("value.bpmnElementType", "PROCESS");
+//        TermQueryBuilder valueType = new TermQueryBuilder("value.bpmnElementType", "PROCESS");
         BoolQueryBuilder boolQueryBuilder = new BoolQueryBuilder().filter(processId);
 
         AbstractAggregationBuilder aggregationBuilder = new TermsAggregationBuilder("process")
                 .field("value.processInstanceKey")
                 .subAggregation(new TopHitsAggregationBuilder("current")
                         .size(1)
-                        .sort("position", SortOrder.DESC));
+                        .sort("position", SortOrder.DESC))
+                .subAggregation(new TopHitsAggregationBuilder("start")
+                        .size(1)
+                        .sort("position", SortOrder.ASC));
 
         NativeSearchQuery query = new NativeSearchQueryBuilder().withQuery(boolQueryBuilder).addAggregation(aggregationBuilder).build();
 
-        List<ZeebeInstanceEntity> results = operations.aggregate(query, ZeebeInstanceEntity.class, IndexCoordinates.of("zeebe-record-process-instance","zeebe-record-incident"))
+        List<ZeebeInstance> results = operations.aggregate(query,
+                        ZeebeInstanceEntity.class,
+                        IndexCoordinates.of("zeebe-record-process-instance", "zeebe-record-incident"))
                 .cast(ParsedLongTerms.class)
                 .singleOrEmpty()
                 .flatMapMany(parsedLongTerms -> Flux.fromIterable(parsedLongTerms.getBuckets()))
-                .filter(bucket -> bucket.getAggregations() != null && bucket.getAggregations().get("current") != null)
-                .map(buckets -> buckets.getAggregations().get("current"))
-                .cast(ParsedTopHits.class)
-                .filter(parsedTopHits -> parsedTopHits.getHits().getHits().length > 0)
-                .map(parsedTopHits -> parsedTopHits.getHits().getAt(0))
-                .flatMap(documentFields -> {
+                .map(bucket -> Tuple.tuple(bucket.getAggregations().get("current"), bucket.getAggregations().get("start")))
+                .map(tuple -> Tuple.tuple(((ParsedTopHits) tuple.v1()).getHits().getAt(0), ((ParsedTopHits) tuple.v2()).getHits().getAt(0)))
+                .map(tuple -> Tuple.tuple((tuple.v1()).getSourceRef(), (tuple.v2()).getSourceRef()))
+                .map((Function<Tuple<BytesReference, BytesReference>, Object>) tuple -> {
                     try {
-                        return Mono.just(mapper.readValue(documentFields.getSourceRef().streamInput(), ZeebeInstanceEntity.class));
+                        return new ZeebeInstance(mapper.readValue(tuple.v1().streamInput(), ZeebeInstanceEntity.class),
+                                mapper.readValue(tuple.v1().streamInput(), ZeebeInstanceEntity.class));
                     } catch (IOException e) {
-                        return Mono.error(e);
+                        throw new RuntimeException(e.getMessage(), e);
                     }
                 })
+                .cast(ZeebeInstance.class)
                 .collectList()
                 .block();
 
-        System.out.println(mapper.writeValueAsString(results));
+        for (ZeebeInstance item : results) {
+            System.out.println(mapper.writeValueAsString(
+                    item
+            ));
+        }
     }
 }
