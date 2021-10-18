@@ -71,7 +71,7 @@ public class ZeebeInstanceService implements InstanceService {
                         .setName("current")
                         .setSize(1)
                         .addSort(new FieldSortBuilder("position").order(SortOrder.DESC))));
-        return operations.searchForPage(query, ZeebeInstanceEntity.class, IndexCoordinates.of("zeebe-record-process-instance"))
+        return operations.searchForPage(query, ZeebeInstanceEntity.class, IndexCoordinates.of("zeebe-record-process-instance", "zeebe-record-incident"))
                 .flatMapMany(searchHits -> Flux.fromIterable(searchHits.getSearchHits()))
                 .singleOrEmpty()
                 .switchIfEmpty(Mono.error(ErrorEnum.INSTANCE_NOT_FOUND.getException()))
