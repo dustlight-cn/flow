@@ -12,6 +12,24 @@ plus:
       client-id: none
       uri: http://api.wgv/v1/token/validity
       token-type: jwt
+  datacenter:
+    amqp:
+      exchange: datacenter-test
+      sync:
+        enabled: true
+        queue: flow-test
+        dead-letter-queue: flow-dead-test
+  flow:
+    authorization-endpoint: "http://accounts.wgv.ink/authorize"
+    zeebe:
+      address: zeebe.svc:26500
+      plaintext: true
+      system-prefix:
+        - "system."
+  messenger:
+    client:
+      client-id: 8906c510dc30000
+      client-secret: dc09dbd5abeba019afbd678325961b05b1bfdbf0
 # SpringDoc 配置
 springdoc:
   api-docs:
@@ -23,16 +41,18 @@ springdoc:
       client-id: 86c3e34e2030000
       additional-query-string-params:
         jwt: true
-
 spring:
   rabbitmq:
     addresses: rabbitmq.svc
     port: 5672
-
+    username: flow-test
+    password: flow-test
   data:
-    mongodb:
-      host: mongodb.svc
-      username: my-user
-      password: MTIzNDU2
-      authentication-database: admin
-      database: messenger
+    elasticsearch:
+      client:
+        reactive:
+          endpoints:
+            - elasticsearch.zeebe.svc
+logging:
+  level:
+    plus.flow.*: debug

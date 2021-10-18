@@ -8,29 +8,24 @@
         <version>0.1.0-SNAPSHOT</version>
         <relativePath>../pom.xml</relativePath>
     </parent>
-    <artifactId>flow-service</artifactId>
-    <description>PLUS 流程服务</description>
+    <artifactId>flow-zeebe</artifactId>
+    <description>PLUS 流程服务 - Zeebe 模块</description>
 
     <dependencies>
         <dependency>
             <groupId>org.springframework.boot</groupId>
-            <artifactId>spring-boot-starter-actuator</artifactId>
+            <artifactId>spring-boot-starter-data-elasticsearch</artifactId>
         </dependency>
         <dependency>
             <groupId>org.springframework.boot</groupId>
-            <artifactId>spring-boot-starter-webflux</artifactId>
+            <artifactId>spring-boot-autoconfigure</artifactId>
         </dependency>
-        <dependency>
-            <groupId>org.springframework.experimental</groupId>
-            <artifactId>spring-native</artifactId>
-            <version>${spring-native.version}</version>
-        </dependency>
-
         <dependency>
             <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-configuration-processor</artifactId>
             <optional>true</optional>
         </dependency>
+
         <dependency>
             <groupId>org.projectlombok</groupId>
             <artifactId>lombok</artifactId>
@@ -46,43 +41,32 @@
             <artifactId>reactor-test</artifactId>
             <scope>test</scope>
         </dependency>
-        <dependency>
-            <groupId>org.springdoc</groupId>
-            <artifactId>springdoc-openapi-webflux-ui</artifactId>
-        </dependency>
 
         <dependency>
-            <groupId>plus.auth</groupId>
-            <artifactId>auth-resource-server-reactive</artifactId>
-        </dependency>
-        <dependency>
-            <groupId>plus.auth</groupId>
-            <artifactId>auth-client-reactive</artifactId>
+            <groupId>io.camunda</groupId>
+            <artifactId>zeebe-client-java</artifactId>
         </dependency>
 
         <dependency>
             <groupId>plus.flow</groupId>
             <artifactId>flow-core</artifactId>
         </dependency>
-        <dependency>
-            <groupId>plus.flow</groupId>
-            <artifactId>flow-datacenter</artifactId>
-        </dependency>
-        <dependency>
-            <groupId>plus.flow</groupId>
-            <artifactId>flow-zeebe</artifactId>
-        </dependency>
     </dependencies>
 
     <build>
         <plugins>
             <plugin>
-                <groupId>org.springframework.boot</groupId>
-                <artifactId>spring-boot-maven-plugin</artifactId>
-            </plugin>
-            <plugin>
-                <groupId>org.springframework.experimental</groupId>
-                <artifactId>spring-aot-maven-plugin</artifactId>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-gpg-plugin</artifactId>
+                <executions>
+                    <execution>
+                        <id>sign-artifacts</id>
+                        <phase>verify</phase>
+                        <goals>
+                            <goal>sign</goal>
+                        </goals>
+                    </execution>
+                </executions>
             </plugin>
         </plugins>
     </build>

@@ -5,23 +5,13 @@
     <parent>
         <groupId>plus.flow</groupId>
         <artifactId>flow-parent</artifactId>
-        <version>0.0.1-SNAPSHOT</version>
+        <version>0.1.0-SNAPSHOT</version>
         <relativePath>../pom.xml</relativePath>
     </parent>
     <artifactId>flow-datacenter</artifactId>
     <description>PLUS 流程服务 - 数据中心模块</description>
 
     <dependencies>
-        <dependency>
-            <groupId>org.springframework.boot</groupId>
-            <artifactId>spring-boot-starter-amqp</artifactId>
-        </dependency>
-        <dependency>
-            <groupId>org.springframework.experimental</groupId>
-            <artifactId>spring-native</artifactId>
-            <version>${spring-native.version}</version>
-        </dependency>
-
         <dependency>
             <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-configuration-processor</artifactId>
@@ -43,14 +33,12 @@
             <scope>test</scope>
         </dependency>
         <dependency>
-            <groupId>org.springframework.amqp</groupId>
-            <artifactId>spring-rabbit-test</artifactId>
-            <scope>test</scope>
-        </dependency>
-
-        <dependency>
             <groupId>plus.flow</groupId>
             <artifactId>flow-core</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>plus.datacenter</groupId>
+            <artifactId>datacenter-amqp</artifactId>
         </dependency>
     </dependencies>
 
