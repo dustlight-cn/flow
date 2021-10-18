@@ -22,6 +22,9 @@ public interface InstanceService {
                          String name,
                          Map<String, Object> variables);
 
+    Mono<Instance> getInstance(String clientId,
+                               Long id);
+
     Flux<Instance> listInstance(String clientId,
                                 String name,
                                 Integer version,

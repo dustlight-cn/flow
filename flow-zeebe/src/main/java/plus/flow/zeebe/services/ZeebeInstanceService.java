@@ -12,6 +12,7 @@ import org.springframework.data.elasticsearch.core.mapping.IndexCoordinates;
 import org.springframework.data.elasticsearch.core.query.NativeSearchQuery;
 import org.springframework.data.elasticsearch.core.query.NativeSearchQueryBuilder;
 import org.springframework.util.StringUtils;
+import plus.flow.core.exceptions.ErrorEnum;
 import plus.flow.core.flow.Instance;
 import plus.flow.core.flow.InstanceService;
 import plus.flow.zeebe.entities.ZeebeInstance;
@@ -55,6 +56,31 @@ public class ZeebeInstanceService implements InstanceService {
                                         sink.success(new ZeebeInstance(entity, null));
                                 }))
         );
+    }
+
+    @Override
+    public Mono<Instance> getInstance(String clientId, Long id) {
+        BoolQueryBuilder boolQueryBuilder = new BoolQueryBuilder()
+                .filter(new PrefixQueryBuilder("value.bpmnProcessId", String.format("c%s-", clientId)))
+                .filter(new TermQueryBuilder("value.processInstanceKey", id));
+        NativeSearchQuery query = new NativeSearchQueryBuilder()
+                .withQuery(boolQueryBuilder)
+                .build();
+        query.setCollapseBuilder(new CollapseBuilder("value.processInstanceKey")
+                .setInnerHits(new InnerHitBuilder()
+                        .setName("current")
+                        .setSize(1)
+                        .addSort(new FieldSortBuilder("position").order(SortOrder.DESC))));
+        return operations.searchForPage(query, ZeebeInstanceEntity.class, IndexCoordinates.of("zeebe-record-process-instance"))
+                .flatMapMany(searchHits -> Flux.fromIterable(searchHits.getSearchHits()))
+                .singleOrEmpty()
+                .switchIfEmpty(Mono.error(ErrorEnum.INSTANCE_NOT_FOUND.getException()))
+                .map(hit -> {
+                    ZeebeInstanceEntity start = hit.getContent();
+                    SearchHits<ZeebeInstanceEntity> currentHits = (SearchHits<ZeebeInstanceEntity>) hit.getInnerHits("current");
+                    ZeebeInstanceEntity current = currentHits.hasSearchHits() ? currentHits.getSearchHit(0).getContent() : null;
+                    return new ZeebeInstance(start, current);
+                });
     }
 
     @Override
