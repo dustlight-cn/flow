@@ -82,7 +82,7 @@ public class ElasticsearchTest {
                         .setSize(1)
                         .addSort(new FieldSortBuilder("position").order(SortOrder.DESC))));
 
-        Object results = operations.searchForPage(query,
+        List<ZeebeInstance> results = operations.searchForPage(query,
                         ZeebeInstanceEntity.class,
                         IndexCoordinates.of("zeebe-record-process-instance", "zeebe-record-incident"))
                 .flatMapMany(searchHits -> Flux.fromIterable(searchHits.getContent()))
@@ -92,32 +92,48 @@ public class ElasticsearchTest {
                     ZeebeInstanceEntity current = currentHits.hasSearchHits() ? currentHits.getSearchHit(0).getContent() : null;
                     return new ZeebeInstance(start, current);
                 })
-//                .cast(ParsedLongTerms.class)
-//                .singleOrEmpty()
-//                .flatMapMany(parsedLongTerms -> Flux.fromIterable(parsedLongTerms.getBuckets()))
-//                .map(bucket -> Tuple.tuple(bucket.getAggregations().get("current"), bucket.getAggregations().get("start")))
-//                .map(tuple -> Tuple.tuple(((ParsedTopHits) tuple.v1()).getHits().getAt(0), ((ParsedTopHits) tuple.v2()).getHits().getAt(0)))
-//                .map(tuple -> Tuple.tuple((tuple.v1()).getSourceRef(), (tuple.v2()).getSourceRef()))
-//                .map((Function<Tuple<BytesReference, BytesReference>, Object>) tuple -> {
-//                    try {
-//                        return new ZeebeInstance(mapper.readValue(tuple.v1().streamInput(), ZeebeInstanceEntity.class),
-//                                mapper.readValue(tuple.v1().streamInput(), ZeebeInstanceEntity.class));
-//                    } catch (IOException e) {
-//                        throw new RuntimeException(e.getMessage(), e);
-//                    }
-//                })
-//                .cast(ZeebeInstance.class)
                 .collectList()
                 .block();
 
-//        for (ZeebeInstance item : results) {
-//            System.out.println(mapper.writeValueAsString(
-//                    item
-//            ));
-//        }
+        System.out.println(mapper.writeValueAsString(results));
+    }
 
-        System.out.println(mapper.writeValueAsString(
-                results
-        ));
+    @Test
+    public void test3() throws JsonProcessingException {
+        TermQueryBuilder processId = new TermQueryBuilder("value.processInstanceKey", "2251799813685775");
+        BoolQueryBuilder boolQueryBuilder = new BoolQueryBuilder()
+                .filter(processId);
+
+
+        NativeSearchQuery query = new NativeSearchQueryBuilder()
+                .withSort(new FieldSortBuilder("timestamp").order(SortOrder.ASC))
+                .withSort(new FieldSortBuilder("position").order(SortOrder.ASC))
+                .withQuery(boolQueryBuilder)
+                .build();
+
+        query.setCollapseBuilder(new CollapseBuilder("key")
+                .setInnerHits(new InnerHitBuilder()
+                        .setName("events")
+                        .setSize(4)
+                        .addSort(new FieldSortBuilder("timestamp").order(SortOrder.ASC))
+                        .addSort(new FieldSortBuilder("position").order(SortOrder.ASC))));
+
+        ZeebeInstance instance = operations.searchForPage(query,
+                        ZeebeInstanceEntity.class,
+                        IndexCoordinates.of("zeebe-record-process-instance", "zeebe-record-incident"))
+                .flatMapMany(searchHits -> Flux.fromIterable(searchHits.getContent()))
+                .map(hit -> {
+                    ZeebeInstanceEntity start = hit.getContent();
+                    SearchHits<ZeebeInstanceEntity> currentHits = (SearchHits<ZeebeInstanceEntity>) hit.getInnerHits("events");
+
+                    ZeebeInstanceEntity current = currentHits.hasSearchHits() ? currentHits.getSearchHit(currentHits.getSearchHits().size() - 1).getContent() : null;
+
+                    return new ZeebeInstanceEvent(start, current);
+                })
+                .collectList()
+                .map(events -> new ZeebeInstance(events))
+                .block();
+
+        System.out.println(mapper.writeValueAsString(instance));
     }
 }

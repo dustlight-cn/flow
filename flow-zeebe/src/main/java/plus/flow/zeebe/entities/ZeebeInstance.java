@@ -1,28 +1,85 @@
 package plus.flow.zeebe.entities;
 
-import lombok.AllArgsConstructor;
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
 import org.springframework.util.StringUtils;
 import plus.flow.core.flow.Instance;
-import plus.flow.core.flow.InstanceError;
 
-import java.time.Instant;
-import java.util.Collection;
-import java.util.Set;
+import java.util.List;
 
-@AllArgsConstructor
-public class ZeebeInstance implements Instance, Cloneable {
+@Getter
+@Setter
+@NoArgsConstructor
+public class ZeebeInstance extends ZeebeInstanceEvent implements Instance<ZeebeInstanceEvent> {
 
-    private ZeebeInstanceEntity start;
-    private ZeebeInstanceEntity current;
+    private List<ZeebeInstanceEvent> events;
+
+    public ZeebeInstance(List<ZeebeInstanceEvent> events) {
+        this.events = events;
+        if (events != null && events.size() > 0) {
+            events.forEach(event -> {
+                ZeebeInstanceEntity eventStart = event == null || event.start == null ? null : event.start;
+                ZeebeInstanceEntity eventCurrent = event == null ? null :
+                        (event.current == null ? (event.start == null ? null : event.start) : event.current);
+
+                if (this.start == null ||
+                        (eventStart != null &&
+                                eventStart.getTimestamp() != null &&
+                                eventStart.getTimestamp() <= this.start.getTimestamp() &&
+                                (eventStart.getPosition() != null && eventStart.getPosition() < this.start.getPosition())))
+                    this.start = eventStart;
+                if (this.current == null ||
+                        (eventCurrent != null &&
+                                eventCurrent.getTimestamp() != null &&
+                                eventCurrent.getTimestamp() >= this.current.getTimestamp() &&
+                                (eventCurrent.getPosition() != null && eventCurrent.getPosition() > this.current.getPosition())))
+                    this.current = eventCurrent;
+            });
+        }
+    }
+
+    public ZeebeInstance(ZeebeInstanceEntity start, ZeebeInstanceEntity current) {
+        super(start, current);
+    }
 
     @Override
     public Integer getVersion() {
         return start == null || start.getValue() == null ? null : start.getValue().getVersion();
     }
 
+    @JsonIgnore
     @Override
-    public Long getId() {
-        return start == null || start.getValue() == null ? null : start.getValue().getProcessInstanceKey();
+    public String getElementType() {
+        return super.getElementType();
+    }
+
+    @JsonIgnore
+    @Override
+    public String getElementId() {
+        return super.getElementId();
+    }
+
+    @Override
+    public Status getStatus() {
+        if (current == null)
+            return start == null ? null : Status.ACTIVE;
+        String intent = current.getIntent();
+        String valueType = current.getValueType();
+        if (VALUE_TYPE_ERROR.contains(valueType))
+            return Status.INCIDENT;
+        ZeebeInstanceEntity.Value value = current.getValue();
+        if (value != null) {
+            String eType = value.getBpmnElementType();
+            if ("PROCESS".equals(eType)) {
+                if (INTENT_COMPLETED.contains(intent))
+                    return Status.COMPLETED;
+                if (INTENT_CANCELED.contains(intent))
+                    return Status.CANCELED;
+            }
+        }
+        return Status.ACTIVE;
     }
 
     @Override
@@ -50,46 +107,4 @@ public class ZeebeInstance implements Instance, Cloneable {
         return prefix.startsWith("c") ? prefix.substring(1) : prefix;
     }
 
-    public static final Collection<String> VALUE_TYPE_ERROR = Set.of("ERROR", "INCIDENT");
-    public static final Collection<String> INTENT_COMPLETED = Set.of("ELEMENT_COMPLETED");
-    public static final Collection<String> INTENT_CANCELED = Set.of("ELEMENT_TERMINATED");
-
-    @Override
-    public Status getStatus() {
-        if (current == null)
-            return start == null ? null : Status.ACTIVE;
-        String intent = current.getIntent();
-        String valueType = current.getValueType();
-        if (VALUE_TYPE_ERROR.contains(valueType))
-            return Status.INCIDENT;
-        ZeebeInstanceEntity.Value value = current.getValue();
-        if (value != null) {
-            String eType = value.getBpmnElementType();
-            if ("PROCESS".equals(eType)) {
-                if (INTENT_COMPLETED.contains(intent))
-                    return Status.COMPLETED;
-                if (INTENT_CANCELED.contains(intent))
-                    return Status.CANCELED;
-            }
-        }
-        return Status.ACTIVE;
-    }
-
-    @Override
-    public Instant getCreatedAt() {
-        return start == null || start.getTimestamp() == null ? null : Instant.ofEpochMilli(start.getTimestamp());
-    }
-
-    @Override
-    public Instant getUpdatedAt() {
-        return current == null || current.getTimestamp() == null ? null : Instant.ofEpochMilli(current.getTimestamp());
-    }
-
-    @Override
-    public InstanceError getError() {
-        ZeebeInstanceEntity.Value value;
-        return current == null || (value = current.getValue()) == null ||
-                (!StringUtils.hasText(value.getErrorMessage()) && !StringUtils.hasText(value.getErrorType())) ?
-                null : new ZeebeInstanceError(value.getErrorMessage(), value.getErrorType());
-    }
 }

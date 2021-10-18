@@ -4,6 +4,7 @@ import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
 
 import java.util.Map;
+import java.util.Set;
 
 /**
  * 实例服务
@@ -28,7 +29,7 @@ public interface InstanceService {
     Flux<Instance> listInstance(String clientId,
                                 String name,
                                 Integer version,
-                                Instance.Status status,
+                                Set<Instance.Status> statuses,
                                 int page,
                                 int size);
 

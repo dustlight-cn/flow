@@ -14,13 +14,16 @@ import org.springframework.data.elasticsearch.core.query.NativeSearchQueryBuilde
 import org.springframework.util.StringUtils;
 import plus.flow.core.exceptions.ErrorEnum;
 import plus.flow.core.flow.Instance;
+import plus.flow.core.flow.InstanceEvent;
 import plus.flow.core.flow.InstanceService;
 import plus.flow.zeebe.entities.ZeebeInstance;
 import plus.flow.zeebe.entities.ZeebeInstanceEntity;
+import plus.flow.zeebe.entities.ZeebeInstanceEvent;
 import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
 
 import java.util.Map;
+import java.util.Set;
 
 public class ZeebeInstanceService implements InstanceService {
 
@@ -65,29 +68,33 @@ public class ZeebeInstanceService implements InstanceService {
                 .filter(new TermQueryBuilder("value.processInstanceKey", id));
         NativeSearchQuery query = new NativeSearchQueryBuilder()
                 .withQuery(boolQueryBuilder)
+                .withSort(new FieldSortBuilder("timestamp").order(SortOrder.ASC))
+                .withSort(new FieldSortBuilder("position").order(SortOrder.ASC))
                 .build();
-        query.setCollapseBuilder(new CollapseBuilder("value.processInstanceKey")
+        query.setCollapseBuilder(new CollapseBuilder("key")
                 .setInnerHits(new InnerHitBuilder()
-                        .setName("current")
-                        .setSize(1)
-                        .addSort(new FieldSortBuilder("position").order(SortOrder.DESC))));
+                        .setName("events")
+                        .setSize(4)
+                        .addSort(new FieldSortBuilder("timestamp").order(SortOrder.ASC))
+                        .addSort(new FieldSortBuilder("position").order(SortOrder.ASC))));
+
         return operations.searchForPage(query, ZeebeInstanceEntity.class, IndexCoordinates.of("zeebe-record-process-instance", "zeebe-record-incident"))
-                .flatMapMany(searchHits -> Flux.fromIterable(searchHits.getSearchHits()))
-                .singleOrEmpty()
-                .switchIfEmpty(Mono.error(ErrorEnum.INSTANCE_NOT_FOUND.getException()))
+                .flatMapMany(searchHits -> searchHits.hasContent() ? Flux.fromIterable(searchHits.getSearchHits()) : Flux.error(ErrorEnum.INSTANCE_NOT_FOUND.getException()))
                 .map(hit -> {
                     ZeebeInstanceEntity start = hit.getContent();
-                    SearchHits<ZeebeInstanceEntity> currentHits = (SearchHits<ZeebeInstanceEntity>) hit.getInnerHits("current");
-                    ZeebeInstanceEntity current = currentHits.hasSearchHits() ? currentHits.getSearchHit(0).getContent() : null;
-                    return new ZeebeInstance(start, current);
-                });
+                    SearchHits<ZeebeInstanceEntity> currentHits = (SearchHits<ZeebeInstanceEntity>) hit.getInnerHits("events");
+                    ZeebeInstanceEntity current = currentHits.hasSearchHits() ? currentHits.getSearchHit(currentHits.getSearchHits().size() - 1).getContent() : null;
+                    return new ZeebeInstanceEvent(start, current);
+                })
+                .collectList()
+                .map(events -> new ZeebeInstance(events));
     }
 
     @Override
     public Flux<Instance> listInstance(String clientId,
                                        String name,
                                        Integer version,
-                                       Instance.Status status,
+                                       Set<Instance.Status> statuses,
                                        int page,
                                        int size) {
 
@@ -98,12 +105,17 @@ public class ZeebeInstanceService implements InstanceService {
         BoolQueryBuilder boolQueryBuilder = new BoolQueryBuilder()
                 .filter(processId);
 
-        if (status != null) {
+        if (version != null) {
+            boolQueryBuilder.filter(new TermQueryBuilder("value.version", version));
+        }
+        if (statuses != null && !statuses.isEmpty()) {
 
         }
 
         NativeSearchQuery query = new NativeSearchQueryBuilder()
                 .withQuery(boolQueryBuilder)
+                .withSort(new FieldSortBuilder("timestamp").order(SortOrder.ASC))
+                .withSort(new FieldSortBuilder("position").order(SortOrder.ASC))
                 .withPageable(Pageable.ofSize(size).withPage(page))
                 .build();
 
