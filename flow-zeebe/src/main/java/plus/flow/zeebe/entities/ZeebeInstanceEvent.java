@@ -18,8 +18,14 @@ public class ZeebeInstanceEvent implements InstanceEvent, Cloneable {
     protected ZeebeInstanceEntity current;
 
     public static final Collection<String> VALUE_TYPE_ERROR = Set.of("ERROR", "INCIDENT");
-    public static final Collection<String> INTENT_COMPLETED = Set.of("ELEMENT_COMPLETED","SEQUENCE_FLOW_TAKEN");
+    public static final Collection<String> INCIDENT_RESOLVED = Set.of("RESOLVED");
+    public static final Collection<String> INTENT_COMPLETED = Set.of("ELEMENT_COMPLETED", "SEQUENCE_FLOW_TAKEN");
     public static final Collection<String> INTENT_CANCELED = Set.of("ELEMENT_TERMINATED");
+
+    @Override
+    public Long getId() {
+        return start == null ? null : start.getKey();
+    }
 
     @Override
     public String getElementType() {
@@ -38,7 +44,7 @@ public class ZeebeInstanceEvent implements InstanceEvent, Cloneable {
         String intent = current.getIntent();
         String valueType = current.getValueType();
         if (VALUE_TYPE_ERROR.contains(valueType))
-            return Status.INCIDENT;
+            return INCIDENT_RESOLVED.contains(intent) ? Status.RESOLVED : Status.INCIDENT;
         if (INTENT_COMPLETED.contains(intent))
             return Status.COMPLETED;
         if (INTENT_CANCELED.contains(intent))

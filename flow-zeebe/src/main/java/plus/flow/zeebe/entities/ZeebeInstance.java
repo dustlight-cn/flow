@@ -62,11 +62,6 @@ public class ZeebeInstance extends ZeebeInstanceEvent implements Instance<ZeebeI
     }
 
     @Override
-    public Long getId() {
-        return start == null || start.getValue() == null ? null : start.getValue().getProcessInstanceKey();
-    }
-
-    @Override
     public Status getStatus() {
         if (current == null)
             return start == null ? null : Status.ACTIVE;

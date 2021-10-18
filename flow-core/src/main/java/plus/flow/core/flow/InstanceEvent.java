@@ -1,8 +1,14 @@
 package plus.flow.core.flow;
 
+import com.fasterxml.jackson.databind.annotation.JsonSerialize;
+import com.fasterxml.jackson.databind.ser.std.ToStringSerializer;
+
 import java.time.Instant;
 
 public interface InstanceEvent {
+
+    @JsonSerialize(using = ToStringSerializer.class)
+    Long getId();
 
     String getElementType();
 
@@ -20,7 +26,8 @@ public interface InstanceEvent {
         ACTIVE,
         CANCELED,
         COMPLETED,
-        INCIDENT
+        INCIDENT,
+        RESOLVED
     }
 
 }
