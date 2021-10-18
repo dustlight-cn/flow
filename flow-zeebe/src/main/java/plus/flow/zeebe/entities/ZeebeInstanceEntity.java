@@ -16,6 +16,7 @@ public class ZeebeInstanceEntity implements Serializable, Cloneable {
     private String valueType;
     private String recordType;
     private String intent;
+    private Long position;
 
     private Long sourceRecordPosition;
     private Value value;

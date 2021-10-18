@@ -3,32 +3,20 @@ package plus.flow.core.flow;
 import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 import com.fasterxml.jackson.databind.ser.std.ToStringSerializer;
 
-import java.time.Instant;
+import java.util.List;
 
-public interface Instance {
+public interface Instance<T> extends InstanceEvent {
 
-    Integer getVersion();
 
     @JsonSerialize(using = ToStringSerializer.class)
     Long getId();
 
     String getName();
 
+    Integer getVersion();
+
     String getClientId();
 
-    Status getStatus();
-
-    Instant getCreatedAt();
-
-    Instant getUpdatedAt();
-
-    InstanceError getError();
-
-    enum Status {
-        ACTIVE,
-        CANCELED,
-        COMPLETED,
-        INCIDENT
-    }
+    List<T> getEvents();
 
 }
