@@ -23,24 +23,50 @@ public interface InstanceService {
                          String name,
                          Map<String, Object> variables);
 
-    Mono<Instance> getInstance(String clientId,
-                               Long id);
-
-    Flux<Instance> listInstance(String clientId,
-                                String name,
-                                Integer version,
-                                Set<Instance.Status> statuses,
-                                int page,
-                                int size);
-
     /**
-     * 发布消息
+     * 获取实例
      *
      * @param clientId
-     * @param messageName
-     * @param key
+     * @param id
      * @return
      */
-    Mono<Void> publishMessage(String clientId, String messageName, String key);
+    Mono<Instance> get(String clientId,
+                       Long id);
+
+    /**
+     * 查找实例
+     *
+     * @param clientId
+     * @param name
+     * @param version
+     * @param statuses
+     * @param page
+     * @param size
+     * @return
+     */
+    Flux<Instance> list(String clientId,
+                        String name,
+                        Integer version,
+                        Set<Instance.Status> statuses,
+                        int page,
+                        int size);
+
+    /**
+     * 取消允许
+     *
+     * @param client
+     * @param id
+     * @return
+     */
+    Mono<Void> cancel(String client, Long id);
+
+    /**
+     * 重启异常
+     *
+     * @param client
+     * @param id
+     * @return
+     */
+    Mono<Void> resolve(String client, Long id);
 
 }
