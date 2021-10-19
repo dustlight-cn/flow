@@ -48,7 +48,7 @@ public class InstanceController {
                                        ReactiveAuthClient reactiveAuthClient,
                                        AuthPrincipal principal) {
         return ClientUtils.obtainClientId(reactiveAuthClient, clientId, principal)
-                .flatMapMany(cid -> instanceService.listInstance(cid, name, version, status, page, size));
+                .flatMapMany(cid -> instanceService.list(cid, name, version, status, page, size));
     }
 
     @Operation(summary = "通过 ID 获取流程实例")
@@ -58,18 +58,17 @@ public class InstanceController {
                                       ReactiveAuthClient reactiveAuthClient,
                                       AuthPrincipal principal) {
         return ClientUtils.obtainClientId(reactiveAuthClient, clientId, principal)
-                .flatMap(cid -> instanceService.getInstance(cid, id));
+                .flatMap(cid -> instanceService.get(cid, id));
     }
 
-    @Operation(summary = "发布消息")
-    @PostMapping(value = "/message")
-    public Mono<Void> createMessage(@RequestParam(name = "name") String name,
-                                    @RequestParam(name = "key") String key,
-                                    @RequestParam(name = "cid", required = false) String clientId,
-                                    ReactiveAuthClient reactiveAuthClient,
-                                    AuthPrincipal principal) {
+    @Operation(summary = "通过 ID 取消运行实例")
+    @DeleteMapping(value = "/instance/{id}")
+    public Mono<Void> cancelInstance(@PathVariable Long id,
+                                     @RequestParam(name = "cid", required = false) String clientId,
+                                     ReactiveAuthClient reactiveAuthClient,
+                                     AuthPrincipal principal) {
         return ClientUtils.obtainClientId(reactiveAuthClient, clientId, principal)
-                .flatMap(cid -> instanceService.publishMessage(cid, name, key))
-                .then();
+                .flatMap(cid -> instanceService.cancel(cid, id));
     }
+
 }

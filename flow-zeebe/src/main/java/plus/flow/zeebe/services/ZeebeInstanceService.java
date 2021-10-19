@@ -60,6 +60,7 @@ public class ZeebeInstanceService implements InstanceService {
                                 .send()
                                 .whenComplete((processInstanceEvent, throwable) -> {
                                     ZeebeInstanceEntity entity = new ZeebeInstanceEntity();
+                                    entity.setKey(processInstanceEvent.getProcessInstanceKey());
                                     ZeebeInstanceEntity.Value value = new ZeebeInstanceEntity.Value();
                                     entity.setValue(value);
                                     value.setBpmnProcessId(processInstanceEvent.getBpmnProcessId());
@@ -75,7 +76,7 @@ public class ZeebeInstanceService implements InstanceService {
     }
 
     @Override
-    public Mono<Instance> getInstance(String clientId, Long id) {
+    public Mono<Instance> get(String clientId, Long id) {
         BoolQueryBuilder boolQueryBuilder = new BoolQueryBuilder()
                 .filter(new PrefixQueryBuilder("value.bpmnProcessId", String.format("c%s-", clientId)))
                 .filter(new TermQueryBuilder("value.processInstanceKey", id));
@@ -105,12 +106,12 @@ public class ZeebeInstanceService implements InstanceService {
 
 
     @Override
-    public Flux<Instance> listInstance(String clientId,
-                                       String name,
-                                       Integer version,
-                                       Set<Instance.Status> statuses,
-                                       int page,
-                                       int size) {
+    public Flux<Instance> list(String clientId,
+                               String name,
+                               Integer version,
+                               Set<Instance.Status> statuses,
+                               int page,
+                               int size) {
         BoolQueryBuilder statusFilter = null;
         if (statuses != null && !statuses.isEmpty()) {
             statusFilter = new BoolQueryBuilder();
@@ -136,25 +137,43 @@ public class ZeebeInstanceService implements InstanceService {
             for (QueryBuilder builder : statusQueries)
                 statusFilter.should(builder);
         }
-//        QueryBuilder processId = StringUtils.hasText(name) ?
-//                new TermQueryBuilder("value.bpmnProcessId", String.format("c%s-%s", clientId, name)) :
-//                new PrefixQueryBuilder("value.bpmnProcessId", String.format("c%s-", clientId));
-//
-//        BoolQueryBuilder boolQueryBuilder = new BoolQueryBuilder()
-//                .filter(processId);
-//        if (version != null)
-//            boolQueryBuilder.filter(new TermQueryBuilder("value.version", version));
-//        if (statusFilter != null)
-//            boolQueryBuilder.filter(statusFilter);
-//
-//        NativeSearchQuery query = new NativeSearchQueryBuilder()
-//                .withQuery(boolQueryBuilder)
-//                .withSort(new FieldSortBuilder("timestamp").order(SortOrder.ASC))
-//                .withSort(new FieldSortBuilder("position").order(SortOrder.ASC))
-//                .withPageable(Pageable.ofSize(size).withPage(page))
-//                .build();
-
         return listInstance(clientId, name, version, page, size, statusFilter);
+    }
+
+    @Override
+    public Mono<Void> cancel(String client, Long id) {
+        return getEntity(client, id, instanceIndex)
+                .switchIfEmpty(Mono.error(ErrorEnum.INSTANCE_NOT_FOUND.getException()))
+                .map(entity -> new ZeebeInstance(entity, entity))
+                .flatMap(instance -> Mono.create(sink ->
+                        sink.onRequest(unused -> zeebeClient
+                                .newCancelInstanceCommand(instance.getId())
+                                .send()
+                                .whenComplete((unused2, e) -> {
+                                    if (e == null)
+                                        sink.success();
+                                    else
+                                        sink.error(e);
+                                }))
+                ));
+    }
+
+    @Override
+    public Mono<Void> resolve(String client, Long id) {
+        return getEntity(client, id, instanceIndex)
+                .switchIfEmpty(Mono.error(ErrorEnum.RESOURCE_NOT_FOUND.getException()))
+                .map(entity -> new ZeebeInstanceEvent(entity, entity))
+                .flatMap(instance -> Mono.create(sink ->
+                        sink.onRequest(unused -> zeebeClient
+                                .newResolveIncidentCommand(instance.getId())
+                                .send()
+                                .whenComplete((unused2, e) -> {
+                                    if (e == null)
+                                        sink.success();
+                                    else
+                                        sink.error(e);
+                                }))
+                ));
     }
 
     public Flux<Instance> listInstance(String clientId,
@@ -210,20 +229,19 @@ public class ZeebeInstanceService implements InstanceService {
                 });
     }
 
-    @Override
-    public Mono<Void> publishMessage(String clientId, String messageName, String key) {
-        return Mono.create(sink ->
-                sink.onRequest(unused ->
-                        zeebeClient.newPublishMessageCommand()
-                                .messageName(String.format("c%s-%s", clientId, messageName))
-                                .correlationKey(key)
-                                .send()
-                                .whenComplete(((publishMessageResponse, throwable) -> {
-                                    if (throwable != null)
-                                        sink.error(throwable);
-                                    else
-                                        sink.success();
-                                }))));
+    protected Mono<ZeebeInstanceEntity> getEntity(String clientId, Long key, String... index) {
+        BoolQueryBuilder boolQueryBuilder = new BoolQueryBuilder()
+                .filter(new PrefixQueryBuilder("value.bpmnProcessId", String.format("c%s-", clientId)))
+                .filter(new TermQueryBuilder("key", key));
+        NativeSearchQuery query = new NativeSearchQueryBuilder()
+                .withQuery(boolQueryBuilder)
+                .withPageable(Pageable.ofSize(1))
+                .build();
+
+        return operations.searchForPage(query, ZeebeInstanceEntity.class, IndexCoordinates.of(index))
+                .flatMapMany(searchHits -> searchHits.hasContent() ? Flux.fromIterable(searchHits.getSearchHits()) : Flux.empty())
+                .singleOrEmpty()
+                .map(zeebeInstanceEntitySearchHit -> zeebeInstanceEntitySearchHit.getContent());
     }
 
     protected static class StatusQuery {

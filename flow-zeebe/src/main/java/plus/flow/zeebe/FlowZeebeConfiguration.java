@@ -12,10 +12,7 @@ import org.springframework.context.ApplicationContext;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.data.elasticsearch.core.ReactiveElasticsearchOperations;
-import plus.flow.zeebe.services.MultiTenantAdapter;
-import plus.flow.zeebe.services.ZeebeInstanceService;
-import plus.flow.zeebe.services.ZeebeProcessAdapter;
-import plus.flow.zeebe.services.ZeebeProcessService;
+import plus.flow.zeebe.services.*;
 
 import java.util.Set;
 
@@ -62,5 +59,10 @@ public class FlowZeebeConfiguration {
     public ZeebeInstanceService zeebeInstanceService(@Autowired ZeebeClient zeebeClient,
                                                      @Autowired ReactiveElasticsearchOperations operations) {
         return new ZeebeInstanceService(zeebeClient, operations);
+    }
+
+    @Bean
+    public ZeebeMessageService zeebeMessageService(@Autowired ZeebeClient zeebeClient) {
+        return new ZeebeMessageService(zeebeClient);
     }
 }

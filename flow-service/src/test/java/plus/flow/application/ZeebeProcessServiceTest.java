@@ -2,6 +2,8 @@ package plus.flow.application;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import io.camunda.zeebe.client.ZeebeClient;
+import io.camunda.zeebe.client.api.response.CancelProcessInstanceResponse;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.junit.jupiter.api.Test;
@@ -28,6 +30,9 @@ public class ZeebeProcessServiceTest {
 
     @Autowired
     InstanceService instanceService;
+
+    @Autowired
+    ZeebeClient client;
 
     Log logger = LogFactory.getLog(getClass());
 
@@ -83,16 +88,22 @@ public class ZeebeProcessServiceTest {
 
     @Test
     public void findInstance() throws JsonProcessingException {
-        Collection<Instance> list = instanceService.listInstance("86c3e34e2030000",
-                "",
-                null,
-                null,
-                1,
-                10)
+        Collection<Instance> list = instanceService.list("86c3e34e2030000",
+                        "",
+                        null,
+                        null,
+                        1,
+                        10)
                 .collectList()
                 .block();
         for (Instance obj : list) {
             logger.info(mapper.writeValueAsString(obj));
         }
+    }
+
+    @Test
+    public void ct() {
+        Void x = instanceService.cancel("86c3e34e2030000", 4503599627460943L)
+                .block();
     }
 }
