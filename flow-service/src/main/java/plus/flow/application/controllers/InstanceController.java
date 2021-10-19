@@ -9,11 +9,13 @@ import plus.auth.client.reactive.ReactiveAuthClient;
 import plus.auth.resources.core.AuthPrincipal;
 import plus.flow.application.ClientUtils;
 import plus.flow.core.flow.Instance;
+import plus.flow.core.flow.InstanceEvent;
 import plus.flow.core.flow.InstanceService;
 import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
 
 import java.util.Map;
+import java.util.Set;
 
 @RestController
 @RequestMapping("/v1")
@@ -39,13 +41,14 @@ public class InstanceController {
     @GetMapping(value = "/instances")
     public Flux<Instance> getInstances(@RequestParam(name = "name", required = false) String name,
                                        @RequestParam(name = "version", required = false) Integer version,
+                                       @RequestParam(name = "status", required = false) Set<InstanceEvent.Status> status,
                                        @RequestParam(name = "page", required = false, defaultValue = "0") int page,
                                        @RequestParam(name = "size", required = false, defaultValue = "10") int size,
                                        @RequestParam(name = "cid", required = false) String clientId,
                                        ReactiveAuthClient reactiveAuthClient,
                                        AuthPrincipal principal) {
         return ClientUtils.obtainClientId(reactiveAuthClient, clientId, principal)
-                .flatMapMany(cid -> instanceService.listInstance(cid, name, version, null, page, size));
+                .flatMapMany(cid -> instanceService.listInstance(cid, name, version, status, page, size));
     }
 
     @Operation(summary = "通过 ID 获取流程实例")

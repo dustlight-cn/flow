@@ -1,6 +1,8 @@
 package plus.flow.zeebe.services;
 
 import io.camunda.zeebe.client.ZeebeClient;
+import lombok.Getter;
+import lombok.Setter;
 import org.elasticsearch.index.query.*;
 import org.elasticsearch.search.collapse.CollapseBuilder;
 import org.elasticsearch.search.sort.FieldSortBuilder;
@@ -9,6 +11,7 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.data.elasticsearch.core.ReactiveElasticsearchOperations;
 import org.springframework.data.elasticsearch.core.SearchHits;
 import org.springframework.data.elasticsearch.core.mapping.IndexCoordinates;
+import org.springframework.data.elasticsearch.core.query.FetchSourceFilterBuilder;
 import org.springframework.data.elasticsearch.core.query.NativeSearchQuery;
 import org.springframework.data.elasticsearch.core.query.NativeSearchQueryBuilder;
 import org.springframework.util.StringUtils;
@@ -22,6 +25,8 @@ import plus.flow.zeebe.entities.ZeebeInstanceEvent;
 import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
 
+import java.util.Arrays;
+import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
 
@@ -29,6 +34,14 @@ public class ZeebeInstanceService implements InstanceService {
 
     private ZeebeClient zeebeClient;
     private ReactiveElasticsearchOperations operations;
+
+    @Getter
+    @Setter
+    private String instanceIndex = "zeebe-record-process-instance";
+
+    @Getter
+    @Setter
+    private String incidentIndex = "zeebe-record-incident";
 
     public ZeebeInstanceService(ZeebeClient zeebeClient,
                                 ReactiveElasticsearchOperations operations) {
@@ -78,7 +91,7 @@ public class ZeebeInstanceService implements InstanceService {
                         .addSort(new FieldSortBuilder("timestamp").order(SortOrder.ASC))
                         .addSort(new FieldSortBuilder("position").order(SortOrder.ASC))));
 
-        return operations.searchForPage(query, ZeebeInstanceEntity.class, IndexCoordinates.of("zeebe-record-process-instance", "zeebe-record-incident"))
+        return operations.searchForPage(query, ZeebeInstanceEntity.class, IndexCoordinates.of(incidentIndex, instanceIndex))
                 .flatMapMany(searchHits -> searchHits.hasContent() ? Flux.fromIterable(searchHits.getSearchHits()) : Flux.error(ErrorEnum.INSTANCE_NOT_FOUND.getException()))
                 .map(hit -> {
                     ZeebeInstanceEntity start = hit.getContent();
@@ -90,6 +103,7 @@ public class ZeebeInstanceService implements InstanceService {
                 .map(events -> new ZeebeInstance(events));
     }
 
+
     @Override
     public Flux<Instance> listInstance(String clientId,
                                        String name,
@@ -97,7 +111,58 @@ public class ZeebeInstanceService implements InstanceService {
                                        Set<Instance.Status> statuses,
                                        int page,
                                        int size) {
+        BoolQueryBuilder statusFilter = null;
+        if (statuses != null && !statuses.isEmpty()) {
+            statusFilter = new BoolQueryBuilder();
+            Set<QueryBuilder> statusQueries = new HashSet<>();
+            for (InstanceEvent.Status status : statuses) {
+                switch (status) {
+                    case ACTIVE:
+                        statusQueries.add(StatusQuery.ACTIVE);
+                        break;
+                    case CANCELED:
+                        statusQueries.add(StatusQuery.CANCELED);
+                        break;
+                    case COMPLETED:
+                        statusQueries.add(StatusQuery.COMPLETED);
+                        break;
+                    case INCIDENT:
+                        statusQueries.add(StatusQuery.INCIDENT);
+                        break;
+                    default:
+                        break;
+                }
+            }
+            for (QueryBuilder builder : statusQueries)
+                statusFilter.should(builder);
+        }
+//        QueryBuilder processId = StringUtils.hasText(name) ?
+//                new TermQueryBuilder("value.bpmnProcessId", String.format("c%s-%s", clientId, name)) :
+//                new PrefixQueryBuilder("value.bpmnProcessId", String.format("c%s-", clientId));
+//
+//        BoolQueryBuilder boolQueryBuilder = new BoolQueryBuilder()
+//                .filter(processId);
+//        if (version != null)
+//            boolQueryBuilder.filter(new TermQueryBuilder("value.version", version));
+//        if (statusFilter != null)
+//            boolQueryBuilder.filter(statusFilter);
+//
+//        NativeSearchQuery query = new NativeSearchQueryBuilder()
+//                .withQuery(boolQueryBuilder)
+//                .withSort(new FieldSortBuilder("timestamp").order(SortOrder.ASC))
+//                .withSort(new FieldSortBuilder("position").order(SortOrder.ASC))
+//                .withPageable(Pageable.ofSize(size).withPage(page))
+//                .build();
 
+        return listInstance(clientId, name, version, page, size, statusFilter);
+    }
+
+    public Flux<Instance> listInstance(String clientId,
+                                       String name,
+                                       Integer version,
+                                       int page,
+                                       int size,
+                                       QueryBuilder... filters) {
         QueryBuilder processId = StringUtils.hasText(name) ?
                 new TermQueryBuilder("value.bpmnProcessId", String.format("c%s-%s", clientId, name)) :
                 new PrefixQueryBuilder("value.bpmnProcessId", String.format("c%s-", clientId));
@@ -108,29 +173,37 @@ public class ZeebeInstanceService implements InstanceService {
         if (version != null) {
             boolQueryBuilder.filter(new TermQueryBuilder("value.version", version));
         }
-        if (statuses != null && !statuses.isEmpty()) {
-
-        }
+        if (filters != null)
+            for (QueryBuilder f : filters)
+                if (f != null)
+                    boolQueryBuilder.filter(f);
 
         NativeSearchQuery query = new NativeSearchQueryBuilder()
                 .withQuery(boolQueryBuilder)
-                .withSort(new FieldSortBuilder("timestamp").order(SortOrder.ASC))
-                .withSort(new FieldSortBuilder("position").order(SortOrder.ASC))
+                .withSourceFilter(new FetchSourceFilterBuilder().build())
+//                .withSort(new FieldSortBuilder("timestamp").order(SortOrder.ASC))
+//                .withSort(new FieldSortBuilder("position").order(SortOrder.ASC))
                 .withPageable(Pageable.ofSize(size).withPage(page))
                 .build();
 
+
         query.setCollapseBuilder(new CollapseBuilder("value.processInstanceKey")
-                .setInnerHits(new InnerHitBuilder()
-                        .setName("current")
-                        .setSize(1)
-                        .addSort(new FieldSortBuilder("position").order(SortOrder.DESC))));
+                .setInnerHits(Arrays.asList(
+                        new InnerHitBuilder()
+                                .setName("current")
+                                .setSize(1)
+                                .addSort(new FieldSortBuilder("position").order(SortOrder.DESC)),
+                        new InnerHitBuilder()
+                                .setName("start")
+                                .setSize(1)
+                                .addSort(new FieldSortBuilder("position").order(SortOrder.ASC)))));
 
         return operations.searchForPage(query,
                         ZeebeInstanceEntity.class,
-                        IndexCoordinates.of("zeebe-record-process-instance", "zeebe-record-incident"))
+                        IndexCoordinates.of(incidentIndex, instanceIndex))
                 .flatMapMany(searchHits -> Flux.fromIterable(searchHits.getContent()))
                 .map(hit -> {
-                    ZeebeInstanceEntity start = hit.getContent();
+                    ZeebeInstanceEntity start = ((SearchHits<ZeebeInstanceEntity>) hit.getInnerHits("start")).getSearchHit(0).getContent();
                     SearchHits<ZeebeInstanceEntity> currentHits = (SearchHits<ZeebeInstanceEntity>) hit.getInnerHits("current");
                     ZeebeInstanceEntity current = currentHits.hasSearchHits() ? currentHits.getSearchHit(0).getContent() : null;
                     return new ZeebeInstance(start, current);
@@ -153,4 +226,32 @@ public class ZeebeInstanceService implements InstanceService {
                                 }))));
     }
 
+    protected static class StatusQuery {
+
+
+        public static BoolQueryBuilder CANCELED;
+        public static BoolQueryBuilder COMPLETED;
+        public static BoolQueryBuilder INCIDENT;
+        public static BoolQueryBuilder ACTIVE;
+
+        static {
+            CANCELED = new BoolQueryBuilder()
+                    .must(new TermQueryBuilder("value.bpmnElementType", "PROCESS"))
+                    .must(new TermQueryBuilder("intent", "ELEMENT_TERMINATED"));
+
+            COMPLETED = new BoolQueryBuilder()
+                    .must(new TermQueryBuilder("value.bpmnElementType", "PROCESS"))
+                    .must(new TermQueryBuilder("intent", "ELEMENT_COMPLETED"));
+
+            INCIDENT = new BoolQueryBuilder()
+                    .must(new TermQueryBuilder("valueType", "INCIDENT"))
+                    .mustNot(new TermQueryBuilder("intent", "RESOLVED"));
+
+            ACTIVE = new BoolQueryBuilder()
+                    .mustNot(CANCELED)
+                    .mustNot(COMPLETED)
+                    .mustNot(INCIDENT);
+        }
+
+    }
 }
