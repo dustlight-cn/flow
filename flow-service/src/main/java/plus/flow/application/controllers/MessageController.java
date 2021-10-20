@@ -15,6 +15,7 @@ import reactor.core.publisher.Mono;
 @RequestMapping("/v1")
 @SecurityRequirement(name = "auth")
 @Tag(name = "消息资源", description = "-")
+@CrossOrigin
 public class MessageController {
 
     @Autowired
