@@ -24,1303 +24,176 @@ import { BASE_PATH, COLLECTION_FORMATS, RequestArgs, BaseAPI, RequiredError } fr
 /**
  * 
  * @export
- * @interface BooleanItem
+ * @interface InstanceError
  */
-export interface BooleanItem {
+export interface InstanceError {
     /**
      * 
      * @type {string}
-     * @memberof BooleanItem
+     * @memberof InstanceError
      */
-    name?: string;
+    message?: string;
     /**
      * 
      * @type {string}
-     * @memberof BooleanItem
-     */
-    label?: string;
-    /**
-     * 
-     * @type {string}
-     * @memberof BooleanItem
-     */
-    description?: string;
-    /**
-     * 
-     * @type {string}
-     * @memberof BooleanItem
-     */
-    type?: BooleanItemTypeEnum;
-    /**
-     * 
-     * @type {boolean}
-     * @memberof BooleanItem
-     */
-    array?: boolean;
-    /**
-     * 
-     * @type {boolean}
-     * @memberof BooleanItem
-     */
-    required?: boolean;
-}
-
-/**
-    * @export
-    * @enum {string}
-    */
-export enum BooleanItemTypeEnum {
-    Int = 'INT',
-    Double = 'DOUBLE',
-    String = 'STRING',
-    Date = 'DATE',
-    Boolean = 'BOOLEAN',
-    Form = 'FORM',
-    File = 'FILE',
-    Select = 'SELECT',
-    User = 'USER'
-}
-
-/**
- * 
- * @export
- * @interface Check
- */
-export interface Check {
-    /**
-     * 
-     * @type {ItemGroup}
-     * @memberof Check
-     */
-    require?: ItemGroup;
-    /**
-     * 
-     * @type {{ [key: string]: string; }}
-     * @memberof Check
-     */
-    acl?: { [key: string]: string; };
-}
-/**
- * 
- * @export
- * @interface Context
- */
-export interface Context {
-    /**
-     * 
-     * @type {Event}
-     * @memberof Context
-     */
-    event?: Event;
-    /**
-     * 
-     * @type {{ [key: string]: object; }}
-     * @memberof Context
-     */
-    outputs?: { [key: string]: object; };
-}
-/**
- * 
- * @export
- * @interface DateItem
- */
-export interface DateItem {
-    /**
-     * 
-     * @type {string}
-     * @memberof DateItem
-     */
-    name?: string;
-    /**
-     * 
-     * @type {string}
-     * @memberof DateItem
-     */
-    label?: string;
-    /**
-     * 
-     * @type {string}
-     * @memberof DateItem
-     */
-    description?: string;
-    /**
-     * 
-     * @type {string}
-     * @memberof DateItem
-     */
-    type?: DateItemTypeEnum;
-    /**
-     * 
-     * @type {boolean}
-     * @memberof DateItem
-     */
-    array?: boolean;
-    /**
-     * 
-     * @type {boolean}
-     * @memberof DateItem
-     */
-    required?: boolean;
-    /**
-     * 
-     * @type {RangeableInstant}
-     * @memberof DateItem
-     */
-    dateRange?: RangeableInstant;
-}
-
-/**
-    * @export
-    * @enum {string}
-    */
-export enum DateItemTypeEnum {
-    Int = 'INT',
-    Double = 'DOUBLE',
-    String = 'STRING',
-    Date = 'DATE',
-    Boolean = 'BOOLEAN',
-    Form = 'FORM',
-    File = 'FILE',
-    Select = 'SELECT',
-    User = 'USER'
-}
-
-/**
- * 
- * @export
- * @interface DoubleItem
- */
-export interface DoubleItem {
-    /**
-     * 
-     * @type {string}
-     * @memberof DoubleItem
-     */
-    name?: string;
-    /**
-     * 
-     * @type {string}
-     * @memberof DoubleItem
-     */
-    label?: string;
-    /**
-     * 
-     * @type {string}
-     * @memberof DoubleItem
-     */
-    description?: string;
-    /**
-     * 
-     * @type {string}
-     * @memberof DoubleItem
-     */
-    type?: DoubleItemTypeEnum;
-    /**
-     * 
-     * @type {boolean}
-     * @memberof DoubleItem
-     */
-    array?: boolean;
-    /**
-     * 
-     * @type {boolean}
-     * @memberof DoubleItem
-     */
-    required?: boolean;
-    /**
-     * 
-     * @type {RangeableDouble}
-     * @memberof DoubleItem
-     */
-    doubleRange?: RangeableDouble;
-}
-
-/**
-    * @export
-    * @enum {string}
-    */
-export enum DoubleItemTypeEnum {
-    Int = 'INT',
-    Double = 'DOUBLE',
-    String = 'STRING',
-    Date = 'DATE',
-    Boolean = 'BOOLEAN',
-    Form = 'FORM',
-    File = 'FILE',
-    Select = 'SELECT',
-    User = 'USER'
-}
-
-/**
- * 
- * @export
- * @interface Event
- */
-export interface Event {
-    /**
-     * 
-     * @type {string}
-     * @memberof Event
+     * @memberof InstanceError
      */
     type?: string;
+}
+/**
+ * 
+ * @export
+ * @interface InstanceObject
+ */
+export interface InstanceObject {
     /**
      * 
      * @type {string}
-     * @memberof Event
+     * @memberof InstanceObject
      */
-    key?: string;
+    name?: string;
+    /**
+     * 
+     * @type {number}
+     * @memberof InstanceObject
+     */
+    version?: number;
+    /**
+     * 
+     * @type {Array<object>}
+     * @memberof InstanceObject
+     */
+    events?: Array<object>;
+    /**
+     * 
+     * @type {string}
+     * @memberof InstanceObject
+     */
+    clientId?: string;
+    /**
+     * 
+     * @type {number}
+     * @memberof InstanceObject
+     */
+    id?: number;
+    /**
+     * 
+     * @type {string}
+     * @memberof InstanceObject
+     */
+    elementType?: string;
+    /**
+     * 
+     * @type {InstanceError}
+     * @memberof InstanceObject
+     */
+    error?: InstanceError;
+    /**
+     * 
+     * @type {string}
+     * @memberof InstanceObject
+     */
+    status?: InstanceObjectStatusEnum;
+    /**
+     * 
+     * @type {string}
+     * @memberof InstanceObject
+     */
+    elementId?: string;
+    /**
+     * 
+     * @type {string}
+     * @memberof InstanceObject
+     */
+    updatedAt?: string;
+    /**
+     * 
+     * @type {string}
+     * @memberof InstanceObject
+     */
+    createdAt?: string;
+}
+
+/**
+    * @export
+    * @enum {string}
+    */
+export enum InstanceObjectStatusEnum {
+    Active = 'ACTIVE',
+    Canceled = 'CANCELED',
+    Completed = 'COMPLETED',
+    Incident = 'INCIDENT',
+    Resolved = 'RESOLVED'
+}
+
+/**
+ * 
+ * @export
+ * @interface ProcessObject
+ */
+export interface ProcessObject {
+    /**
+     * 
+     * @type {string}
+     * @memberof ProcessObject
+     */
+    name?: string;
+    /**
+     * 
+     * @type {number}
+     * @memberof ProcessObject
+     */
+    id?: number;
+    /**
+     * 
+     * @type {string}
+     * @memberof ProcessObject
+     */
+    owner?: string;
+    /**
+     * 
+     * @type {number}
+     * @memberof ProcessObject
+     */
+    version?: number;
     /**
      * 
      * @type {object}
-     * @memberof Event
+     * @memberof ProcessObject
      */
     data?: object;
-}
-/**
- * 
- * @export
- * @interface EventSource
- */
-export interface EventSource {
     /**
      * 
      * @type {string}
-     * @memberof EventSource
-     */
-    eventType?: string;
-    /**
-     * 
-     * @type {string}
-     * @memberof EventSource
-     */
-    description?: string;
-    /**
-     * 
-     * @type {string}
-     * @memberof EventSource
-     */
-    title?: string;
-}
-/**
- * 
- * @export
- * @interface FileItem
- */
-export interface FileItem {
-    /**
-     * 
-     * @type {string}
-     * @memberof FileItem
-     */
-    name?: string;
-    /**
-     * 
-     * @type {string}
-     * @memberof FileItem
-     */
-    label?: string;
-    /**
-     * 
-     * @type {string}
-     * @memberof FileItem
-     */
-    description?: string;
-    /**
-     * 
-     * @type {string}
-     * @memberof FileItem
-     */
-    type?: FileItemTypeEnum;
-    /**
-     * 
-     * @type {boolean}
-     * @memberof FileItem
-     */
-    array?: boolean;
-    /**
-     * 
-     * @type {boolean}
-     * @memberof FileItem
-     */
-    required?: boolean;
-    /**
-     * 
-     * @type {string}
-     * @memberof FileItem
-     */
-    mime?: string;
-}
-
-/**
-    * @export
-    * @enum {string}
-    */
-export enum FileItemTypeEnum {
-    Int = 'INT',
-    Double = 'DOUBLE',
-    String = 'STRING',
-    Date = 'DATE',
-    Boolean = 'BOOLEAN',
-    Form = 'FORM',
-    File = 'FILE',
-    Select = 'SELECT',
-    User = 'USER'
-}
-
-/**
- * 
- * @export
- * @interface FormItem
- */
-export interface FormItem {
-    /**
-     * 
-     * @type {string}
-     * @memberof FormItem
-     */
-    name?: string;
-    /**
-     * 
-     * @type {string}
-     * @memberof FormItem
-     */
-    label?: string;
-    /**
-     * 
-     * @type {string}
-     * @memberof FormItem
-     */
-    description?: string;
-    /**
-     * 
-     * @type {string}
-     * @memberof FormItem
-     */
-    type?: FormItemTypeEnum;
-    /**
-     * 
-     * @type {boolean}
-     * @memberof FormItem
-     */
-    array?: boolean;
-    /**
-     * 
-     * @type {boolean}
-     * @memberof FormItem
-     */
-    required?: boolean;
-    /**
-     * 
-     * @type {string}
-     * @memberof FormItem
-     */
-    form?: string;
-}
-
-/**
-    * @export
-    * @enum {string}
-    */
-export enum FormItemTypeEnum {
-    Int = 'INT',
-    Double = 'DOUBLE',
-    String = 'STRING',
-    Date = 'DATE',
-    Boolean = 'BOOLEAN',
-    Form = 'FORM',
-    File = 'FILE',
-    Select = 'SELECT',
-    User = 'USER'
-}
-
-/**
- * 
- * @export
- * @interface IntItem
- */
-export interface IntItem {
-    /**
-     * 
-     * @type {string}
-     * @memberof IntItem
-     */
-    name?: string;
-    /**
-     * 
-     * @type {string}
-     * @memberof IntItem
-     */
-    label?: string;
-    /**
-     * 
-     * @type {string}
-     * @memberof IntItem
-     */
-    description?: string;
-    /**
-     * 
-     * @type {string}
-     * @memberof IntItem
-     */
-    type?: IntItemTypeEnum;
-    /**
-     * 
-     * @type {boolean}
-     * @memberof IntItem
-     */
-    array?: boolean;
-    /**
-     * 
-     * @type {boolean}
-     * @memberof IntItem
-     */
-    required?: boolean;
-    /**
-     * 
-     * @type {RangeableInteger}
-     * @memberof IntItem
-     */
-    intRange?: RangeableInteger;
-}
-
-/**
-    * @export
-    * @enum {string}
-    */
-export enum IntItemTypeEnum {
-    Int = 'INT',
-    Double = 'DOUBLE',
-    String = 'STRING',
-    Date = 'DATE',
-    Boolean = 'BOOLEAN',
-    Form = 'FORM',
-    File = 'FILE',
-    Select = 'SELECT',
-    User = 'USER'
-}
-
-/**
- * @type Item
- * @export
- */
-export type Item = BooleanItem | DateItem | DoubleItem | FileItem | FormItem | IntItem | SelectItem | StringItem | UserItem;
-
-/**
- * 
- * @export
- * @interface ItemGroup
- */
-export interface ItemGroup {
-    /**
-     * 
-     * @type {string}
-     * @memberof ItemGroup
-     */
-    name?: string;
-    /**
-     * 
-     * @type {string}
-     * @memberof ItemGroup
-     */
-    description?: string;
-    /**
-     * 
-     * @type {Array<Item>}
-     * @memberof ItemGroup
-     */
-    items?: Array<Item>;
-}
-/**
- * @type Node
- * @export
- */
-export type Node = ScriptNode | ServerlessNode;
-
-/**
- * 
- * @export
- * @interface Pipeline
- */
-export interface Pipeline {
-    /**
-     * 
-     * @type {string}
-     * @memberof Pipeline
-     */
-    id?: string;
-    /**
-     * 
-     * @type {string}
-     * @memberof Pipeline
+     * @memberof ProcessObject
      */
     clientId?: string;
     /**
      * 
-     * @type {Array<string>}
-     * @memberof Pipeline
-     */
-    owner?: Array<string>;
-    /**
-     * 
-     * @type {Array<string>}
-     * @memberof Pipeline
-     */
-    members?: Array<string>;
-    /**
-     * 
      * @type {string}
-     * @memberof Pipeline
-     */
-    title?: string;
-    /**
-     * 
-     * @type {string}
-     * @memberof Pipeline
-     */
-    description?: string;
-    /**
-     * 
-     * @type {Array<Stage>}
-     * @memberof Pipeline
-     */
-    stages?: Array<Stage>;
-    /**
-     * 
-     * @type {string}
-     * @memberof Pipeline
+     * @memberof ProcessObject
      */
     createdAt?: string;
-    /**
-     * 
-     * @type {string}
-     * @memberof Pipeline
-     */
-    updatedAt?: string;
-    /**
-     * 
-     * @type {Array<Event>}
-     * @memberof Pipeline
-     */
-    trigger?: Array<Event>;
-    /**
-     * 
-     * @type {Array<Node>}
-     * @memberof Pipeline
-     */
-    onSuccess?: Array<Node>;
-    /**
-     * 
-     * @type {Array<Node>}
-     * @memberof Pipeline
-     */
-    onFailed?: Array<Node>;
-    /**
-     * 
-     * @type {{ [key: string]: string; }}
-     * @memberof Pipeline
-     */
-    acl?: { [key: string]: string; };
-}
-/**
- * 
- * @export
- * @interface PipelineInstance
- */
-export interface PipelineInstance {
-    /**
-     * 
-     * @type {string}
-     * @memberof PipelineInstance
-     */
-    id?: string;
-    /**
-     * 
-     * @type {string}
-     * @memberof PipelineInstance
-     */
-    clientId?: string;
-    /**
-     * 
-     * @type {Array<string>}
-     * @memberof PipelineInstance
-     */
-    owner?: Array<string>;
-    /**
-     * 
-     * @type {Array<string>}
-     * @memberof PipelineInstance
-     */
-    members?: Array<string>;
-    /**
-     * 
-     * @type {string}
-     * @memberof PipelineInstance
-     */
-    title?: string;
-    /**
-     * 
-     * @type {string}
-     * @memberof PipelineInstance
-     */
-    description?: string;
-    /**
-     * 
-     * @type {Array<Stage>}
-     * @memberof PipelineInstance
-     */
-    stages?: Array<Stage>;
-    /**
-     * 
-     * @type {string}
-     * @memberof PipelineInstance
-     */
-    createdAt?: string;
-    /**
-     * 
-     * @type {string}
-     * @memberof PipelineInstance
-     */
-    updatedAt?: string;
-    /**
-     * 
-     * @type {Array<Event>}
-     * @memberof PipelineInstance
-     */
-    trigger?: Array<Event>;
-    /**
-     * 
-     * @type {Array<Node>}
-     * @memberof PipelineInstance
-     */
-    onSuccess?: Array<Node>;
-    /**
-     * 
-     * @type {Array<Node>}
-     * @memberof PipelineInstance
-     */
-    onFailed?: Array<Node>;
-    /**
-     * 
-     * @type {{ [key: string]: string; }}
-     * @memberof PipelineInstance
-     */
-    acl?: { [key: string]: string; };
-    /**
-     * 
-     * @type {string}
-     * @memberof PipelineInstance
-     */
-    pipeline?: string;
-    /**
-     * 
-     * @type {string}
-     * @memberof PipelineInstance
-     */
-    status?: PipelineInstanceStatusEnum;
-    /**
-     * 
-     * @type {number}
-     * @memberof PipelineInstance
-     */
-    current?: number;
-    /**
-     * 
-     * @type {Context}
-     * @memberof PipelineInstance
-     */
-    context?: Context;
-    /**
-     * 
-     * @type {boolean}
-     * @memberof PipelineInstance
-     */
-    done?: boolean;
-    /**
-     * 
-     * @type {string}
-     * @memberof PipelineInstance
-     */
-    currentStage?: string;
 }
 
 /**
-    * @export
-    * @enum {string}
-    */
-export enum PipelineInstanceStatusEnum {
-    Blocking = 'BLOCKING',
-    Running = 'RUNNING',
-    Success = 'SUCCESS',
-    Failed = 'FAILED'
-}
-
-/**
- * 
- * @export
- * @interface RangeableDouble
- */
-export interface RangeableDouble {
-    /**
-     * 
-     * @type {number}
-     * @memberof RangeableDouble
-     */
-    min?: number;
-    /**
-     * 
-     * @type {number}
-     * @memberof RangeableDouble
-     */
-    max?: number;
-    /**
-     * 
-     * @type {boolean}
-     * @memberof RangeableDouble
-     */
-    openInterval?: boolean;
-}
-/**
- * 
- * @export
- * @interface RangeableInstant
- */
-export interface RangeableInstant {
-    /**
-     * 
-     * @type {string}
-     * @memberof RangeableInstant
-     */
-    min?: string;
-    /**
-     * 
-     * @type {string}
-     * @memberof RangeableInstant
-     */
-    max?: string;
-    /**
-     * 
-     * @type {boolean}
-     * @memberof RangeableInstant
-     */
-    openInterval?: boolean;
-}
-/**
- * 
- * @export
- * @interface RangeableInteger
- */
-export interface RangeableInteger {
-    /**
-     * 
-     * @type {number}
-     * @memberof RangeableInteger
-     */
-    min?: number;
-    /**
-     * 
-     * @type {number}
-     * @memberof RangeableInteger
-     */
-    max?: number;
-    /**
-     * 
-     * @type {boolean}
-     * @memberof RangeableInteger
-     */
-    openInterval?: boolean;
-}
-/**
- * 
- * @export
- * @interface ScriptNode
- */
-export interface ScriptNode {
-    /**
-     * 
-     * @type {string}
-     * @memberof ScriptNode
-     */
-    title?: string;
-    /**
-     * 
-     * @type {string}
-     * @memberof ScriptNode
-     */
-    type?: ScriptNodeTypeEnum;
-    /**
-     * 
-     * @type {string}
-     * @memberof ScriptNode
-     */
-    language?: string;
-    /**
-     * 
-     * @type {string}
-     * @memberof ScriptNode
-     */
-    script?: string;
-    /**
-     * 
-     * @type {string}
-     * @memberof ScriptNode
-     */
-    main?: string;
-}
-
-/**
-    * @export
-    * @enum {string}
-    */
-export enum ScriptNodeTypeEnum {
-    Script = 'SCRIPT',
-    Serverless = 'SERVERLESS'
-}
-
-/**
- * 
- * @export
- * @interface SelectItem
- */
-export interface SelectItem {
-    /**
-     * 
-     * @type {string}
-     * @memberof SelectItem
-     */
-    name?: string;
-    /**
-     * 
-     * @type {string}
-     * @memberof SelectItem
-     */
-    label?: string;
-    /**
-     * 
-     * @type {string}
-     * @memberof SelectItem
-     */
-    description?: string;
-    /**
-     * 
-     * @type {string}
-     * @memberof SelectItem
-     */
-    type?: SelectItemTypeEnum;
-    /**
-     * 
-     * @type {boolean}
-     * @memberof SelectItem
-     */
-    array?: boolean;
-    /**
-     * 
-     * @type {boolean}
-     * @memberof SelectItem
-     */
-    required?: boolean;
-    /**
-     * 
-     * @type {RangeableInteger}
-     * @memberof SelectItem
-     */
-    selectedRange?: RangeableInteger;
-    /**
-     * 
-     * @type {{ [key: string]: string; }}
-     * @memberof SelectItem
-     */
-    options?: { [key: string]: string; };
-}
-
-/**
-    * @export
-    * @enum {string}
-    */
-export enum SelectItemTypeEnum {
-    Int = 'INT',
-    Double = 'DOUBLE',
-    String = 'STRING',
-    Date = 'DATE',
-    Boolean = 'BOOLEAN',
-    Form = 'FORM',
-    File = 'FILE',
-    Select = 'SELECT',
-    User = 'USER'
-}
-
-/**
- * 
- * @export
- * @interface ServerlessNode
- */
-export interface ServerlessNode {
-    /**
-     * 
-     * @type {string}
-     * @memberof ServerlessNode
-     */
-    title?: string;
-    /**
-     * 
-     * @type {string}
-     * @memberof ServerlessNode
-     */
-    type?: ServerlessNodeTypeEnum;
-    /**
-     * 
-     * @type {string}
-     * @memberof ServerlessNode
-     */
-    _function?: string;
-}
-
-/**
-    * @export
-    * @enum {string}
-    */
-export enum ServerlessNodeTypeEnum {
-    Script = 'SCRIPT',
-    Serverless = 'SERVERLESS'
-}
-
-/**
- * 
- * @export
- * @interface Stage
- */
-export interface Stage {
-    /**
-     * 
-     * @type {string}
-     * @memberof Stage
-     */
-    title?: string;
-    /**
-     * 
-     * @type {Array<Node>}
-     * @memberof Stage
-     */
-    before?: Array<Node>;
-    /**
-     * 
-     * @type {Array<Node>}
-     * @memberof Stage
-     */
-    when?: Array<Node>;
-    /**
-     * 
-     * @type {Array<Node>}
-     * @memberof Stage
-     */
-    after?: Array<Node>;
-    /**
-     * 
-     * @type {Check}
-     * @memberof Stage
-     */
-    check?: Check;
-}
-/**
- * 
- * @export
- * @interface StringItem
- */
-export interface StringItem {
-    /**
-     * 
-     * @type {string}
-     * @memberof StringItem
-     */
-    name?: string;
-    /**
-     * 
-     * @type {string}
-     * @memberof StringItem
-     */
-    label?: string;
-    /**
-     * 
-     * @type {string}
-     * @memberof StringItem
-     */
-    description?: string;
-    /**
-     * 
-     * @type {string}
-     * @memberof StringItem
-     */
-    type?: StringItemTypeEnum;
-    /**
-     * 
-     * @type {boolean}
-     * @memberof StringItem
-     */
-    array?: boolean;
-    /**
-     * 
-     * @type {boolean}
-     * @memberof StringItem
-     */
-    required?: boolean;
-    /**
-     * 
-     * @type {boolean}
-     * @memberof StringItem
-     */
-    multiline?: boolean;
-    /**
-     * 
-     * @type {boolean}
-     * @memberof StringItem
-     */
-    html?: boolean;
-    /**
-     * 
-     * @type {string}
-     * @memberof StringItem
-     */
-    regex?: string;
-}
-
-/**
-    * @export
-    * @enum {string}
-    */
-export enum StringItemTypeEnum {
-    Int = 'INT',
-    Double = 'DOUBLE',
-    String = 'STRING',
-    Date = 'DATE',
-    Boolean = 'BOOLEAN',
-    Form = 'FORM',
-    File = 'FILE',
-    Select = 'SELECT',
-    User = 'USER'
-}
-
-/**
- * 
- * @export
- * @interface UserItem
- */
-export interface UserItem {
-    /**
-     * 
-     * @type {string}
-     * @memberof UserItem
-     */
-    name?: string;
-    /**
-     * 
-     * @type {string}
-     * @memberof UserItem
-     */
-    label?: string;
-    /**
-     * 
-     * @type {string}
-     * @memberof UserItem
-     */
-    description?: string;
-    /**
-     * 
-     * @type {string}
-     * @memberof UserItem
-     */
-    type?: UserItemTypeEnum;
-    /**
-     * 
-     * @type {boolean}
-     * @memberof UserItem
-     */
-    array?: boolean;
-    /**
-     * 
-     * @type {boolean}
-     * @memberof UserItem
-     */
-    required?: boolean;
-}
-
-/**
-    * @export
-    * @enum {string}
-    */
-export enum UserItemTypeEnum {
-    Int = 'INT',
-    Double = 'DOUBLE',
-    String = 'STRING',
-    Date = 'DATE',
-    Boolean = 'BOOLEAN',
-    Form = 'FORM',
-    File = 'FILE',
-    Select = 'SELECT',
-    User = 'USER'
-}
-
-
-/**
- * EventApi - axios parameter creator
+ * DefaultApi - axios parameter creator
  * @export
  */
-export const EventApiAxiosParamCreator = function (configuration?: Configuration) {
+export const DefaultApiAxiosParamCreator = function (configuration?: Configuration) {
     return {
         /**
          * 
-         * @summary 获取全部事件源
+         * @summary 通过 ID 取消运行实例
+         * @param {number} id 
+         * @param {string} [cid] 
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
-        getSources1: async (options: any = {}): Promise<RequestArgs> => {
-            const localVarPath = `/v1/events/sources`;
-            // use dummy base URL string because the URL constructor only accepts absolute URLs.
-            const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL);
-            let baseOptions;
-            if (configuration) {
-                baseOptions = configuration.baseOptions;
-            }
-
-            const localVarRequestOptions = { method: 'GET', ...baseOptions, ...options};
-            const localVarHeaderParameter = {} as any;
-            const localVarQueryParameter = {} as any;
-
-            // authentication auth required
-            // oauth required
-            await setOAuthToObject(localVarHeaderParameter, "auth", [], configuration)
-
-
-    
-            setSearchParams(localVarUrlObj, localVarQueryParameter, options.query);
-            let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {};
-            localVarRequestOptions.headers = {...localVarHeaderParameter, ...headersFromBaseOptions, ...options.headers};
-
-            return {
-                url: toPathString(localVarUrlObj),
-                options: localVarRequestOptions,
-            };
-        },
-    }
-};
-
-/**
- * EventApi - functional programming interface
- * @export
- */
-export const EventApiFp = function(configuration?: Configuration) {
-    const localVarAxiosParamCreator = EventApiAxiosParamCreator(configuration)
-    return {
-        /**
-         * 
-         * @summary 获取全部事件源
-         * @param {*} [options] Override http request option.
-         * @throws {RequiredError}
-         */
-        async getSources1(options?: any): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<Array<EventSource>>> {
-            const localVarAxiosArgs = await localVarAxiosParamCreator.getSources1(options);
-            return createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration);
-        },
-    }
-};
-
-/**
- * EventApi - factory interface
- * @export
- */
-export const EventApiFactory = function (configuration?: Configuration, basePath?: string, axios?: AxiosInstance) {
-    const localVarFp = EventApiFp(configuration)
-    return {
-        /**
-         * 
-         * @summary 获取全部事件源
-         * @param {*} [options] Override http request option.
-         * @throws {RequiredError}
-         */
-        getSources1(options?: any): AxiosPromise<Array<EventSource>> {
-            return localVarFp.getSources1(options).then((request) => request(axios, basePath));
-        },
-    };
-};
-
-/**
- * EventApi - object-oriented interface
- * @export
- * @class EventApi
- * @extends {BaseAPI}
- */
-export class EventApi extends BaseAPI {
-    /**
-     * 
-     * @summary 获取全部事件源
-     * @param {*} [options] Override http request option.
-     * @throws {RequiredError}
-     * @memberof EventApi
-     */
-    public getSources1(options?: any) {
-        return EventApiFp(this.configuration).getSources1(options).then((request) => request(this.axios, this.basePath));
-    }
-}
-
-
-/**
- * InstanceApi - axios parameter creator
- * @export
- */
-export const InstanceApiAxiosParamCreator = function (configuration?: Configuration) {
-    return {
-        /**
-         * 
-         * @summary 确认检查点
-         * @param {string} id 
-         * @param {object} [body] 
-         * @param {*} [options] Override http request option.
-         * @throws {RequiredError}
-         */
-        confirmCheckpoint: async (id: string, body?: object, options: any = {}): Promise<RequestArgs> => {
+        cancelInstance: async (id: number, cid?: string, options: any = {}): Promise<RequestArgs> => {
             // verify required parameter 'id' is not null or undefined
-            assertParamExists('confirmCheckpoint', 'id', id)
-            const localVarPath = `/v1/instances/{id}/checkpoint`
-                .replace(`{${"id"}}`, encodeURIComponent(String(id)));
-            // use dummy base URL string because the URL constructor only accepts absolute URLs.
-            const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL);
-            let baseOptions;
-            if (configuration) {
-                baseOptions = configuration.baseOptions;
-            }
-
-            const localVarRequestOptions = { method: 'POST', ...baseOptions, ...options};
-            const localVarHeaderParameter = {} as any;
-            const localVarQueryParameter = {} as any;
-
-            // authentication auth required
-            // oauth required
-            await setOAuthToObject(localVarHeaderParameter, "auth", [], configuration)
-
-
-    
-            localVarHeaderParameter['Content-Type'] = 'application/json';
-
-            setSearchParams(localVarUrlObj, localVarQueryParameter, options.query);
-            let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {};
-            localVarRequestOptions.headers = {...localVarHeaderParameter, ...headersFromBaseOptions, ...options.headers};
-            localVarRequestOptions.data = serializeDataIfNeeded(body, localVarRequestOptions, configuration)
-
-            return {
-                url: toPathString(localVarUrlObj),
-                options: localVarRequestOptions,
-            };
-        },
-        /**
-         * 
-         * @summary 否认检查点
-         * @param {string} id 
-         * @param {object} [body] 
-         * @param {*} [options] Override http request option.
-         * @throws {RequiredError}
-         */
-        denyCheckpoint: async (id: string, body?: object, options: any = {}): Promise<RequestArgs> => {
-            // verify required parameter 'id' is not null or undefined
-            assertParamExists('denyCheckpoint', 'id', id)
-            const localVarPath = `/v1/instances/{id}/checkpoint`
+            assertParamExists('cancelInstance', 'id', id)
+            const localVarPath = `/v1/instance/{id}`
                 .replace(`{${"id"}}`, encodeURIComponent(String(id)));
             // use dummy base URL string because the URL constructor only accepts absolute URLs.
             const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL);
@@ -1337,9 +210,165 @@ export const InstanceApiAxiosParamCreator = function (configuration?: Configurat
             // oauth required
             await setOAuthToObject(localVarHeaderParameter, "auth", [], configuration)
 
+            if (cid !== undefined) {
+                localVarQueryParameter['cid'] = cid;
+            }
+
+
+    
+            setSearchParams(localVarUrlObj, localVarQueryParameter, options.query);
+            let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {};
+            localVarRequestOptions.headers = {...localVarHeaderParameter, ...headersFromBaseOptions, ...options.headers};
+
+            return {
+                url: toPathString(localVarUrlObj),
+                options: localVarRequestOptions,
+            };
+        },
+        /**
+         * 
+         * @summary 创建流程实例
+         * @param {string} name 
+         * @param {{ [key: string]: object; }} requestBody 
+         * @param {string} [cid] 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        createInstance: async (name: string, requestBody: { [key: string]: object; }, cid?: string, options: any = {}): Promise<RequestArgs> => {
+            // verify required parameter 'name' is not null or undefined
+            assertParamExists('createInstance', 'name', name)
+            // verify required parameter 'requestBody' is not null or undefined
+            assertParamExists('createInstance', 'requestBody', requestBody)
+            const localVarPath = `/v1/instance`;
+            // use dummy base URL string because the URL constructor only accepts absolute URLs.
+            const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL);
+            let baseOptions;
+            if (configuration) {
+                baseOptions = configuration.baseOptions;
+            }
+
+            const localVarRequestOptions = { method: 'POST', ...baseOptions, ...options};
+            const localVarHeaderParameter = {} as any;
+            const localVarQueryParameter = {} as any;
+
+            // authentication auth required
+            // oauth required
+            await setOAuthToObject(localVarHeaderParameter, "auth", [], configuration)
+
+            if (name !== undefined) {
+                localVarQueryParameter['name'] = name;
+            }
+
+            if (cid !== undefined) {
+                localVarQueryParameter['cid'] = cid;
+            }
+
 
     
             localVarHeaderParameter['Content-Type'] = 'application/json';
+
+            setSearchParams(localVarUrlObj, localVarQueryParameter, options.query);
+            let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {};
+            localVarRequestOptions.headers = {...localVarHeaderParameter, ...headersFromBaseOptions, ...options.headers};
+            localVarRequestOptions.data = serializeDataIfNeeded(requestBody, localVarRequestOptions, configuration)
+
+            return {
+                url: toPathString(localVarUrlObj),
+                options: localVarRequestOptions,
+            };
+        },
+        /**
+         * 
+         * @summary 发布消息
+         * @param {string} name 
+         * @param {string} key 
+         * @param {string} [cid] 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        createMessage: async (name: string, key: string, cid?: string, options: any = {}): Promise<RequestArgs> => {
+            // verify required parameter 'name' is not null or undefined
+            assertParamExists('createMessage', 'name', name)
+            // verify required parameter 'key' is not null or undefined
+            assertParamExists('createMessage', 'key', key)
+            const localVarPath = `/v1/message`;
+            // use dummy base URL string because the URL constructor only accepts absolute URLs.
+            const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL);
+            let baseOptions;
+            if (configuration) {
+                baseOptions = configuration.baseOptions;
+            }
+
+            const localVarRequestOptions = { method: 'POST', ...baseOptions, ...options};
+            const localVarHeaderParameter = {} as any;
+            const localVarQueryParameter = {} as any;
+
+            // authentication auth required
+            // oauth required
+            await setOAuthToObject(localVarHeaderParameter, "auth", [], configuration)
+
+            if (name !== undefined) {
+                localVarQueryParameter['name'] = name;
+            }
+
+            if (key !== undefined) {
+                localVarQueryParameter['key'] = key;
+            }
+
+            if (cid !== undefined) {
+                localVarQueryParameter['cid'] = cid;
+            }
+
+
+    
+            setSearchParams(localVarUrlObj, localVarQueryParameter, options.query);
+            let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {};
+            localVarRequestOptions.headers = {...localVarHeaderParameter, ...headersFromBaseOptions, ...options.headers};
+
+            return {
+                url: toPathString(localVarUrlObj),
+                options: localVarRequestOptions,
+            };
+        },
+        /**
+         * 
+         * @summary 创建流程
+         * @param {string} body 
+         * @param {string} [cid] 
+         * @param {boolean} [base64] 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        createProcess: async (body: string, cid?: string, base64?: boolean, options: any = {}): Promise<RequestArgs> => {
+            // verify required parameter 'body' is not null or undefined
+            assertParamExists('createProcess', 'body', body)
+            const localVarPath = `/v1/process`;
+            // use dummy base URL string because the URL constructor only accepts absolute URLs.
+            const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL);
+            let baseOptions;
+            if (configuration) {
+                baseOptions = configuration.baseOptions;
+            }
+
+            const localVarRequestOptions = { method: 'POST', ...baseOptions, ...options};
+            const localVarHeaderParameter = {} as any;
+            const localVarQueryParameter = {} as any;
+
+            // authentication auth required
+            // oauth required
+            await setOAuthToObject(localVarHeaderParameter, "auth", [], configuration)
+
+            if (cid !== undefined) {
+                localVarQueryParameter['cid'] = cid;
+            }
+
+            if (base64 !== undefined) {
+                localVarQueryParameter['base64'] = base64;
+            }
+
+
+    
+            localVarHeaderParameter['Content-Type'] = 'application/xml';
 
             setSearchParams(localVarUrlObj, localVarQueryParameter, options.query);
             let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {};
@@ -1353,15 +382,16 @@ export const InstanceApiAxiosParamCreator = function (configuration?: Configurat
         },
         /**
          * 
-         * @summary 获取流水线实例
-         * @param {string} id 
+         * @summary 通过 ID 获取流程实例
+         * @param {number} id 
+         * @param {string} [cid] 
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
-        getInstance: async (id: string, options: any = {}): Promise<RequestArgs> => {
+        getInstance: async (id: number, cid?: string, options: any = {}): Promise<RequestArgs> => {
             // verify required parameter 'id' is not null or undefined
             assertParamExists('getInstance', 'id', id)
-            const localVarPath = `/v1/instances/{id}`
+            const localVarPath = `/v1/instance/{id}`
                 .replace(`{${"id"}}`, encodeURIComponent(String(id)));
             // use dummy base URL string because the URL constructor only accepts absolute URLs.
             const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL);
@@ -1378,6 +408,10 @@ export const InstanceApiAxiosParamCreator = function (configuration?: Configurat
             // oauth required
             await setOAuthToObject(localVarHeaderParameter, "auth", [], configuration)
 
+            if (cid !== undefined) {
+                localVarQueryParameter['cid'] = cid;
+            }
+
 
     
             setSearchParams(localVarUrlObj, localVarQueryParameter, options.query);
@@ -1391,20 +425,18 @@ export const InstanceApiAxiosParamCreator = function (configuration?: Configurat
         },
         /**
          * 
-         * @summary 查找记录流水线实例
-         * @param {string} recordId 
-         * @param {string} eventKey 
-         * @param {string} [eventType] 
+         * @summary 查询流程实例
+         * @param {string} [name] 
+         * @param {number} [version] 
+         * @param {Set<'ACTIVE' | 'CANCELED' | 'COMPLETED' | 'INCIDENT' | 'RESOLVED'>} [status] 
+         * @param {number} [page] 
+         * @param {number} [size] 
+         * @param {string} [cid] 
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
-        getInstancesByRecord: async (recordId: string, eventKey: string, eventType?: string, options: any = {}): Promise<RequestArgs> => {
-            // verify required parameter 'recordId' is not null or undefined
-            assertParamExists('getInstancesByRecord', 'recordId', recordId)
-            // verify required parameter 'eventKey' is not null or undefined
-            assertParamExists('getInstancesByRecord', 'eventKey', eventKey)
-            const localVarPath = `/v1/record/{recordId}/instances`
-                .replace(`{${"recordId"}}`, encodeURIComponent(String(recordId)));
+        getInstances: async (name?: string, version?: number, status?: Set<'ACTIVE' | 'CANCELED' | 'COMPLETED' | 'INCIDENT' | 'RESOLVED'>, page?: number, size?: number, cid?: string, options: any = {}): Promise<RequestArgs> => {
+            const localVarPath = `/v1/instances`;
             // use dummy base URL string because the URL constructor only accepts absolute URLs.
             const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL);
             let baseOptions;
@@ -1420,12 +452,172 @@ export const InstanceApiAxiosParamCreator = function (configuration?: Configurat
             // oauth required
             await setOAuthToObject(localVarHeaderParameter, "auth", [], configuration)
 
-            if (eventKey !== undefined) {
-                localVarQueryParameter['eventKey'] = eventKey;
+            if (name !== undefined) {
+                localVarQueryParameter['name'] = name;
             }
 
-            if (eventType !== undefined) {
-                localVarQueryParameter['eventType'] = eventType;
+            if (version !== undefined) {
+                localVarQueryParameter['version'] = version;
+            }
+
+            if (status) {
+                localVarQueryParameter['status'] = Array.from(status);
+            }
+
+            if (page !== undefined) {
+                localVarQueryParameter['page'] = page;
+            }
+
+            if (size !== undefined) {
+                localVarQueryParameter['size'] = size;
+            }
+
+            if (cid !== undefined) {
+                localVarQueryParameter['cid'] = cid;
+            }
+
+
+    
+            setSearchParams(localVarUrlObj, localVarQueryParameter, options.query);
+            let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {};
+            localVarRequestOptions.headers = {...localVarHeaderParameter, ...headersFromBaseOptions, ...options.headers};
+
+            return {
+                url: toPathString(localVarUrlObj),
+                options: localVarRequestOptions,
+            };
+        },
+        /**
+         * 
+         * @summary 通过名称获取流程
+         * @param {string} name 
+         * @param {string} [cid] 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        getProcess: async (name: string, cid?: string, options: any = {}): Promise<RequestArgs> => {
+            // verify required parameter 'name' is not null or undefined
+            assertParamExists('getProcess', 'name', name)
+            const localVarPath = `/v1/process/{name}`
+                .replace(`{${"name"}}`, encodeURIComponent(String(name)));
+            // use dummy base URL string because the URL constructor only accepts absolute URLs.
+            const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL);
+            let baseOptions;
+            if (configuration) {
+                baseOptions = configuration.baseOptions;
+            }
+
+            const localVarRequestOptions = { method: 'GET', ...baseOptions, ...options};
+            const localVarHeaderParameter = {} as any;
+            const localVarQueryParameter = {} as any;
+
+            // authentication auth required
+            // oauth required
+            await setOAuthToObject(localVarHeaderParameter, "auth", [], configuration)
+
+            if (cid !== undefined) {
+                localVarQueryParameter['cid'] = cid;
+            }
+
+
+    
+            setSearchParams(localVarUrlObj, localVarQueryParameter, options.query);
+            let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {};
+            localVarRequestOptions.headers = {...localVarHeaderParameter, ...headersFromBaseOptions, ...options.headers};
+
+            return {
+                url: toPathString(localVarUrlObj),
+                options: localVarRequestOptions,
+            };
+        },
+        /**
+         * 
+         * @summary 通过名称与版本号获取流程
+         * @param {string} name 
+         * @param {number} version 
+         * @param {string} [cid] 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        getProcess1: async (name: string, version: number, cid?: string, options: any = {}): Promise<RequestArgs> => {
+            // verify required parameter 'name' is not null or undefined
+            assertParamExists('getProcess1', 'name', name)
+            // verify required parameter 'version' is not null or undefined
+            assertParamExists('getProcess1', 'version', version)
+            const localVarPath = `/v1/process/{name}/{version}`
+                .replace(`{${"name"}}`, encodeURIComponent(String(name)))
+                .replace(`{${"version"}}`, encodeURIComponent(String(version)));
+            // use dummy base URL string because the URL constructor only accepts absolute URLs.
+            const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL);
+            let baseOptions;
+            if (configuration) {
+                baseOptions = configuration.baseOptions;
+            }
+
+            const localVarRequestOptions = { method: 'GET', ...baseOptions, ...options};
+            const localVarHeaderParameter = {} as any;
+            const localVarQueryParameter = {} as any;
+
+            // authentication auth required
+            // oauth required
+            await setOAuthToObject(localVarHeaderParameter, "auth", [], configuration)
+
+            if (cid !== undefined) {
+                localVarQueryParameter['cid'] = cid;
+            }
+
+
+    
+            setSearchParams(localVarUrlObj, localVarQueryParameter, options.query);
+            let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {};
+            localVarRequestOptions.headers = {...localVarHeaderParameter, ...headersFromBaseOptions, ...options.headers};
+
+            return {
+                url: toPathString(localVarUrlObj),
+                options: localVarRequestOptions,
+            };
+        },
+        /**
+         * 
+         * @summary 获取流程列表
+         * @param {string} [q] 
+         * @param {string} [cid] 
+         * @param {number} [page] 
+         * @param {number} [size] 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        getProcesses: async (q?: string, cid?: string, page?: number, size?: number, options: any = {}): Promise<RequestArgs> => {
+            const localVarPath = `/v1/processes`;
+            // use dummy base URL string because the URL constructor only accepts absolute URLs.
+            const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL);
+            let baseOptions;
+            if (configuration) {
+                baseOptions = configuration.baseOptions;
+            }
+
+            const localVarRequestOptions = { method: 'GET', ...baseOptions, ...options};
+            const localVarHeaderParameter = {} as any;
+            const localVarQueryParameter = {} as any;
+
+            // authentication auth required
+            // oauth required
+            await setOAuthToObject(localVarHeaderParameter, "auth", [], configuration)
+
+            if (q !== undefined) {
+                localVarQueryParameter['q'] = q;
+            }
+
+            if (cid !== undefined) {
+                localVarQueryParameter['cid'] = cid;
+            }
+
+            if (page !== undefined) {
+                localVarQueryParameter['page'] = page;
+            }
+
+            if (size !== undefined) {
+                localVarQueryParameter['size'] = size;
             }
 
 
@@ -1443,688 +635,384 @@ export const InstanceApiAxiosParamCreator = function (configuration?: Configurat
 };
 
 /**
- * InstanceApi - functional programming interface
+ * DefaultApi - functional programming interface
  * @export
  */
-export const InstanceApiFp = function(configuration?: Configuration) {
-    const localVarAxiosParamCreator = InstanceApiAxiosParamCreator(configuration)
+export const DefaultApiFp = function(configuration?: Configuration) {
+    const localVarAxiosParamCreator = DefaultApiAxiosParamCreator(configuration)
     return {
         /**
          * 
-         * @summary 确认检查点
-         * @param {string} id 
-         * @param {object} [body] 
+         * @summary 通过 ID 取消运行实例
+         * @param {number} id 
+         * @param {string} [cid] 
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
-        async confirmCheckpoint(id: string, body?: object, options?: any): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<void>> {
-            const localVarAxiosArgs = await localVarAxiosParamCreator.confirmCheckpoint(id, body, options);
+        async cancelInstance(id: number, cid?: string, options?: any): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<void>> {
+            const localVarAxiosArgs = await localVarAxiosParamCreator.cancelInstance(id, cid, options);
             return createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration);
         },
         /**
          * 
-         * @summary 否认检查点
-         * @param {string} id 
-         * @param {object} [body] 
+         * @summary 创建流程实例
+         * @param {string} name 
+         * @param {{ [key: string]: object; }} requestBody 
+         * @param {string} [cid] 
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
-        async denyCheckpoint(id: string, body?: object, options?: any): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<void>> {
-            const localVarAxiosArgs = await localVarAxiosParamCreator.denyCheckpoint(id, body, options);
+        async createInstance(name: string, requestBody: { [key: string]: object; }, cid?: string, options?: any): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<InstanceObject>> {
+            const localVarAxiosArgs = await localVarAxiosParamCreator.createInstance(name, requestBody, cid, options);
             return createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration);
         },
         /**
          * 
-         * @summary 获取流水线实例
-         * @param {string} id 
+         * @summary 发布消息
+         * @param {string} name 
+         * @param {string} key 
+         * @param {string} [cid] 
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
-        async getInstance(id: string, options?: any): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<PipelineInstance>> {
-            const localVarAxiosArgs = await localVarAxiosParamCreator.getInstance(id, options);
+        async createMessage(name: string, key: string, cid?: string, options?: any): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<void>> {
+            const localVarAxiosArgs = await localVarAxiosParamCreator.createMessage(name, key, cid, options);
             return createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration);
         },
         /**
          * 
-         * @summary 查找记录流水线实例
-         * @param {string} recordId 
-         * @param {string} eventKey 
-         * @param {string} [eventType] 
+         * @summary 创建流程
+         * @param {string} body 
+         * @param {string} [cid] 
+         * @param {boolean} [base64] 
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
-        async getInstancesByRecord(recordId: string, eventKey: string, eventType?: string, options?: any): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<Array<PipelineInstance>>> {
-            const localVarAxiosArgs = await localVarAxiosParamCreator.getInstancesByRecord(recordId, eventKey, eventType, options);
+        async createProcess(body: string, cid?: string, base64?: boolean, options?: any): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<void>> {
+            const localVarAxiosArgs = await localVarAxiosParamCreator.createProcess(body, cid, base64, options);
+            return createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration);
+        },
+        /**
+         * 
+         * @summary 通过 ID 获取流程实例
+         * @param {number} id 
+         * @param {string} [cid] 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        async getInstance(id: number, cid?: string, options?: any): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<InstanceObject>> {
+            const localVarAxiosArgs = await localVarAxiosParamCreator.getInstance(id, cid, options);
+            return createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration);
+        },
+        /**
+         * 
+         * @summary 查询流程实例
+         * @param {string} [name] 
+         * @param {number} [version] 
+         * @param {Set<'ACTIVE' | 'CANCELED' | 'COMPLETED' | 'INCIDENT' | 'RESOLVED'>} [status] 
+         * @param {number} [page] 
+         * @param {number} [size] 
+         * @param {string} [cid] 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        async getInstances(name?: string, version?: number, status?: Set<'ACTIVE' | 'CANCELED' | 'COMPLETED' | 'INCIDENT' | 'RESOLVED'>, page?: number, size?: number, cid?: string, options?: any): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<Array<InstanceObject>>> {
+            const localVarAxiosArgs = await localVarAxiosParamCreator.getInstances(name, version, status, page, size, cid, options);
+            return createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration);
+        },
+        /**
+         * 
+         * @summary 通过名称获取流程
+         * @param {string} name 
+         * @param {string} [cid] 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        async getProcess(name: string, cid?: string, options?: any): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<ProcessObject>> {
+            const localVarAxiosArgs = await localVarAxiosParamCreator.getProcess(name, cid, options);
+            return createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration);
+        },
+        /**
+         * 
+         * @summary 通过名称与版本号获取流程
+         * @param {string} name 
+         * @param {number} version 
+         * @param {string} [cid] 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        async getProcess1(name: string, version: number, cid?: string, options?: any): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<ProcessObject>> {
+            const localVarAxiosArgs = await localVarAxiosParamCreator.getProcess1(name, version, cid, options);
+            return createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration);
+        },
+        /**
+         * 
+         * @summary 获取流程列表
+         * @param {string} [q] 
+         * @param {string} [cid] 
+         * @param {number} [page] 
+         * @param {number} [size] 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        async getProcesses(q?: string, cid?: string, page?: number, size?: number, options?: any): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<Array<ProcessObject>>> {
+            const localVarAxiosArgs = await localVarAxiosParamCreator.getProcesses(q, cid, page, size, options);
             return createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration);
         },
     }
 };
 
 /**
- * InstanceApi - factory interface
+ * DefaultApi - factory interface
  * @export
  */
-export const InstanceApiFactory = function (configuration?: Configuration, basePath?: string, axios?: AxiosInstance) {
-    const localVarFp = InstanceApiFp(configuration)
+export const DefaultApiFactory = function (configuration?: Configuration, basePath?: string, axios?: AxiosInstance) {
+    const localVarFp = DefaultApiFp(configuration)
     return {
         /**
          * 
-         * @summary 确认检查点
-         * @param {string} id 
-         * @param {object} [body] 
+         * @summary 通过 ID 取消运行实例
+         * @param {number} id 
+         * @param {string} [cid] 
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
-        confirmCheckpoint(id: string, body?: object, options?: any): AxiosPromise<void> {
-            return localVarFp.confirmCheckpoint(id, body, options).then((request) => request(axios, basePath));
+        cancelInstance(id: number, cid?: string, options?: any): AxiosPromise<void> {
+            return localVarFp.cancelInstance(id, cid, options).then((request) => request(axios, basePath));
         },
         /**
          * 
-         * @summary 否认检查点
-         * @param {string} id 
-         * @param {object} [body] 
+         * @summary 创建流程实例
+         * @param {string} name 
+         * @param {{ [key: string]: object; }} requestBody 
+         * @param {string} [cid] 
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
-        denyCheckpoint(id: string, body?: object, options?: any): AxiosPromise<void> {
-            return localVarFp.denyCheckpoint(id, body, options).then((request) => request(axios, basePath));
+        createInstance(name: string, requestBody: { [key: string]: object; }, cid?: string, options?: any): AxiosPromise<InstanceObject> {
+            return localVarFp.createInstance(name, requestBody, cid, options).then((request) => request(axios, basePath));
         },
         /**
          * 
-         * @summary 获取流水线实例
-         * @param {string} id 
+         * @summary 发布消息
+         * @param {string} name 
+         * @param {string} key 
+         * @param {string} [cid] 
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
-        getInstance(id: string, options?: any): AxiosPromise<PipelineInstance> {
-            return localVarFp.getInstance(id, options).then((request) => request(axios, basePath));
+        createMessage(name: string, key: string, cid?: string, options?: any): AxiosPromise<void> {
+            return localVarFp.createMessage(name, key, cid, options).then((request) => request(axios, basePath));
         },
         /**
          * 
-         * @summary 查找记录流水线实例
-         * @param {string} recordId 
-         * @param {string} eventKey 
-         * @param {string} [eventType] 
+         * @summary 创建流程
+         * @param {string} body 
+         * @param {string} [cid] 
+         * @param {boolean} [base64] 
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
-        getInstancesByRecord(recordId: string, eventKey: string, eventType?: string, options?: any): AxiosPromise<Array<PipelineInstance>> {
-            return localVarFp.getInstancesByRecord(recordId, eventKey, eventType, options).then((request) => request(axios, basePath));
+        createProcess(body: string, cid?: string, base64?: boolean, options?: any): AxiosPromise<void> {
+            return localVarFp.createProcess(body, cid, base64, options).then((request) => request(axios, basePath));
+        },
+        /**
+         * 
+         * @summary 通过 ID 获取流程实例
+         * @param {number} id 
+         * @param {string} [cid] 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        getInstance(id: number, cid?: string, options?: any): AxiosPromise<InstanceObject> {
+            return localVarFp.getInstance(id, cid, options).then((request) => request(axios, basePath));
+        },
+        /**
+         * 
+         * @summary 查询流程实例
+         * @param {string} [name] 
+         * @param {number} [version] 
+         * @param {Set<'ACTIVE' | 'CANCELED' | 'COMPLETED' | 'INCIDENT' | 'RESOLVED'>} [status] 
+         * @param {number} [page] 
+         * @param {number} [size] 
+         * @param {string} [cid] 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        getInstances(name?: string, version?: number, status?: Set<'ACTIVE' | 'CANCELED' | 'COMPLETED' | 'INCIDENT' | 'RESOLVED'>, page?: number, size?: number, cid?: string, options?: any): AxiosPromise<Array<InstanceObject>> {
+            return localVarFp.getInstances(name, version, status, page, size, cid, options).then((request) => request(axios, basePath));
+        },
+        /**
+         * 
+         * @summary 通过名称获取流程
+         * @param {string} name 
+         * @param {string} [cid] 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        getProcess(name: string, cid?: string, options?: any): AxiosPromise<ProcessObject> {
+            return localVarFp.getProcess(name, cid, options).then((request) => request(axios, basePath));
+        },
+        /**
+         * 
+         * @summary 通过名称与版本号获取流程
+         * @param {string} name 
+         * @param {number} version 
+         * @param {string} [cid] 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        getProcess1(name: string, version: number, cid?: string, options?: any): AxiosPromise<ProcessObject> {
+            return localVarFp.getProcess1(name, version, cid, options).then((request) => request(axios, basePath));
+        },
+        /**
+         * 
+         * @summary 获取流程列表
+         * @param {string} [q] 
+         * @param {string} [cid] 
+         * @param {number} [page] 
+         * @param {number} [size] 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        getProcesses(q?: string, cid?: string, page?: number, size?: number, options?: any): AxiosPromise<Array<ProcessObject>> {
+            return localVarFp.getProcesses(q, cid, page, size, options).then((request) => request(axios, basePath));
         },
     };
 };
 
 /**
- * InstanceApi - object-oriented interface
+ * DefaultApi - object-oriented interface
  * @export
- * @class InstanceApi
+ * @class DefaultApi
  * @extends {BaseAPI}
  */
-export class InstanceApi extends BaseAPI {
+export class DefaultApi extends BaseAPI {
     /**
      * 
-     * @summary 确认检查点
-     * @param {string} id 
-     * @param {object} [body] 
+     * @summary 通过 ID 取消运行实例
+     * @param {number} id 
+     * @param {string} [cid] 
      * @param {*} [options] Override http request option.
      * @throws {RequiredError}
-     * @memberof InstanceApi
+     * @memberof DefaultApi
      */
-    public confirmCheckpoint(id: string, body?: object, options?: any) {
-        return InstanceApiFp(this.configuration).confirmCheckpoint(id, body, options).then((request) => request(this.axios, this.basePath));
-    }
-
-    /**
-     * 
-     * @summary 否认检查点
-     * @param {string} id 
-     * @param {object} [body] 
-     * @param {*} [options] Override http request option.
-     * @throws {RequiredError}
-     * @memberof InstanceApi
-     */
-    public denyCheckpoint(id: string, body?: object, options?: any) {
-        return InstanceApiFp(this.configuration).denyCheckpoint(id, body, options).then((request) => request(this.axios, this.basePath));
+    public cancelInstance(id: number, cid?: string, options?: any) {
+        return DefaultApiFp(this.configuration).cancelInstance(id, cid, options).then((request) => request(this.axios, this.basePath));
     }
 
     /**
      * 
-     * @summary 获取流水线实例
-     * @param {string} id 
+     * @summary 创建流程实例
+     * @param {string} name 
+     * @param {{ [key: string]: object; }} requestBody 
+     * @param {string} [cid] 
      * @param {*} [options] Override http request option.
      * @throws {RequiredError}
-     * @memberof InstanceApi
+     * @memberof DefaultApi
      */
-    public getInstance(id: string, options?: any) {
-        return InstanceApiFp(this.configuration).getInstance(id, options).then((request) => request(this.axios, this.basePath));
+    public createInstance(name: string, requestBody: { [key: string]: object; }, cid?: string, options?: any) {
+        return DefaultApiFp(this.configuration).createInstance(name, requestBody, cid, options).then((request) => request(this.axios, this.basePath));
     }
 
     /**
      * 
-     * @summary 查找记录流水线实例
-     * @param {string} recordId 
-     * @param {string} eventKey 
-     * @param {string} [eventType] 
+     * @summary 发布消息
+     * @param {string} name 
+     * @param {string} key 
+     * @param {string} [cid] 
      * @param {*} [options] Override http request option.
      * @throws {RequiredError}
-     * @memberof InstanceApi
+     * @memberof DefaultApi
      */
-    public getInstancesByRecord(recordId: string, eventKey: string, eventType?: string, options?: any) {
-        return InstanceApiFp(this.configuration).getInstancesByRecord(recordId, eventKey, eventType, options).then((request) => request(this.axios, this.basePath));
-    }
-}
-
-
-/**
- * PipelineApi - axios parameter creator
- * @export
- */
-export const PipelineApiAxiosParamCreator = function (configuration?: Configuration) {
-    return {
-        /**
-         * 
-         * @summary 创建流水线
-         * @param {Pipeline} pipeline 
-         * @param {*} [options] Override http request option.
-         * @throws {RequiredError}
-         */
-        createPipeline: async (pipeline: Pipeline, options: any = {}): Promise<RequestArgs> => {
-            // verify required parameter 'pipeline' is not null or undefined
-            assertParamExists('createPipeline', 'pipeline', pipeline)
-            const localVarPath = `/v1/pipelines`;
-            // use dummy base URL string because the URL constructor only accepts absolute URLs.
-            const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL);
-            let baseOptions;
-            if (configuration) {
-                baseOptions = configuration.baseOptions;
-            }
-
-            const localVarRequestOptions = { method: 'POST', ...baseOptions, ...options};
-            const localVarHeaderParameter = {} as any;
-            const localVarQueryParameter = {} as any;
-
-            // authentication auth required
-            // oauth required
-            await setOAuthToObject(localVarHeaderParameter, "auth", [], configuration)
-
-
-    
-            localVarHeaderParameter['Content-Type'] = 'application/json';
-
-            setSearchParams(localVarUrlObj, localVarQueryParameter, options.query);
-            let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {};
-            localVarRequestOptions.headers = {...localVarHeaderParameter, ...headersFromBaseOptions, ...options.headers};
-            localVarRequestOptions.data = serializeDataIfNeeded(pipeline, localVarRequestOptions, configuration)
-
-            return {
-                url: toPathString(localVarUrlObj),
-                options: localVarRequestOptions,
-            };
-        },
-        /**
-         * 
-         * @summary 删除流水线
-         * @param {string} id 
-         * @param {*} [options] Override http request option.
-         * @throws {RequiredError}
-         */
-        deletePipeline: async (id: string, options: any = {}): Promise<RequestArgs> => {
-            // verify required parameter 'id' is not null or undefined
-            assertParamExists('deletePipeline', 'id', id)
-            const localVarPath = `/v1/pipelines/{id}`
-                .replace(`{${"id"}}`, encodeURIComponent(String(id)));
-            // use dummy base URL string because the URL constructor only accepts absolute URLs.
-            const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL);
-            let baseOptions;
-            if (configuration) {
-                baseOptions = configuration.baseOptions;
-            }
-
-            const localVarRequestOptions = { method: 'DELETE', ...baseOptions, ...options};
-            const localVarHeaderParameter = {} as any;
-            const localVarQueryParameter = {} as any;
-
-            // authentication auth required
-            // oauth required
-            await setOAuthToObject(localVarHeaderParameter, "auth", [], configuration)
-
-
-    
-            setSearchParams(localVarUrlObj, localVarQueryParameter, options.query);
-            let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {};
-            localVarRequestOptions.headers = {...localVarHeaderParameter, ...headersFromBaseOptions, ...options.headers};
-
-            return {
-                url: toPathString(localVarUrlObj),
-                options: localVarRequestOptions,
-            };
-        },
-        /**
-         * 
-         * @summary 查找表单流水线
-         * @param {string} formName 
-         * @param {string} [eventType] 
-         * @param {*} [options] Override http request option.
-         * @throws {RequiredError}
-         */
-        getFormPipelines: async (formName: string, eventType?: string, options: any = {}): Promise<RequestArgs> => {
-            // verify required parameter 'formName' is not null or undefined
-            assertParamExists('getFormPipelines', 'formName', formName)
-            const localVarPath = `/v1/forms/{formName}/instances`
-                .replace(`{${"formName"}}`, encodeURIComponent(String(formName)));
-            // use dummy base URL string because the URL constructor only accepts absolute URLs.
-            const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL);
-            let baseOptions;
-            if (configuration) {
-                baseOptions = configuration.baseOptions;
-            }
-
-            const localVarRequestOptions = { method: 'GET', ...baseOptions, ...options};
-            const localVarHeaderParameter = {} as any;
-            const localVarQueryParameter = {} as any;
-
-            // authentication auth required
-            // oauth required
-            await setOAuthToObject(localVarHeaderParameter, "auth", [], configuration)
-
-            if (eventType !== undefined) {
-                localVarQueryParameter['eventType'] = eventType;
-            }
-
-
-    
-            setSearchParams(localVarUrlObj, localVarQueryParameter, options.query);
-            let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {};
-            localVarRequestOptions.headers = {...localVarHeaderParameter, ...headersFromBaseOptions, ...options.headers};
-
-            return {
-                url: toPathString(localVarUrlObj),
-                options: localVarRequestOptions,
-            };
-        },
-        /**
-         * 
-         * @summary 获取流水线
-         * @param {string} id 
-         * @param {*} [options] Override http request option.
-         * @throws {RequiredError}
-         */
-        getPipeline: async (id: string, options: any = {}): Promise<RequestArgs> => {
-            // verify required parameter 'id' is not null or undefined
-            assertParamExists('getPipeline', 'id', id)
-            const localVarPath = `/v1/pipelines/{id}`
-                .replace(`{${"id"}}`, encodeURIComponent(String(id)));
-            // use dummy base URL string because the URL constructor only accepts absolute URLs.
-            const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL);
-            let baseOptions;
-            if (configuration) {
-                baseOptions = configuration.baseOptions;
-            }
-
-            const localVarRequestOptions = { method: 'GET', ...baseOptions, ...options};
-            const localVarHeaderParameter = {} as any;
-            const localVarQueryParameter = {} as any;
-
-            // authentication auth required
-            // oauth required
-            await setOAuthToObject(localVarHeaderParameter, "auth", [], configuration)
-
-
-    
-            setSearchParams(localVarUrlObj, localVarQueryParameter, options.query);
-            let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {};
-            localVarRequestOptions.headers = {...localVarHeaderParameter, ...headersFromBaseOptions, ...options.headers};
-
-            return {
-                url: toPathString(localVarUrlObj),
-                options: localVarRequestOptions,
-            };
-        },
-        /**
-         * 
-         * @summary 更新流水线
-         * @param {string} id 
-         * @param {Pipeline} pipeline 
-         * @param {*} [options] Override http request option.
-         * @throws {RequiredError}
-         */
-        updatePipeline: async (id: string, pipeline: Pipeline, options: any = {}): Promise<RequestArgs> => {
-            // verify required parameter 'id' is not null or undefined
-            assertParamExists('updatePipeline', 'id', id)
-            // verify required parameter 'pipeline' is not null or undefined
-            assertParamExists('updatePipeline', 'pipeline', pipeline)
-            const localVarPath = `/v1/pipelines/{id}`
-                .replace(`{${"id"}}`, encodeURIComponent(String(id)));
-            // use dummy base URL string because the URL constructor only accepts absolute URLs.
-            const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL);
-            let baseOptions;
-            if (configuration) {
-                baseOptions = configuration.baseOptions;
-            }
-
-            const localVarRequestOptions = { method: 'PUT', ...baseOptions, ...options};
-            const localVarHeaderParameter = {} as any;
-            const localVarQueryParameter = {} as any;
-
-            // authentication auth required
-            // oauth required
-            await setOAuthToObject(localVarHeaderParameter, "auth", [], configuration)
-
-
-    
-            localVarHeaderParameter['Content-Type'] = 'application/json';
-
-            setSearchParams(localVarUrlObj, localVarQueryParameter, options.query);
-            let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {};
-            localVarRequestOptions.headers = {...localVarHeaderParameter, ...headersFromBaseOptions, ...options.headers};
-            localVarRequestOptions.data = serializeDataIfNeeded(pipeline, localVarRequestOptions, configuration)
-
-            return {
-                url: toPathString(localVarUrlObj),
-                options: localVarRequestOptions,
-            };
-        },
-    }
-};
-
-/**
- * PipelineApi - functional programming interface
- * @export
- */
-export const PipelineApiFp = function(configuration?: Configuration) {
-    const localVarAxiosParamCreator = PipelineApiAxiosParamCreator(configuration)
-    return {
-        /**
-         * 
-         * @summary 创建流水线
-         * @param {Pipeline} pipeline 
-         * @param {*} [options] Override http request option.
-         * @throws {RequiredError}
-         */
-        async createPipeline(pipeline: Pipeline, options?: any): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<Pipeline>> {
-            const localVarAxiosArgs = await localVarAxiosParamCreator.createPipeline(pipeline, options);
-            return createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration);
-        },
-        /**
-         * 
-         * @summary 删除流水线
-         * @param {string} id 
-         * @param {*} [options] Override http request option.
-         * @throws {RequiredError}
-         */
-        async deletePipeline(id: string, options?: any): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<void>> {
-            const localVarAxiosArgs = await localVarAxiosParamCreator.deletePipeline(id, options);
-            return createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration);
-        },
-        /**
-         * 
-         * @summary 查找表单流水线
-         * @param {string} formName 
-         * @param {string} [eventType] 
-         * @param {*} [options] Override http request option.
-         * @throws {RequiredError}
-         */
-        async getFormPipelines(formName: string, eventType?: string, options?: any): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<Array<Pipeline>>> {
-            const localVarAxiosArgs = await localVarAxiosParamCreator.getFormPipelines(formName, eventType, options);
-            return createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration);
-        },
-        /**
-         * 
-         * @summary 获取流水线
-         * @param {string} id 
-         * @param {*} [options] Override http request option.
-         * @throws {RequiredError}
-         */
-        async getPipeline(id: string, options?: any): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<Pipeline>> {
-            const localVarAxiosArgs = await localVarAxiosParamCreator.getPipeline(id, options);
-            return createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration);
-        },
-        /**
-         * 
-         * @summary 更新流水线
-         * @param {string} id 
-         * @param {Pipeline} pipeline 
-         * @param {*} [options] Override http request option.
-         * @throws {RequiredError}
-         */
-        async updatePipeline(id: string, pipeline: Pipeline, options?: any): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<Pipeline>> {
-            const localVarAxiosArgs = await localVarAxiosParamCreator.updatePipeline(id, pipeline, options);
-            return createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration);
-        },
-    }
-};
-
-/**
- * PipelineApi - factory interface
- * @export
- */
-export const PipelineApiFactory = function (configuration?: Configuration, basePath?: string, axios?: AxiosInstance) {
-    const localVarFp = PipelineApiFp(configuration)
-    return {
-        /**
-         * 
-         * @summary 创建流水线
-         * @param {Pipeline} pipeline 
-         * @param {*} [options] Override http request option.
-         * @throws {RequiredError}
-         */
-        createPipeline(pipeline: Pipeline, options?: any): AxiosPromise<Pipeline> {
-            return localVarFp.createPipeline(pipeline, options).then((request) => request(axios, basePath));
-        },
-        /**
-         * 
-         * @summary 删除流水线
-         * @param {string} id 
-         * @param {*} [options] Override http request option.
-         * @throws {RequiredError}
-         */
-        deletePipeline(id: string, options?: any): AxiosPromise<void> {
-            return localVarFp.deletePipeline(id, options).then((request) => request(axios, basePath));
-        },
-        /**
-         * 
-         * @summary 查找表单流水线
-         * @param {string} formName 
-         * @param {string} [eventType] 
-         * @param {*} [options] Override http request option.
-         * @throws {RequiredError}
-         */
-        getFormPipelines(formName: string, eventType?: string, options?: any): AxiosPromise<Array<Pipeline>> {
-            return localVarFp.getFormPipelines(formName, eventType, options).then((request) => request(axios, basePath));
-        },
-        /**
-         * 
-         * @summary 获取流水线
-         * @param {string} id 
-         * @param {*} [options] Override http request option.
-         * @throws {RequiredError}
-         */
-        getPipeline(id: string, options?: any): AxiosPromise<Pipeline> {
-            return localVarFp.getPipeline(id, options).then((request) => request(axios, basePath));
-        },
-        /**
-         * 
-         * @summary 更新流水线
-         * @param {string} id 
-         * @param {Pipeline} pipeline 
-         * @param {*} [options] Override http request option.
-         * @throws {RequiredError}
-         */
-        updatePipeline(id: string, pipeline: Pipeline, options?: any): AxiosPromise<Pipeline> {
-            return localVarFp.updatePipeline(id, pipeline, options).then((request) => request(axios, basePath));
-        },
-    };
-};
-
-/**
- * PipelineApi - object-oriented interface
- * @export
- * @class PipelineApi
- * @extends {BaseAPI}
- */
-export class PipelineApi extends BaseAPI {
-    /**
-     * 
-     * @summary 创建流水线
-     * @param {Pipeline} pipeline 
-     * @param {*} [options] Override http request option.
-     * @throws {RequiredError}
-     * @memberof PipelineApi
-     */
-    public createPipeline(pipeline: Pipeline, options?: any) {
-        return PipelineApiFp(this.configuration).createPipeline(pipeline, options).then((request) => request(this.axios, this.basePath));
+    public createMessage(name: string, key: string, cid?: string, options?: any) {
+        return DefaultApiFp(this.configuration).createMessage(name, key, cid, options).then((request) => request(this.axios, this.basePath));
     }
 
     /**
      * 
-     * @summary 删除流水线
-     * @param {string} id 
+     * @summary 创建流程
+     * @param {string} body 
+     * @param {string} [cid] 
+     * @param {boolean} [base64] 
      * @param {*} [options] Override http request option.
      * @throws {RequiredError}
-     * @memberof PipelineApi
+     * @memberof DefaultApi
      */
-    public deletePipeline(id: string, options?: any) {
-        return PipelineApiFp(this.configuration).deletePipeline(id, options).then((request) => request(this.axios, this.basePath));
+    public createProcess(body: string, cid?: string, base64?: boolean, options?: any) {
+        return DefaultApiFp(this.configuration).createProcess(body, cid, base64, options).then((request) => request(this.axios, this.basePath));
     }
 
     /**
      * 
-     * @summary 查找表单流水线
-     * @param {string} formName 
-     * @param {string} [eventType] 
+     * @summary 通过 ID 获取流程实例
+     * @param {number} id 
+     * @param {string} [cid] 
      * @param {*} [options] Override http request option.
      * @throws {RequiredError}
-     * @memberof PipelineApi
+     * @memberof DefaultApi
      */
-    public getFormPipelines(formName: string, eventType?: string, options?: any) {
-        return PipelineApiFp(this.configuration).getFormPipelines(formName, eventType, options).then((request) => request(this.axios, this.basePath));
+    public getInstance(id: number, cid?: string, options?: any) {
+        return DefaultApiFp(this.configuration).getInstance(id, cid, options).then((request) => request(this.axios, this.basePath));
     }
 
     /**
      * 
-     * @summary 获取流水线
-     * @param {string} id 
+     * @summary 查询流程实例
+     * @param {string} [name] 
+     * @param {number} [version] 
+     * @param {Set<'ACTIVE' | 'CANCELED' | 'COMPLETED' | 'INCIDENT' | 'RESOLVED'>} [status] 
+     * @param {number} [page] 
+     * @param {number} [size] 
+     * @param {string} [cid] 
      * @param {*} [options] Override http request option.
      * @throws {RequiredError}
-     * @memberof PipelineApi
+     * @memberof DefaultApi
      */
-    public getPipeline(id: string, options?: any) {
-        return PipelineApiFp(this.configuration).getPipeline(id, options).then((request) => request(this.axios, this.basePath));
+    public getInstances(name?: string, version?: number, status?: Set<'ACTIVE' | 'CANCELED' | 'COMPLETED' | 'INCIDENT' | 'RESOLVED'>, page?: number, size?: number, cid?: string, options?: any) {
+        return DefaultApiFp(this.configuration).getInstances(name, version, status, page, size, cid, options).then((request) => request(this.axios, this.basePath));
     }
 
     /**
      * 
-     * @summary 更新流水线
-     * @param {string} id 
-     * @param {Pipeline} pipeline 
+     * @summary 通过名称获取流程
+     * @param {string} name 
+     * @param {string} [cid] 
      * @param {*} [options] Override http request option.
      * @throws {RequiredError}
-     * @memberof PipelineApi
+     * @memberof DefaultApi
      */
-    public updatePipeline(id: string, pipeline: Pipeline, options?: any) {
-        return PipelineApiFp(this.configuration).updatePipeline(id, pipeline, options).then((request) => request(this.axios, this.basePath));
+    public getProcess(name: string, cid?: string, options?: any) {
+        return DefaultApiFp(this.configuration).getProcess(name, cid, options).then((request) => request(this.axios, this.basePath));
     }
-}
 
-
-/**
- * ServerlessApi - axios parameter creator
- * @export
- */
-export const ServerlessApiAxiosParamCreator = function (configuration?: Configuration) {
-    return {
-        /**
-         * 
-         * @summary 获取全部函数
-         * @param {*} [options] Override http request option.
-         * @throws {RequiredError}
-         */
-        getSources: async (options: any = {}): Promise<RequestArgs> => {
-            const localVarPath = `/v1/serverless/functions`;
-            // use dummy base URL string because the URL constructor only accepts absolute URLs.
-            const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL);
-            let baseOptions;
-            if (configuration) {
-                baseOptions = configuration.baseOptions;
-            }
-
-            const localVarRequestOptions = { method: 'GET', ...baseOptions, ...options};
-            const localVarHeaderParameter = {} as any;
-            const localVarQueryParameter = {} as any;
-
-            // authentication auth required
-            // oauth required
-            await setOAuthToObject(localVarHeaderParameter, "auth", [], configuration)
-
-
-    
-            setSearchParams(localVarUrlObj, localVarQueryParameter, options.query);
-            let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {};
-            localVarRequestOptions.headers = {...localVarHeaderParameter, ...headersFromBaseOptions, ...options.headers};
-
-            return {
-                url: toPathString(localVarUrlObj),
-                options: localVarRequestOptions,
-            };
-        },
-    }
-};
-
-/**
- * ServerlessApi - functional programming interface
- * @export
- */
-export const ServerlessApiFp = function(configuration?: Configuration) {
-    const localVarAxiosParamCreator = ServerlessApiAxiosParamCreator(configuration)
-    return {
-        /**
-         * 
-         * @summary 获取全部函数
-         * @param {*} [options] Override http request option.
-         * @throws {RequiredError}
-         */
-        async getSources(options?: any): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<Array<string>>> {
-            const localVarAxiosArgs = await localVarAxiosParamCreator.getSources(options);
-            return createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration);
-        },
-    }
-};
-
-/**
- * ServerlessApi - factory interface
- * @export
- */
-export const ServerlessApiFactory = function (configuration?: Configuration, basePath?: string, axios?: AxiosInstance) {
-    const localVarFp = ServerlessApiFp(configuration)
-    return {
-        /**
-         * 
-         * @summary 获取全部函数
-         * @param {*} [options] Override http request option.
-         * @throws {RequiredError}
-         */
-        getSources(options?: any): AxiosPromise<Array<string>> {
-            return localVarFp.getSources(options).then((request) => request(axios, basePath));
-        },
-    };
-};
-
-/**
- * ServerlessApi - object-oriented interface
- * @export
- * @class ServerlessApi
- * @extends {BaseAPI}
- */
-export class ServerlessApi extends BaseAPI {
     /**
      * 
-     * @summary 获取全部函数
+     * @summary 通过名称与版本号获取流程
+     * @param {string} name 
+     * @param {number} version 
+     * @param {string} [cid] 
      * @param {*} [options] Override http request option.
      * @throws {RequiredError}
-     * @memberof ServerlessApi
+     * @memberof DefaultApi
      */
-    public getSources(options?: any) {
-        return ServerlessApiFp(this.configuration).getSources(options).then((request) => request(this.axios, this.basePath));
+    public getProcess1(name: string, version: number, cid?: string, options?: any) {
+        return DefaultApiFp(this.configuration).getProcess1(name, version, cid, options).then((request) => request(this.axios, this.basePath));
+    }
+
+    /**
+     * 
+     * @summary 获取流程列表
+     * @param {string} [q] 
+     * @param {string} [cid] 
+     * @param {number} [page] 
+     * @param {number} [size] 
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     * @memberof DefaultApi
+     */
+    public getProcesses(q?: string, cid?: string, page?: number, size?: number, options?: any) {
+        return DefaultApiFp(this.configuration).getProcesses(q, cid, page, size, options).then((request) => request(this.axios, this.basePath));
     }
 }
 

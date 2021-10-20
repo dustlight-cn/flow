@@ -1,0 +1,13 @@
+{
+  "name": "@plus/flow-client-axios-js",
+  "version": "0.1.0-alpha",
+  "description": "Client SDK for Flow-Service",
+  "main": "index.ts",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "dependencies": {
+    "axios": "~0.21.1"
+  },
+  "author": "Hansin <hansin@goodvoice.com>"
+}

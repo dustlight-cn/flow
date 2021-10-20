@@ -21,6 +21,7 @@ import java.util.Base64;
 @RequestMapping("/v1")
 @SecurityRequirement(name = "auth")
 @Tag(name = "流程资源", description = "创建和查询流程")
+@CrossOrigin
 public class ProcessController {
 
     @Autowired
