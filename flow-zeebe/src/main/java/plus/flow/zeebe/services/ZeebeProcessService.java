@@ -18,8 +18,8 @@ import org.springframework.data.elasticsearch.core.query.NativeSearchQueryBuilde
 import org.springframework.util.StringUtils;
 import plus.flow.core.exceptions.ErrorEnum;
 import plus.flow.core.exceptions.FlowException;
-import plus.flow.core.flow.Process;
-import plus.flow.core.flow.ProcessService;
+import plus.flow.core.flow.process.Process;
+import plus.flow.core.flow.process.ProcessService;
 import plus.flow.zeebe.entities.DefaultAdapterContext;
 import plus.flow.zeebe.entities.ZeebeProcess;
 import plus.flow.zeebe.entities.ZeebeProcessEntity;

@@ -1,4 +1,4 @@
-package plus.flow.core.flow;
+package plus.flow.core.flow.message;
 
 import reactor.core.publisher.Mono;
 

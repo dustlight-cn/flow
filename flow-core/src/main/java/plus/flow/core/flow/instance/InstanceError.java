@@ -1,4 +1,4 @@
-package plus.flow.core.flow;
+package plus.flow.core.flow.instance;
 
 public interface InstanceError {
 

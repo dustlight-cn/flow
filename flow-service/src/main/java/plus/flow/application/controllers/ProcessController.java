@@ -9,8 +9,8 @@ import org.springframework.web.bind.annotation.*;
 import plus.auth.client.reactive.ReactiveAuthClient;
 import plus.auth.resources.core.AuthPrincipal;
 import plus.flow.application.ClientUtils;
-import plus.flow.core.flow.Process;
-import plus.flow.core.flow.ProcessService;
+import plus.flow.core.flow.process.Process;
+import plus.flow.core.flow.process.ProcessService;
 import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
 

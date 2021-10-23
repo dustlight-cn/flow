@@ -4,7 +4,7 @@ import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
-import plus.flow.core.flow.InstanceError;
+import plus.flow.core.flow.instance.InstanceError;
 
 @Getter
 @Setter

@@ -3,7 +3,7 @@ package plus.flow.zeebe.entities;
 import lombok.AllArgsConstructor;
 import lombok.NoArgsConstructor;
 import org.springframework.util.StringUtils;
-import plus.flow.core.flow.Process;
+import plus.flow.core.flow.process.Process;
 
 import java.time.Instant;
 

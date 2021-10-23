@@ -1,4 +1,4 @@
-package plus.flow.core.flow;
+package plus.flow.core.flow.process;
 
 import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 import com.fasterxml.jackson.databind.ser.std.ToStringSerializer;
