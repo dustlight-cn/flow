@@ -1,5 +1,6 @@
 package plus.flow.zeebe.services.usertask;
 
+import io.camunda.zeebe.client.ZeebeClient;
 import lombok.Getter;
 import lombok.Setter;
 import org.elasticsearch.index.query.BoolQueryBuilder;
@@ -14,7 +15,6 @@ import org.springframework.data.elasticsearch.core.query.NativeSearchQueryBuilde
 import org.springframework.util.Assert;
 import plus.flow.core.exceptions.ErrorEnum;
 import plus.flow.core.flow.usertask.AbstractUserTaskService;
-import plus.flow.core.flow.usertask.UserTask;
 import plus.flow.core.flow.usertask.UserTaskDataValidator;
 import plus.flow.zeebe.entities.ZeebeUserTask;
 import plus.flow.zeebe.entities.ZeebeUserTaskEntity;
@@ -26,9 +26,11 @@ import java.util.Map;
 
 @Getter
 @Setter
-public class ZeebeUserTaskService extends AbstractUserTaskService implements InitializingBean {
+public class ZeebeUserTaskService extends AbstractUserTaskService<ZeebeUserTask> implements InitializingBean {
 
     private ReactiveElasticsearchOperations operations;
+
+    private ZeebeClient zeebeClient;
 
     private String index = "flow-user-task";
 
@@ -37,9 +39,11 @@ public class ZeebeUserTaskService extends AbstractUserTaskService implements Ini
     }
 
     public ZeebeUserTaskService(UserTaskDataValidator validator,
+                                ZeebeClient zeebeClient,
                                 ReactiveElasticsearchOperations operations) {
         this(validator);
         this.operations = operations;
+        this.zeebeClient = zeebeClient;
     }
 
     @Override
@@ -47,21 +51,31 @@ public class ZeebeUserTaskService extends AbstractUserTaskService implements Ini
                                     Long id,
                                     String user,
                                     Map<String, Object> data,
-                                    UserTask userTask) {
+                                    ZeebeUserTask userTask) {
+        return Mono.create(sink -> sink.onRequest(unused -> zeebeClient.newCompleteCommand(userTask.getId())
+                        .variables(data)
+                        .send()
+                        .whenComplete((completeJobResponse, throwable) -> {
+                            if (throwable != null)
+                                sink.error(ErrorEnum.UNKNOWN.details(throwable).getException());
+                            else
+                                sink.success(System.currentTimeMillis());
+                        })))
+                .flatMap((unused) -> operations.save(userTask.complete(user, data).entity(), IndexCoordinates.of(index)))
+                .then();
+    }
+
+    @Override
+    public Flux<ZeebeUserTask> getTasks(String clientId,
+                                        Collection<String> users,
+                                        Collection<String> roles,
+                                        int page,
+                                        int size) {
         return null;
     }
 
     @Override
-    public Flux<UserTask> getTasks(String clientId,
-                                   Collection<String> users,
-                                   Collection<String> roles,
-                                   int page,
-                                   int size) {
-        return null;
-    }
-
-    @Override
-    public Mono<UserTask> getTask(String clientId, Long id) {
+    public Mono<ZeebeUserTask> getTask(String clientId, Long id) {
         BoolQueryBuilder boolQueryBuilder = new BoolQueryBuilder();
         boolQueryBuilder.filter(new TermQueryBuilder("key", id))
                 .filter(new PrefixQueryBuilder("bpmnProcessId.keyword", String.format("c%s-", clientId)));
@@ -78,5 +92,6 @@ public class ZeebeUserTaskService extends AbstractUserTaskService implements Ini
     @Override
     public void afterPropertiesSet() throws Exception {
         Assert.notNull(operations, "ReactiveElasticsearchOperations must be set!");
+        Assert.notNull(zeebeClient, "ZeebeClient must be set!");
     }
 }

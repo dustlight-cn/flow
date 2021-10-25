@@ -9,15 +9,15 @@ import java.util.Map;
 /**
  * 用户任务服务
  */
-public interface UserTaskService {
+public interface UserTaskService<T extends UserTask> {
 
-    Flux<UserTask> getTasks(String clientId,
+    Flux<T> getTasks(String clientId,
                             Collection<String> users,
                             Collection<String> roles,
                             int page,
                             int size);
 
-    Mono<UserTask> getTask(String clientId, Long id);
+    Mono<T> getTask(String clientId, Long id);
 
     Mono<Void> complete(String clientId, Long id, String user, Map<String, Object> data);
 }

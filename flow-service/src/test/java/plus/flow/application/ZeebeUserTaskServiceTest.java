@@ -8,6 +8,9 @@ import org.springframework.boot.test.context.SpringBootTest;
 import plus.flow.core.flow.usertask.UserTask;
 import plus.flow.core.flow.usertask.UserTaskService;
 
+import java.util.HashMap;
+import java.util.Map;
+
 
 @SpringBootTest
 public class ZeebeUserTaskServiceTest {
@@ -19,9 +22,18 @@ public class ZeebeUserTaskServiceTest {
     ObjectMapper mapper;
 
     @Test
-    public void test() throws JsonProcessingException {
-        UserTask task = userTaskService.getTask("86c3e34e2030000", 6755399441312133L).block();
+    public void getTask() throws JsonProcessingException {
+        UserTask task = (UserTask) userTaskService.getTask("86c3e34e2030000", 6755399441316180L).block();
 
         System.out.println(mapper.writeValueAsString(task));
+    }
+
+    @Test
+    public void completeTask() throws JsonProcessingException {
+        Map<String, Object> map = new HashMap<>();
+        map.put("gg1", "boy1");
+        map.put("gg2", "boy2");
+        userTaskService.complete("86c3e34e2030000", 6755399441316180L, "ggboy", map).block();
+        getTask();
     }
 }

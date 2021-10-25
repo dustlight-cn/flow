@@ -8,8 +8,8 @@ import java.util.Map;
 public class DatacenterRecordValidator implements UserTaskDataValidator {
 
     @Override
-    public Mono<Void> verify(String form, Map<String, Object> data) {
-        return null;
+    public Mono<Boolean> verify(String form, Map<String, Object> data) {
+        return Mono.just(true);
     }
 
 }

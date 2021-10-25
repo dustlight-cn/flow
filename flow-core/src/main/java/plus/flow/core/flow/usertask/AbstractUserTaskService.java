@@ -8,7 +8,7 @@ import reactor.core.publisher.Mono;
 import java.util.Map;
 
 @AllArgsConstructor
-public abstract class AbstractUserTaskService implements UserTaskService {
+public abstract class AbstractUserTaskService<T extends UserTask> implements UserTaskService<T> {
 
     private UserTaskDataValidator validator;
 
@@ -17,16 +17,17 @@ public abstract class AbstractUserTaskService implements UserTaskService {
         return getTask(clientId, id)
                 .switchIfEmpty(Mono.error(ErrorEnum.USER_TASK_NOT_FOUND.getException()))
                 .flatMap(userTask -> validator.verify(userTask.getForm(), data)
-                        .onErrorMap(throwable -> throwable instanceof FlowException ? throwable :
-                                ErrorEnum.USER_TASK_DATA_INVALID.details(throwable).getException())
-                        .flatMap((unused) -> doComplete(clientId, id, user, data, userTask))
-                );
+                        .flatMap(flag -> flag ?
+                                doComplete(clientId, id, user, data, userTask) :
+                                Mono.error(ErrorEnum.USER_TASK_DATA_INVALID.getException())))
+                .onErrorMap(throwable -> throwable instanceof FlowException ? throwable :
+                        ErrorEnum.USER_TASK_DATA_INVALID.details(throwable).getException());
     }
 
     protected abstract Mono<Void> doComplete(String clientId,
                                              Long id,
                                              String user,
                                              Map<String, Object> data,
-                                             UserTask userTask);
+                                             T userTask);
 
 }
