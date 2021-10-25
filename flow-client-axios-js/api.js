@@ -25,7 +25,7 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.DefaultApi = exports.DefaultApiFactory = exports.DefaultApiFp = exports.DefaultApiAxiosParamCreator = exports.InstanceObjectStatusEnum = void 0;
+exports.UserTasksApi = exports.UserTasksApiFactory = exports.UserTasksApiFp = exports.UserTasksApiAxiosParamCreator = exports.ProcessesApi = exports.ProcessesApiFactory = exports.ProcessesApiFp = exports.ProcessesApiAxiosParamCreator = exports.MessagesApi = exports.MessagesApiFactory = exports.MessagesApiFp = exports.MessagesApiAxiosParamCreator = exports.InstancesApi = exports.InstancesApiFactory = exports.InstancesApiFp = exports.InstancesApiAxiosParamCreator = exports.InstanceObjectStatusEnum = void 0;
 const axios_1 = __importDefault(require("axios"));
 // Some imports not used depending on template conditions
 // @ts-ignore
@@ -45,10 +45,10 @@ var InstanceObjectStatusEnum;
     InstanceObjectStatusEnum["Resolved"] = "RESOLVED";
 })(InstanceObjectStatusEnum = exports.InstanceObjectStatusEnum || (exports.InstanceObjectStatusEnum = {}));
 /**
- * DefaultApi - axios parameter creator
+ * InstancesApi - axios parameter creator
  * @export
  */
-const DefaultApiAxiosParamCreator = function (configuration) {
+const InstancesApiAxiosParamCreator = function (configuration) {
     return {
         /**
          *
@@ -124,91 +124,6 @@ const DefaultApiAxiosParamCreator = function (configuration) {
             let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {};
             localVarRequestOptions.headers = Object.assign(Object.assign(Object.assign({}, localVarHeaderParameter), headersFromBaseOptions), options.headers);
             localVarRequestOptions.data = common_1.serializeDataIfNeeded(requestBody, localVarRequestOptions, configuration);
-            return {
-                url: common_1.toPathString(localVarUrlObj),
-                options: localVarRequestOptions,
-            };
-        }),
-        /**
-         *
-         * @summary 发布消息
-         * @param {string} name
-         * @param {string} key
-         * @param {string} [cid]
-         * @param {*} [options] Override http request option.
-         * @throws {RequiredError}
-         */
-        createMessage: (name, key, cid, options = {}) => __awaiter(this, void 0, void 0, function* () {
-            // verify required parameter 'name' is not null or undefined
-            common_1.assertParamExists('createMessage', 'name', name);
-            // verify required parameter 'key' is not null or undefined
-            common_1.assertParamExists('createMessage', 'key', key);
-            const localVarPath = `/v1/message`;
-            // use dummy base URL string because the URL constructor only accepts absolute URLs.
-            const localVarUrlObj = new URL(localVarPath, common_1.DUMMY_BASE_URL);
-            let baseOptions;
-            if (configuration) {
-                baseOptions = configuration.baseOptions;
-            }
-            const localVarRequestOptions = Object.assign(Object.assign({ method: 'POST' }, baseOptions), options);
-            const localVarHeaderParameter = {};
-            const localVarQueryParameter = {};
-            // authentication auth required
-            // oauth required
-            yield common_1.setOAuthToObject(localVarHeaderParameter, "auth", [], configuration);
-            if (name !== undefined) {
-                localVarQueryParameter['name'] = name;
-            }
-            if (key !== undefined) {
-                localVarQueryParameter['key'] = key;
-            }
-            if (cid !== undefined) {
-                localVarQueryParameter['cid'] = cid;
-            }
-            common_1.setSearchParams(localVarUrlObj, localVarQueryParameter, options.query);
-            let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {};
-            localVarRequestOptions.headers = Object.assign(Object.assign(Object.assign({}, localVarHeaderParameter), headersFromBaseOptions), options.headers);
-            return {
-                url: common_1.toPathString(localVarUrlObj),
-                options: localVarRequestOptions,
-            };
-        }),
-        /**
-         *
-         * @summary 创建流程
-         * @param {string} body
-         * @param {string} [cid]
-         * @param {boolean} [base64]
-         * @param {*} [options] Override http request option.
-         * @throws {RequiredError}
-         */
-        createProcess: (body, cid, base64, options = {}) => __awaiter(this, void 0, void 0, function* () {
-            // verify required parameter 'body' is not null or undefined
-            common_1.assertParamExists('createProcess', 'body', body);
-            const localVarPath = `/v1/process`;
-            // use dummy base URL string because the URL constructor only accepts absolute URLs.
-            const localVarUrlObj = new URL(localVarPath, common_1.DUMMY_BASE_URL);
-            let baseOptions;
-            if (configuration) {
-                baseOptions = configuration.baseOptions;
-            }
-            const localVarRequestOptions = Object.assign(Object.assign({ method: 'POST' }, baseOptions), options);
-            const localVarHeaderParameter = {};
-            const localVarQueryParameter = {};
-            // authentication auth required
-            // oauth required
-            yield common_1.setOAuthToObject(localVarHeaderParameter, "auth", [], configuration);
-            if (cid !== undefined) {
-                localVarQueryParameter['cid'] = cid;
-            }
-            if (base64 !== undefined) {
-                localVarQueryParameter['base64'] = base64;
-            }
-            localVarHeaderParameter['Content-Type'] = 'application/xml';
-            common_1.setSearchParams(localVarUrlObj, localVarQueryParameter, options.query);
-            let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {};
-            localVarRequestOptions.headers = Object.assign(Object.assign(Object.assign({}, localVarHeaderParameter), headersFromBaseOptions), options.headers);
-            localVarRequestOptions.data = common_1.serializeDataIfNeeded(body, localVarRequestOptions, configuration);
             return {
                 url: common_1.toPathString(localVarUrlObj),
                 options: localVarRequestOptions,
@@ -297,6 +212,370 @@ const DefaultApiAxiosParamCreator = function (configuration) {
             common_1.setSearchParams(localVarUrlObj, localVarQueryParameter, options.query);
             let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {};
             localVarRequestOptions.headers = Object.assign(Object.assign(Object.assign({}, localVarHeaderParameter), headersFromBaseOptions), options.headers);
+            return {
+                url: common_1.toPathString(localVarUrlObj),
+                options: localVarRequestOptions,
+            };
+        }),
+    };
+};
+exports.InstancesApiAxiosParamCreator = InstancesApiAxiosParamCreator;
+/**
+ * InstancesApi - functional programming interface
+ * @export
+ */
+const InstancesApiFp = function (configuration) {
+    const localVarAxiosParamCreator = exports.InstancesApiAxiosParamCreator(configuration);
+    return {
+        /**
+         *
+         * @summary 通过 ID 取消运行实例
+         * @param {number} id
+         * @param {string} [cid]
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        cancelInstance(id, cid, options) {
+            return __awaiter(this, void 0, void 0, function* () {
+                const localVarAxiosArgs = yield localVarAxiosParamCreator.cancelInstance(id, cid, options);
+                return common_1.createRequestFunction(localVarAxiosArgs, axios_1.default, base_1.BASE_PATH, configuration);
+            });
+        },
+        /**
+         *
+         * @summary 创建流程实例
+         * @param {string} name
+         * @param {{ [key: string]: object; }} requestBody
+         * @param {string} [cid]
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        createInstance(name, requestBody, cid, options) {
+            return __awaiter(this, void 0, void 0, function* () {
+                const localVarAxiosArgs = yield localVarAxiosParamCreator.createInstance(name, requestBody, cid, options);
+                return common_1.createRequestFunction(localVarAxiosArgs, axios_1.default, base_1.BASE_PATH, configuration);
+            });
+        },
+        /**
+         *
+         * @summary 通过 ID 获取流程实例
+         * @param {number} id
+         * @param {string} [cid]
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        getInstance(id, cid, options) {
+            return __awaiter(this, void 0, void 0, function* () {
+                const localVarAxiosArgs = yield localVarAxiosParamCreator.getInstance(id, cid, options);
+                return common_1.createRequestFunction(localVarAxiosArgs, axios_1.default, base_1.BASE_PATH, configuration);
+            });
+        },
+        /**
+         *
+         * @summary 查询流程实例
+         * @param {string} [name]
+         * @param {number} [version]
+         * @param {Set<'ACTIVE' | 'CANCELED' | 'COMPLETED' | 'INCIDENT' | 'RESOLVED'>} [status]
+         * @param {number} [page]
+         * @param {number} [size]
+         * @param {string} [cid]
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        getInstances(name, version, status, page, size, cid, options) {
+            return __awaiter(this, void 0, void 0, function* () {
+                const localVarAxiosArgs = yield localVarAxiosParamCreator.getInstances(name, version, status, page, size, cid, options);
+                return common_1.createRequestFunction(localVarAxiosArgs, axios_1.default, base_1.BASE_PATH, configuration);
+            });
+        },
+    };
+};
+exports.InstancesApiFp = InstancesApiFp;
+/**
+ * InstancesApi - factory interface
+ * @export
+ */
+const InstancesApiFactory = function (configuration, basePath, axios) {
+    const localVarFp = exports.InstancesApiFp(configuration);
+    return {
+        /**
+         *
+         * @summary 通过 ID 取消运行实例
+         * @param {number} id
+         * @param {string} [cid]
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        cancelInstance(id, cid, options) {
+            return localVarFp.cancelInstance(id, cid, options).then((request) => request(axios, basePath));
+        },
+        /**
+         *
+         * @summary 创建流程实例
+         * @param {string} name
+         * @param {{ [key: string]: object; }} requestBody
+         * @param {string} [cid]
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        createInstance(name, requestBody, cid, options) {
+            return localVarFp.createInstance(name, requestBody, cid, options).then((request) => request(axios, basePath));
+        },
+        /**
+         *
+         * @summary 通过 ID 获取流程实例
+         * @param {number} id
+         * @param {string} [cid]
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        getInstance(id, cid, options) {
+            return localVarFp.getInstance(id, cid, options).then((request) => request(axios, basePath));
+        },
+        /**
+         *
+         * @summary 查询流程实例
+         * @param {string} [name]
+         * @param {number} [version]
+         * @param {Set<'ACTIVE' | 'CANCELED' | 'COMPLETED' | 'INCIDENT' | 'RESOLVED'>} [status]
+         * @param {number} [page]
+         * @param {number} [size]
+         * @param {string} [cid]
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        getInstances(name, version, status, page, size, cid, options) {
+            return localVarFp.getInstances(name, version, status, page, size, cid, options).then((request) => request(axios, basePath));
+        },
+    };
+};
+exports.InstancesApiFactory = InstancesApiFactory;
+/**
+ * InstancesApi - object-oriented interface
+ * @export
+ * @class InstancesApi
+ * @extends {BaseAPI}
+ */
+class InstancesApi extends base_1.BaseAPI {
+    /**
+     *
+     * @summary 通过 ID 取消运行实例
+     * @param {number} id
+     * @param {string} [cid]
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     * @memberof InstancesApi
+     */
+    cancelInstance(id, cid, options) {
+        return exports.InstancesApiFp(this.configuration).cancelInstance(id, cid, options).then((request) => request(this.axios, this.basePath));
+    }
+    /**
+     *
+     * @summary 创建流程实例
+     * @param {string} name
+     * @param {{ [key: string]: object; }} requestBody
+     * @param {string} [cid]
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     * @memberof InstancesApi
+     */
+    createInstance(name, requestBody, cid, options) {
+        return exports.InstancesApiFp(this.configuration).createInstance(name, requestBody, cid, options).then((request) => request(this.axios, this.basePath));
+    }
+    /**
+     *
+     * @summary 通过 ID 获取流程实例
+     * @param {number} id
+     * @param {string} [cid]
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     * @memberof InstancesApi
+     */
+    getInstance(id, cid, options) {
+        return exports.InstancesApiFp(this.configuration).getInstance(id, cid, options).then((request) => request(this.axios, this.basePath));
+    }
+    /**
+     *
+     * @summary 查询流程实例
+     * @param {string} [name]
+     * @param {number} [version]
+     * @param {Set<'ACTIVE' | 'CANCELED' | 'COMPLETED' | 'INCIDENT' | 'RESOLVED'>} [status]
+     * @param {number} [page]
+     * @param {number} [size]
+     * @param {string} [cid]
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     * @memberof InstancesApi
+     */
+    getInstances(name, version, status, page, size, cid, options) {
+        return exports.InstancesApiFp(this.configuration).getInstances(name, version, status, page, size, cid, options).then((request) => request(this.axios, this.basePath));
+    }
+}
+exports.InstancesApi = InstancesApi;
+/**
+ * MessagesApi - axios parameter creator
+ * @export
+ */
+const MessagesApiAxiosParamCreator = function (configuration) {
+    return {
+        /**
+         *
+         * @summary 发布消息
+         * @param {string} name
+         * @param {string} key
+         * @param {string} [cid]
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        createMessage: (name, key, cid, options = {}) => __awaiter(this, void 0, void 0, function* () {
+            // verify required parameter 'name' is not null or undefined
+            common_1.assertParamExists('createMessage', 'name', name);
+            // verify required parameter 'key' is not null or undefined
+            common_1.assertParamExists('createMessage', 'key', key);
+            const localVarPath = `/v1/message`;
+            // use dummy base URL string because the URL constructor only accepts absolute URLs.
+            const localVarUrlObj = new URL(localVarPath, common_1.DUMMY_BASE_URL);
+            let baseOptions;
+            if (configuration) {
+                baseOptions = configuration.baseOptions;
+            }
+            const localVarRequestOptions = Object.assign(Object.assign({ method: 'POST' }, baseOptions), options);
+            const localVarHeaderParameter = {};
+            const localVarQueryParameter = {};
+            // authentication auth required
+            // oauth required
+            yield common_1.setOAuthToObject(localVarHeaderParameter, "auth", [], configuration);
+            if (name !== undefined) {
+                localVarQueryParameter['name'] = name;
+            }
+            if (key !== undefined) {
+                localVarQueryParameter['key'] = key;
+            }
+            if (cid !== undefined) {
+                localVarQueryParameter['cid'] = cid;
+            }
+            common_1.setSearchParams(localVarUrlObj, localVarQueryParameter, options.query);
+            let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {};
+            localVarRequestOptions.headers = Object.assign(Object.assign(Object.assign({}, localVarHeaderParameter), headersFromBaseOptions), options.headers);
+            return {
+                url: common_1.toPathString(localVarUrlObj),
+                options: localVarRequestOptions,
+            };
+        }),
+    };
+};
+exports.MessagesApiAxiosParamCreator = MessagesApiAxiosParamCreator;
+/**
+ * MessagesApi - functional programming interface
+ * @export
+ */
+const MessagesApiFp = function (configuration) {
+    const localVarAxiosParamCreator = exports.MessagesApiAxiosParamCreator(configuration);
+    return {
+        /**
+         *
+         * @summary 发布消息
+         * @param {string} name
+         * @param {string} key
+         * @param {string} [cid]
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        createMessage(name, key, cid, options) {
+            return __awaiter(this, void 0, void 0, function* () {
+                const localVarAxiosArgs = yield localVarAxiosParamCreator.createMessage(name, key, cid, options);
+                return common_1.createRequestFunction(localVarAxiosArgs, axios_1.default, base_1.BASE_PATH, configuration);
+            });
+        },
+    };
+};
+exports.MessagesApiFp = MessagesApiFp;
+/**
+ * MessagesApi - factory interface
+ * @export
+ */
+const MessagesApiFactory = function (configuration, basePath, axios) {
+    const localVarFp = exports.MessagesApiFp(configuration);
+    return {
+        /**
+         *
+         * @summary 发布消息
+         * @param {string} name
+         * @param {string} key
+         * @param {string} [cid]
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        createMessage(name, key, cid, options) {
+            return localVarFp.createMessage(name, key, cid, options).then((request) => request(axios, basePath));
+        },
+    };
+};
+exports.MessagesApiFactory = MessagesApiFactory;
+/**
+ * MessagesApi - object-oriented interface
+ * @export
+ * @class MessagesApi
+ * @extends {BaseAPI}
+ */
+class MessagesApi extends base_1.BaseAPI {
+    /**
+     *
+     * @summary 发布消息
+     * @param {string} name
+     * @param {string} key
+     * @param {string} [cid]
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     * @memberof MessagesApi
+     */
+    createMessage(name, key, cid, options) {
+        return exports.MessagesApiFp(this.configuration).createMessage(name, key, cid, options).then((request) => request(this.axios, this.basePath));
+    }
+}
+exports.MessagesApi = MessagesApi;
+/**
+ * ProcessesApi - axios parameter creator
+ * @export
+ */
+const ProcessesApiAxiosParamCreator = function (configuration) {
+    return {
+        /**
+         *
+         * @summary 创建流程
+         * @param {string} body
+         * @param {string} [cid]
+         * @param {boolean} [base64]
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        createProcess: (body, cid, base64, options = {}) => __awaiter(this, void 0, void 0, function* () {
+            // verify required parameter 'body' is not null or undefined
+            common_1.assertParamExists('createProcess', 'body', body);
+            const localVarPath = `/v1/process`;
+            // use dummy base URL string because the URL constructor only accepts absolute URLs.
+            const localVarUrlObj = new URL(localVarPath, common_1.DUMMY_BASE_URL);
+            let baseOptions;
+            if (configuration) {
+                baseOptions = configuration.baseOptions;
+            }
+            const localVarRequestOptions = Object.assign(Object.assign({ method: 'POST' }, baseOptions), options);
+            const localVarHeaderParameter = {};
+            const localVarQueryParameter = {};
+            // authentication auth required
+            // oauth required
+            yield common_1.setOAuthToObject(localVarHeaderParameter, "auth", [], configuration);
+            if (cid !== undefined) {
+                localVarQueryParameter['cid'] = cid;
+            }
+            if (base64 !== undefined) {
+                localVarQueryParameter['base64'] = base64;
+            }
+            localVarHeaderParameter['Content-Type'] = 'application/xml';
+            common_1.setSearchParams(localVarUrlObj, localVarQueryParameter, options.query);
+            let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {};
+            localVarRequestOptions.headers = Object.assign(Object.assign(Object.assign({}, localVarHeaderParameter), headersFromBaseOptions), options.headers);
+            localVarRequestOptions.data = common_1.serializeDataIfNeeded(body, localVarRequestOptions, configuration);
             return {
                 url: common_1.toPathString(localVarUrlObj),
                 options: localVarRequestOptions,
@@ -424,58 +703,14 @@ const DefaultApiAxiosParamCreator = function (configuration) {
         }),
     };
 };
-exports.DefaultApiAxiosParamCreator = DefaultApiAxiosParamCreator;
+exports.ProcessesApiAxiosParamCreator = ProcessesApiAxiosParamCreator;
 /**
- * DefaultApi - functional programming interface
+ * ProcessesApi - functional programming interface
  * @export
  */
-const DefaultApiFp = function (configuration) {
-    const localVarAxiosParamCreator = exports.DefaultApiAxiosParamCreator(configuration);
+const ProcessesApiFp = function (configuration) {
+    const localVarAxiosParamCreator = exports.ProcessesApiAxiosParamCreator(configuration);
     return {
-        /**
-         *
-         * @summary 通过 ID 取消运行实例
-         * @param {number} id
-         * @param {string} [cid]
-         * @param {*} [options] Override http request option.
-         * @throws {RequiredError}
-         */
-        cancelInstance(id, cid, options) {
-            return __awaiter(this, void 0, void 0, function* () {
-                const localVarAxiosArgs = yield localVarAxiosParamCreator.cancelInstance(id, cid, options);
-                return common_1.createRequestFunction(localVarAxiosArgs, axios_1.default, base_1.BASE_PATH, configuration);
-            });
-        },
-        /**
-         *
-         * @summary 创建流程实例
-         * @param {string} name
-         * @param {{ [key: string]: object; }} requestBody
-         * @param {string} [cid]
-         * @param {*} [options] Override http request option.
-         * @throws {RequiredError}
-         */
-        createInstance(name, requestBody, cid, options) {
-            return __awaiter(this, void 0, void 0, function* () {
-                const localVarAxiosArgs = yield localVarAxiosParamCreator.createInstance(name, requestBody, cid, options);
-                return common_1.createRequestFunction(localVarAxiosArgs, axios_1.default, base_1.BASE_PATH, configuration);
-            });
-        },
-        /**
-         *
-         * @summary 发布消息
-         * @param {string} name
-         * @param {string} key
-         * @param {string} [cid]
-         * @param {*} [options] Override http request option.
-         * @throws {RequiredError}
-         */
-        createMessage(name, key, cid, options) {
-            return __awaiter(this, void 0, void 0, function* () {
-                const localVarAxiosArgs = yield localVarAxiosParamCreator.createMessage(name, key, cid, options);
-                return common_1.createRequestFunction(localVarAxiosArgs, axios_1.default, base_1.BASE_PATH, configuration);
-            });
-        },
         /**
          *
          * @summary 创建流程
@@ -488,38 +723,6 @@ const DefaultApiFp = function (configuration) {
         createProcess(body, cid, base64, options) {
             return __awaiter(this, void 0, void 0, function* () {
                 const localVarAxiosArgs = yield localVarAxiosParamCreator.createProcess(body, cid, base64, options);
-                return common_1.createRequestFunction(localVarAxiosArgs, axios_1.default, base_1.BASE_PATH, configuration);
-            });
-        },
-        /**
-         *
-         * @summary 通过 ID 获取流程实例
-         * @param {number} id
-         * @param {string} [cid]
-         * @param {*} [options] Override http request option.
-         * @throws {RequiredError}
-         */
-        getInstance(id, cid, options) {
-            return __awaiter(this, void 0, void 0, function* () {
-                const localVarAxiosArgs = yield localVarAxiosParamCreator.getInstance(id, cid, options);
-                return common_1.createRequestFunction(localVarAxiosArgs, axios_1.default, base_1.BASE_PATH, configuration);
-            });
-        },
-        /**
-         *
-         * @summary 查询流程实例
-         * @param {string} [name]
-         * @param {number} [version]
-         * @param {Set<'ACTIVE' | 'CANCELED' | 'COMPLETED' | 'INCIDENT' | 'RESOLVED'>} [status]
-         * @param {number} [page]
-         * @param {number} [size]
-         * @param {string} [cid]
-         * @param {*} [options] Override http request option.
-         * @throws {RequiredError}
-         */
-        getInstances(name, version, status, page, size, cid, options) {
-            return __awaiter(this, void 0, void 0, function* () {
-                const localVarAxiosArgs = yield localVarAxiosParamCreator.getInstances(name, version, status, page, size, cid, options);
                 return common_1.createRequestFunction(localVarAxiosArgs, axios_1.default, base_1.BASE_PATH, configuration);
             });
         },
@@ -570,49 +773,14 @@ const DefaultApiFp = function (configuration) {
         },
     };
 };
-exports.DefaultApiFp = DefaultApiFp;
+exports.ProcessesApiFp = ProcessesApiFp;
 /**
- * DefaultApi - factory interface
+ * ProcessesApi - factory interface
  * @export
  */
-const DefaultApiFactory = function (configuration, basePath, axios) {
-    const localVarFp = exports.DefaultApiFp(configuration);
+const ProcessesApiFactory = function (configuration, basePath, axios) {
+    const localVarFp = exports.ProcessesApiFp(configuration);
     return {
-        /**
-         *
-         * @summary 通过 ID 取消运行实例
-         * @param {number} id
-         * @param {string} [cid]
-         * @param {*} [options] Override http request option.
-         * @throws {RequiredError}
-         */
-        cancelInstance(id, cid, options) {
-            return localVarFp.cancelInstance(id, cid, options).then((request) => request(axios, basePath));
-        },
-        /**
-         *
-         * @summary 创建流程实例
-         * @param {string} name
-         * @param {{ [key: string]: object; }} requestBody
-         * @param {string} [cid]
-         * @param {*} [options] Override http request option.
-         * @throws {RequiredError}
-         */
-        createInstance(name, requestBody, cid, options) {
-            return localVarFp.createInstance(name, requestBody, cid, options).then((request) => request(axios, basePath));
-        },
-        /**
-         *
-         * @summary 发布消息
-         * @param {string} name
-         * @param {string} key
-         * @param {string} [cid]
-         * @param {*} [options] Override http request option.
-         * @throws {RequiredError}
-         */
-        createMessage(name, key, cid, options) {
-            return localVarFp.createMessage(name, key, cid, options).then((request) => request(axios, basePath));
-        },
         /**
          *
          * @summary 创建流程
@@ -624,32 +792,6 @@ const DefaultApiFactory = function (configuration, basePath, axios) {
          */
         createProcess(body, cid, base64, options) {
             return localVarFp.createProcess(body, cid, base64, options).then((request) => request(axios, basePath));
-        },
-        /**
-         *
-         * @summary 通过 ID 获取流程实例
-         * @param {number} id
-         * @param {string} [cid]
-         * @param {*} [options] Override http request option.
-         * @throws {RequiredError}
-         */
-        getInstance(id, cid, options) {
-            return localVarFp.getInstance(id, cid, options).then((request) => request(axios, basePath));
-        },
-        /**
-         *
-         * @summary 查询流程实例
-         * @param {string} [name]
-         * @param {number} [version]
-         * @param {Set<'ACTIVE' | 'CANCELED' | 'COMPLETED' | 'INCIDENT' | 'RESOLVED'>} [status]
-         * @param {number} [page]
-         * @param {number} [size]
-         * @param {string} [cid]
-         * @param {*} [options] Override http request option.
-         * @throws {RequiredError}
-         */
-        getInstances(name, version, status, page, size, cid, options) {
-            return localVarFp.getInstances(name, version, status, page, size, cid, options).then((request) => request(axios, basePath));
         },
         /**
          *
@@ -689,52 +831,14 @@ const DefaultApiFactory = function (configuration, basePath, axios) {
         },
     };
 };
-exports.DefaultApiFactory = DefaultApiFactory;
+exports.ProcessesApiFactory = ProcessesApiFactory;
 /**
- * DefaultApi - object-oriented interface
+ * ProcessesApi - object-oriented interface
  * @export
- * @class DefaultApi
+ * @class ProcessesApi
  * @extends {BaseAPI}
  */
-class DefaultApi extends base_1.BaseAPI {
-    /**
-     *
-     * @summary 通过 ID 取消运行实例
-     * @param {number} id
-     * @param {string} [cid]
-     * @param {*} [options] Override http request option.
-     * @throws {RequiredError}
-     * @memberof DefaultApi
-     */
-    cancelInstance(id, cid, options) {
-        return exports.DefaultApiFp(this.configuration).cancelInstance(id, cid, options).then((request) => request(this.axios, this.basePath));
-    }
-    /**
-     *
-     * @summary 创建流程实例
-     * @param {string} name
-     * @param {{ [key: string]: object; }} requestBody
-     * @param {string} [cid]
-     * @param {*} [options] Override http request option.
-     * @throws {RequiredError}
-     * @memberof DefaultApi
-     */
-    createInstance(name, requestBody, cid, options) {
-        return exports.DefaultApiFp(this.configuration).createInstance(name, requestBody, cid, options).then((request) => request(this.axios, this.basePath));
-    }
-    /**
-     *
-     * @summary 发布消息
-     * @param {string} name
-     * @param {string} key
-     * @param {string} [cid]
-     * @param {*} [options] Override http request option.
-     * @throws {RequiredError}
-     * @memberof DefaultApi
-     */
-    createMessage(name, key, cid, options) {
-        return exports.DefaultApiFp(this.configuration).createMessage(name, key, cid, options).then((request) => request(this.axios, this.basePath));
-    }
+class ProcessesApi extends base_1.BaseAPI {
     /**
      *
      * @summary 创建流程
@@ -743,38 +847,10 @@ class DefaultApi extends base_1.BaseAPI {
      * @param {boolean} [base64]
      * @param {*} [options] Override http request option.
      * @throws {RequiredError}
-     * @memberof DefaultApi
+     * @memberof ProcessesApi
      */
     createProcess(body, cid, base64, options) {
-        return exports.DefaultApiFp(this.configuration).createProcess(body, cid, base64, options).then((request) => request(this.axios, this.basePath));
-    }
-    /**
-     *
-     * @summary 通过 ID 获取流程实例
-     * @param {number} id
-     * @param {string} [cid]
-     * @param {*} [options] Override http request option.
-     * @throws {RequiredError}
-     * @memberof DefaultApi
-     */
-    getInstance(id, cid, options) {
-        return exports.DefaultApiFp(this.configuration).getInstance(id, cid, options).then((request) => request(this.axios, this.basePath));
-    }
-    /**
-     *
-     * @summary 查询流程实例
-     * @param {string} [name]
-     * @param {number} [version]
-     * @param {Set<'ACTIVE' | 'CANCELED' | 'COMPLETED' | 'INCIDENT' | 'RESOLVED'>} [status]
-     * @param {number} [page]
-     * @param {number} [size]
-     * @param {string} [cid]
-     * @param {*} [options] Override http request option.
-     * @throws {RequiredError}
-     * @memberof DefaultApi
-     */
-    getInstances(name, version, status, page, size, cid, options) {
-        return exports.DefaultApiFp(this.configuration).getInstances(name, version, status, page, size, cid, options).then((request) => request(this.axios, this.basePath));
+        return exports.ProcessesApiFp(this.configuration).createProcess(body, cid, base64, options).then((request) => request(this.axios, this.basePath));
     }
     /**
      *
@@ -783,10 +859,10 @@ class DefaultApi extends base_1.BaseAPI {
      * @param {string} [cid]
      * @param {*} [options] Override http request option.
      * @throws {RequiredError}
-     * @memberof DefaultApi
+     * @memberof ProcessesApi
      */
     getProcess(name, cid, options) {
-        return exports.DefaultApiFp(this.configuration).getProcess(name, cid, options).then((request) => request(this.axios, this.basePath));
+        return exports.ProcessesApiFp(this.configuration).getProcess(name, cid, options).then((request) => request(this.axios, this.basePath));
     }
     /**
      *
@@ -796,10 +872,10 @@ class DefaultApi extends base_1.BaseAPI {
      * @param {string} [cid]
      * @param {*} [options] Override http request option.
      * @throws {RequiredError}
-     * @memberof DefaultApi
+     * @memberof ProcessesApi
      */
     getProcess1(name, version, cid, options) {
-        return exports.DefaultApiFp(this.configuration).getProcess1(name, version, cid, options).then((request) => request(this.axios, this.basePath));
+        return exports.ProcessesApiFp(this.configuration).getProcess1(name, version, cid, options).then((request) => request(this.axios, this.basePath));
     }
     /**
      *
@@ -810,10 +886,261 @@ class DefaultApi extends base_1.BaseAPI {
      * @param {number} [size]
      * @param {*} [options] Override http request option.
      * @throws {RequiredError}
-     * @memberof DefaultApi
+     * @memberof ProcessesApi
      */
     getProcesses(q, cid, page, size, options) {
-        return exports.DefaultApiFp(this.configuration).getProcesses(q, cid, page, size, options).then((request) => request(this.axios, this.basePath));
+        return exports.ProcessesApiFp(this.configuration).getProcesses(q, cid, page, size, options).then((request) => request(this.axios, this.basePath));
     }
 }
-exports.DefaultApi = DefaultApi;
+exports.ProcessesApi = ProcessesApi;
+/**
+ * UserTasksApi - axios parameter creator
+ * @export
+ */
+const UserTasksApiAxiosParamCreator = function (configuration) {
+    return {
+        /**
+         *
+         * @summary 完成用户任务
+         * @param {number} id
+         * @param {{ [key: string]: object; }} requestBody
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        completeUserTask: (id, requestBody, options = {}) => __awaiter(this, void 0, void 0, function* () {
+            // verify required parameter 'id' is not null or undefined
+            common_1.assertParamExists('completeUserTask', 'id', id);
+            // verify required parameter 'requestBody' is not null or undefined
+            common_1.assertParamExists('completeUserTask', 'requestBody', requestBody);
+            const localVarPath = `/v1/task/{id}/completion`
+                .replace(`{${"id"}}`, encodeURIComponent(String(id)));
+            // use dummy base URL string because the URL constructor only accepts absolute URLs.
+            const localVarUrlObj = new URL(localVarPath, common_1.DUMMY_BASE_URL);
+            let baseOptions;
+            if (configuration) {
+                baseOptions = configuration.baseOptions;
+            }
+            const localVarRequestOptions = Object.assign(Object.assign({ method: 'POST' }, baseOptions), options);
+            const localVarHeaderParameter = {};
+            const localVarQueryParameter = {};
+            // authentication auth required
+            // oauth required
+            yield common_1.setOAuthToObject(localVarHeaderParameter, "auth", [], configuration);
+            localVarHeaderParameter['Content-Type'] = 'application/json';
+            common_1.setSearchParams(localVarUrlObj, localVarQueryParameter, options.query);
+            let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {};
+            localVarRequestOptions.headers = Object.assign(Object.assign(Object.assign({}, localVarHeaderParameter), headersFromBaseOptions), options.headers);
+            localVarRequestOptions.data = common_1.serializeDataIfNeeded(requestBody, localVarRequestOptions, configuration);
+            return {
+                url: common_1.toPathString(localVarUrlObj),
+                options: localVarRequestOptions,
+            };
+        }),
+        /**
+         *
+         * @summary 获取用户任务
+         * @param {number} id
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        getUserTask: (id, options = {}) => __awaiter(this, void 0, void 0, function* () {
+            // verify required parameter 'id' is not null or undefined
+            common_1.assertParamExists('getUserTask', 'id', id);
+            const localVarPath = `/v1/task/{id}`
+                .replace(`{${"id"}}`, encodeURIComponent(String(id)));
+            // use dummy base URL string because the URL constructor only accepts absolute URLs.
+            const localVarUrlObj = new URL(localVarPath, common_1.DUMMY_BASE_URL);
+            let baseOptions;
+            if (configuration) {
+                baseOptions = configuration.baseOptions;
+            }
+            const localVarRequestOptions = Object.assign(Object.assign({ method: 'GET' }, baseOptions), options);
+            const localVarHeaderParameter = {};
+            const localVarQueryParameter = {};
+            // authentication auth required
+            // oauth required
+            yield common_1.setOAuthToObject(localVarHeaderParameter, "auth", [], configuration);
+            common_1.setSearchParams(localVarUrlObj, localVarQueryParameter, options.query);
+            let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {};
+            localVarRequestOptions.headers = Object.assign(Object.assign(Object.assign({}, localVarHeaderParameter), headersFromBaseOptions), options.headers);
+            return {
+                url: common_1.toPathString(localVarUrlObj),
+                options: localVarRequestOptions,
+            };
+        }),
+        /**
+         *
+         * @summary 获取用户任务
+         * @param {number} [page]
+         * @param {number} [size]
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        getUserTasks: (page, size, options = {}) => __awaiter(this, void 0, void 0, function* () {
+            const localVarPath = `/v1/tasks`;
+            // use dummy base URL string because the URL constructor only accepts absolute URLs.
+            const localVarUrlObj = new URL(localVarPath, common_1.DUMMY_BASE_URL);
+            let baseOptions;
+            if (configuration) {
+                baseOptions = configuration.baseOptions;
+            }
+            const localVarRequestOptions = Object.assign(Object.assign({ method: 'GET' }, baseOptions), options);
+            const localVarHeaderParameter = {};
+            const localVarQueryParameter = {};
+            // authentication auth required
+            // oauth required
+            yield common_1.setOAuthToObject(localVarHeaderParameter, "auth", [], configuration);
+            if (page !== undefined) {
+                localVarQueryParameter['page'] = page;
+            }
+            if (size !== undefined) {
+                localVarQueryParameter['size'] = size;
+            }
+            common_1.setSearchParams(localVarUrlObj, localVarQueryParameter, options.query);
+            let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {};
+            localVarRequestOptions.headers = Object.assign(Object.assign(Object.assign({}, localVarHeaderParameter), headersFromBaseOptions), options.headers);
+            return {
+                url: common_1.toPathString(localVarUrlObj),
+                options: localVarRequestOptions,
+            };
+        }),
+    };
+};
+exports.UserTasksApiAxiosParamCreator = UserTasksApiAxiosParamCreator;
+/**
+ * UserTasksApi - functional programming interface
+ * @export
+ */
+const UserTasksApiFp = function (configuration) {
+    const localVarAxiosParamCreator = exports.UserTasksApiAxiosParamCreator(configuration);
+    return {
+        /**
+         *
+         * @summary 完成用户任务
+         * @param {number} id
+         * @param {{ [key: string]: object; }} requestBody
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        completeUserTask(id, requestBody, options) {
+            return __awaiter(this, void 0, void 0, function* () {
+                const localVarAxiosArgs = yield localVarAxiosParamCreator.completeUserTask(id, requestBody, options);
+                return common_1.createRequestFunction(localVarAxiosArgs, axios_1.default, base_1.BASE_PATH, configuration);
+            });
+        },
+        /**
+         *
+         * @summary 获取用户任务
+         * @param {number} id
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        getUserTask(id, options) {
+            return __awaiter(this, void 0, void 0, function* () {
+                const localVarAxiosArgs = yield localVarAxiosParamCreator.getUserTask(id, options);
+                return common_1.createRequestFunction(localVarAxiosArgs, axios_1.default, base_1.BASE_PATH, configuration);
+            });
+        },
+        /**
+         *
+         * @summary 获取用户任务
+         * @param {number} [page]
+         * @param {number} [size]
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        getUserTasks(page, size, options) {
+            return __awaiter(this, void 0, void 0, function* () {
+                const localVarAxiosArgs = yield localVarAxiosParamCreator.getUserTasks(page, size, options);
+                return common_1.createRequestFunction(localVarAxiosArgs, axios_1.default, base_1.BASE_PATH, configuration);
+            });
+        },
+    };
+};
+exports.UserTasksApiFp = UserTasksApiFp;
+/**
+ * UserTasksApi - factory interface
+ * @export
+ */
+const UserTasksApiFactory = function (configuration, basePath, axios) {
+    const localVarFp = exports.UserTasksApiFp(configuration);
+    return {
+        /**
+         *
+         * @summary 完成用户任务
+         * @param {number} id
+         * @param {{ [key: string]: object; }} requestBody
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        completeUserTask(id, requestBody, options) {
+            return localVarFp.completeUserTask(id, requestBody, options).then((request) => request(axios, basePath));
+        },
+        /**
+         *
+         * @summary 获取用户任务
+         * @param {number} id
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        getUserTask(id, options) {
+            return localVarFp.getUserTask(id, options).then((request) => request(axios, basePath));
+        },
+        /**
+         *
+         * @summary 获取用户任务
+         * @param {number} [page]
+         * @param {number} [size]
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        getUserTasks(page, size, options) {
+            return localVarFp.getUserTasks(page, size, options).then((request) => request(axios, basePath));
+        },
+    };
+};
+exports.UserTasksApiFactory = UserTasksApiFactory;
+/**
+ * UserTasksApi - object-oriented interface
+ * @export
+ * @class UserTasksApi
+ * @extends {BaseAPI}
+ */
+class UserTasksApi extends base_1.BaseAPI {
+    /**
+     *
+     * @summary 完成用户任务
+     * @param {number} id
+     * @param {{ [key: string]: object; }} requestBody
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     * @memberof UserTasksApi
+     */
+    completeUserTask(id, requestBody, options) {
+        return exports.UserTasksApiFp(this.configuration).completeUserTask(id, requestBody, options).then((request) => request(this.axios, this.basePath));
+    }
+    /**
+     *
+     * @summary 获取用户任务
+     * @param {number} id
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     * @memberof UserTasksApi
+     */
+    getUserTask(id, options) {
+        return exports.UserTasksApiFp(this.configuration).getUserTask(id, options).then((request) => request(this.axios, this.basePath));
+    }
+    /**
+     *
+     * @summary 获取用户任务
+     * @param {number} [page]
+     * @param {number} [size]
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     * @memberof UserTasksApi
+     */
+    getUserTasks(page, size, options) {
+        return exports.UserTasksApiFp(this.configuration).getUserTasks(page, size, options).then((request) => request(this.axios, this.basePath));
+    }
+}
+exports.UserTasksApi = UserTasksApi;
