@@ -6,6 +6,7 @@ import plus.flow.core.flow.usertask.UserTask;
 import plus.flow.core.flow.usertask.UserTaskTarget;
 
 import java.time.Instant;
+import java.util.Map;
 
 @AllArgsConstructor
 @NoArgsConstructor
@@ -37,6 +38,23 @@ public class ZeebeUserTask implements UserTask {
     @Override
     public String getUser() {
         return entity == null ? null : entity.getDoneBy();
+    }
+
+    public ZeebeUserTask complete(String user, Map<String, Object> data, Instant completedAt) {
+        if (entity == null)
+            throw new NullPointerException("ZeebeUserTaskEntity is null");
+        entity.setDoneBy(user);
+        entity.setDoneAt(completedAt);
+        entity.setData(data);
+        return this;
+    }
+
+    public ZeebeUserTask complete(String user, Map<String, Object> data) {
+        return complete(user, data, Instant.now());
+    }
+
+    public ZeebeUserTaskEntity entity() {
+        return entity;
     }
 
     @Override

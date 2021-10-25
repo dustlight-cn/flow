@@ -38,6 +38,7 @@ public class ZeebeUserTaskEntity implements Cloneable {
     private DefaultUserTarget target;
     private String doneBy;
     private Instant doneAt;
+    private Map<String, Object> data;
 
     @SneakyThrows
     public static ZeebeUserTaskEntity fromJob(ActivatedJob job) {

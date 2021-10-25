@@ -20,7 +20,7 @@ import java.util.Base64;
 @RestController
 @RequestMapping("/v1")
 @SecurityRequirement(name = "auth")
-@Tag(name = "流程资源", description = "创建和查询流程")
+@Tag(name = "Processes", description = "流程资源")
 @CrossOrigin
 public class ProcessController {
 

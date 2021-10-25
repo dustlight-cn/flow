@@ -6,6 +6,6 @@ import java.util.Map;
 
 public interface UserTaskDataValidator {
 
-    Mono<Void> verify(String form, Map<String, Object> data);
+    Mono<Boolean> verify(String form, Map<String, Object> data);
 
 }
