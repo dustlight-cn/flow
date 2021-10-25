@@ -90,7 +90,7 @@ export interface InstanceObject {
      * @type {string}
      * @memberof InstanceObject
      */
-    elementId?: string;
+    createdAt?: string;
     /**
      *
      * @type {string}
@@ -102,7 +102,7 @@ export interface InstanceObject {
      * @type {string}
      * @memberof InstanceObject
      */
-    createdAt?: string;
+    elementId?: string;
 }
 /**
     * @export
@@ -165,10 +165,78 @@ export interface ProcessObject {
     createdAt?: string;
 }
 /**
- * DefaultApi - axios parameter creator
+ *
+ * @export
+ * @interface UserTask
+ */
+export interface UserTask {
+    /**
+     *
+     * @type {number}
+     * @memberof UserTask
+     */
+    id?: number;
+    /**
+     *
+     * @type {UserTaskTarget}
+     * @memberof UserTask
+     */
+    target?: UserTaskTarget;
+    /**
+     *
+     * @type {number}
+     * @memberof UserTask
+     */
+    processId?: number;
+    /**
+     *
+     * @type {string}
+     * @memberof UserTask
+     */
+    user?: string;
+    /**
+     *
+     * @type {string}
+     * @memberof UserTask
+     */
+    form?: string;
+    /**
+     *
+     * @type {string}
+     * @memberof UserTask
+     */
+    completedAt?: string;
+    /**
+     *
+     * @type {number}
+     * @memberof UserTask
+     */
+    instanceId?: number;
+}
+/**
+ *
+ * @export
+ * @interface UserTaskTarget
+ */
+export interface UserTaskTarget {
+    /**
+     *
+     * @type {Array<string>}
+     * @memberof UserTaskTarget
+     */
+    roles?: Array<string>;
+    /**
+     *
+     * @type {Array<string>}
+     * @memberof UserTaskTarget
+     */
+    users?: Array<string>;
+}
+/**
+ * InstancesApi - axios parameter creator
  * @export
  */
-export declare const DefaultApiAxiosParamCreator: (configuration?: Configuration) => {
+export declare const InstancesApiAxiosParamCreator: (configuration?: Configuration) => {
     /**
      *
      * @summary 通过 ID 取消运行实例
@@ -192,26 +260,6 @@ export declare const DefaultApiAxiosParamCreator: (configuration?: Configuration
     }, cid?: string, options?: any) => Promise<RequestArgs>;
     /**
      *
-     * @summary 发布消息
-     * @param {string} name
-     * @param {string} key
-     * @param {string} [cid]
-     * @param {*} [options] Override http request option.
-     * @throws {RequiredError}
-     */
-    createMessage: (name: string, key: string, cid?: string, options?: any) => Promise<RequestArgs>;
-    /**
-     *
-     * @summary 创建流程
-     * @param {string} body
-     * @param {string} [cid]
-     * @param {boolean} [base64]
-     * @param {*} [options] Override http request option.
-     * @throws {RequiredError}
-     */
-    createProcess: (body: string, cid?: string, base64?: boolean, options?: any) => Promise<RequestArgs>;
-    /**
-     *
      * @summary 通过 ID 获取流程实例
      * @param {number} id
      * @param {string} [cid]
@@ -232,6 +280,242 @@ export declare const DefaultApiAxiosParamCreator: (configuration?: Configuration
      * @throws {RequiredError}
      */
     getInstances: (name?: string, version?: number, status?: Set<'ACTIVE' | 'CANCELED' | 'COMPLETED' | 'INCIDENT' | 'RESOLVED'>, page?: number, size?: number, cid?: string, options?: any) => Promise<RequestArgs>;
+};
+/**
+ * InstancesApi - functional programming interface
+ * @export
+ */
+export declare const InstancesApiFp: (configuration?: Configuration) => {
+    /**
+     *
+     * @summary 通过 ID 取消运行实例
+     * @param {number} id
+     * @param {string} [cid]
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     */
+    cancelInstance(id: number, cid?: string, options?: any): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<void>>;
+    /**
+     *
+     * @summary 创建流程实例
+     * @param {string} name
+     * @param {{ [key: string]: object; }} requestBody
+     * @param {string} [cid]
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     */
+    createInstance(name: string, requestBody: {
+        [key: string]: object;
+    }, cid?: string, options?: any): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<InstanceObject>>;
+    /**
+     *
+     * @summary 通过 ID 获取流程实例
+     * @param {number} id
+     * @param {string} [cid]
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     */
+    getInstance(id: number, cid?: string, options?: any): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<InstanceObject>>;
+    /**
+     *
+     * @summary 查询流程实例
+     * @param {string} [name]
+     * @param {number} [version]
+     * @param {Set<'ACTIVE' | 'CANCELED' | 'COMPLETED' | 'INCIDENT' | 'RESOLVED'>} [status]
+     * @param {number} [page]
+     * @param {number} [size]
+     * @param {string} [cid]
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     */
+    getInstances(name?: string, version?: number, status?: Set<'ACTIVE' | 'CANCELED' | 'COMPLETED' | 'INCIDENT' | 'RESOLVED'>, page?: number, size?: number, cid?: string, options?: any): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<Array<InstanceObject>>>;
+};
+/**
+ * InstancesApi - factory interface
+ * @export
+ */
+export declare const InstancesApiFactory: (configuration?: Configuration, basePath?: string, axios?: AxiosInstance) => {
+    /**
+     *
+     * @summary 通过 ID 取消运行实例
+     * @param {number} id
+     * @param {string} [cid]
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     */
+    cancelInstance(id: number, cid?: string, options?: any): AxiosPromise<void>;
+    /**
+     *
+     * @summary 创建流程实例
+     * @param {string} name
+     * @param {{ [key: string]: object; }} requestBody
+     * @param {string} [cid]
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     */
+    createInstance(name: string, requestBody: {
+        [key: string]: object;
+    }, cid?: string, options?: any): AxiosPromise<InstanceObject>;
+    /**
+     *
+     * @summary 通过 ID 获取流程实例
+     * @param {number} id
+     * @param {string} [cid]
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     */
+    getInstance(id: number, cid?: string, options?: any): AxiosPromise<InstanceObject>;
+    /**
+     *
+     * @summary 查询流程实例
+     * @param {string} [name]
+     * @param {number} [version]
+     * @param {Set<'ACTIVE' | 'CANCELED' | 'COMPLETED' | 'INCIDENT' | 'RESOLVED'>} [status]
+     * @param {number} [page]
+     * @param {number} [size]
+     * @param {string} [cid]
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     */
+    getInstances(name?: string, version?: number, status?: Set<'ACTIVE' | 'CANCELED' | 'COMPLETED' | 'INCIDENT' | 'RESOLVED'>, page?: number, size?: number, cid?: string, options?: any): AxiosPromise<Array<InstanceObject>>;
+};
+/**
+ * InstancesApi - object-oriented interface
+ * @export
+ * @class InstancesApi
+ * @extends {BaseAPI}
+ */
+export declare class InstancesApi extends BaseAPI {
+    /**
+     *
+     * @summary 通过 ID 取消运行实例
+     * @param {number} id
+     * @param {string} [cid]
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     * @memberof InstancesApi
+     */
+    cancelInstance(id: number, cid?: string, options?: any): Promise<import("axios").AxiosResponse<void>>;
+    /**
+     *
+     * @summary 创建流程实例
+     * @param {string} name
+     * @param {{ [key: string]: object; }} requestBody
+     * @param {string} [cid]
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     * @memberof InstancesApi
+     */
+    createInstance(name: string, requestBody: {
+        [key: string]: object;
+    }, cid?: string, options?: any): Promise<import("axios").AxiosResponse<InstanceObject>>;
+    /**
+     *
+     * @summary 通过 ID 获取流程实例
+     * @param {number} id
+     * @param {string} [cid]
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     * @memberof InstancesApi
+     */
+    getInstance(id: number, cid?: string, options?: any): Promise<import("axios").AxiosResponse<InstanceObject>>;
+    /**
+     *
+     * @summary 查询流程实例
+     * @param {string} [name]
+     * @param {number} [version]
+     * @param {Set<'ACTIVE' | 'CANCELED' | 'COMPLETED' | 'INCIDENT' | 'RESOLVED'>} [status]
+     * @param {number} [page]
+     * @param {number} [size]
+     * @param {string} [cid]
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     * @memberof InstancesApi
+     */
+    getInstances(name?: string, version?: number, status?: Set<'ACTIVE' | 'CANCELED' | 'COMPLETED' | 'INCIDENT' | 'RESOLVED'>, page?: number, size?: number, cid?: string, options?: any): Promise<import("axios").AxiosResponse<InstanceObject[]>>;
+}
+/**
+ * MessagesApi - axios parameter creator
+ * @export
+ */
+export declare const MessagesApiAxiosParamCreator: (configuration?: Configuration) => {
+    /**
+     *
+     * @summary 发布消息
+     * @param {string} name
+     * @param {string} key
+     * @param {string} [cid]
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     */
+    createMessage: (name: string, key: string, cid?: string, options?: any) => Promise<RequestArgs>;
+};
+/**
+ * MessagesApi - functional programming interface
+ * @export
+ */
+export declare const MessagesApiFp: (configuration?: Configuration) => {
+    /**
+     *
+     * @summary 发布消息
+     * @param {string} name
+     * @param {string} key
+     * @param {string} [cid]
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     */
+    createMessage(name: string, key: string, cid?: string, options?: any): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<void>>;
+};
+/**
+ * MessagesApi - factory interface
+ * @export
+ */
+export declare const MessagesApiFactory: (configuration?: Configuration, basePath?: string, axios?: AxiosInstance) => {
+    /**
+     *
+     * @summary 发布消息
+     * @param {string} name
+     * @param {string} key
+     * @param {string} [cid]
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     */
+    createMessage(name: string, key: string, cid?: string, options?: any): AxiosPromise<void>;
+};
+/**
+ * MessagesApi - object-oriented interface
+ * @export
+ * @class MessagesApi
+ * @extends {BaseAPI}
+ */
+export declare class MessagesApi extends BaseAPI {
+    /**
+     *
+     * @summary 发布消息
+     * @param {string} name
+     * @param {string} key
+     * @param {string} [cid]
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     * @memberof MessagesApi
+     */
+    createMessage(name: string, key: string, cid?: string, options?: any): Promise<import("axios").AxiosResponse<void>>;
+}
+/**
+ * ProcessesApi - axios parameter creator
+ * @export
+ */
+export declare const ProcessesApiAxiosParamCreator: (configuration?: Configuration) => {
+    /**
+     *
+     * @summary 创建流程
+     * @param {string} body
+     * @param {string} [cid]
+     * @param {boolean} [base64]
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     */
+    createProcess: (body: string, cid?: string, base64?: boolean, options?: any) => Promise<RequestArgs>;
     /**
      *
      * @summary 通过名称获取流程
@@ -264,41 +548,10 @@ export declare const DefaultApiAxiosParamCreator: (configuration?: Configuration
     getProcesses: (q?: string, cid?: string, page?: number, size?: number, options?: any) => Promise<RequestArgs>;
 };
 /**
- * DefaultApi - functional programming interface
+ * ProcessesApi - functional programming interface
  * @export
  */
-export declare const DefaultApiFp: (configuration?: Configuration) => {
-    /**
-     *
-     * @summary 通过 ID 取消运行实例
-     * @param {number} id
-     * @param {string} [cid]
-     * @param {*} [options] Override http request option.
-     * @throws {RequiredError}
-     */
-    cancelInstance(id: number, cid?: string, options?: any): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<void>>;
-    /**
-     *
-     * @summary 创建流程实例
-     * @param {string} name
-     * @param {{ [key: string]: object; }} requestBody
-     * @param {string} [cid]
-     * @param {*} [options] Override http request option.
-     * @throws {RequiredError}
-     */
-    createInstance(name: string, requestBody: {
-        [key: string]: object;
-    }, cid?: string, options?: any): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<InstanceObject>>;
-    /**
-     *
-     * @summary 发布消息
-     * @param {string} name
-     * @param {string} key
-     * @param {string} [cid]
-     * @param {*} [options] Override http request option.
-     * @throws {RequiredError}
-     */
-    createMessage(name: string, key: string, cid?: string, options?: any): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<void>>;
+export declare const ProcessesApiFp: (configuration?: Configuration) => {
     /**
      *
      * @summary 创建流程
@@ -309,28 +562,6 @@ export declare const DefaultApiFp: (configuration?: Configuration) => {
      * @throws {RequiredError}
      */
     createProcess(body: string, cid?: string, base64?: boolean, options?: any): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<void>>;
-    /**
-     *
-     * @summary 通过 ID 获取流程实例
-     * @param {number} id
-     * @param {string} [cid]
-     * @param {*} [options] Override http request option.
-     * @throws {RequiredError}
-     */
-    getInstance(id: number, cid?: string, options?: any): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<InstanceObject>>;
-    /**
-     *
-     * @summary 查询流程实例
-     * @param {string} [name]
-     * @param {number} [version]
-     * @param {Set<'ACTIVE' | 'CANCELED' | 'COMPLETED' | 'INCIDENT' | 'RESOLVED'>} [status]
-     * @param {number} [page]
-     * @param {number} [size]
-     * @param {string} [cid]
-     * @param {*} [options] Override http request option.
-     * @throws {RequiredError}
-     */
-    getInstances(name?: string, version?: number, status?: Set<'ACTIVE' | 'CANCELED' | 'COMPLETED' | 'INCIDENT' | 'RESOLVED'>, page?: number, size?: number, cid?: string, options?: any): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<Array<InstanceObject>>>;
     /**
      *
      * @summary 通过名称获取流程
@@ -363,41 +594,10 @@ export declare const DefaultApiFp: (configuration?: Configuration) => {
     getProcesses(q?: string, cid?: string, page?: number, size?: number, options?: any): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<Array<ProcessObject>>>;
 };
 /**
- * DefaultApi - factory interface
+ * ProcessesApi - factory interface
  * @export
  */
-export declare const DefaultApiFactory: (configuration?: Configuration, basePath?: string, axios?: AxiosInstance) => {
-    /**
-     *
-     * @summary 通过 ID 取消运行实例
-     * @param {number} id
-     * @param {string} [cid]
-     * @param {*} [options] Override http request option.
-     * @throws {RequiredError}
-     */
-    cancelInstance(id: number, cid?: string, options?: any): AxiosPromise<void>;
-    /**
-     *
-     * @summary 创建流程实例
-     * @param {string} name
-     * @param {{ [key: string]: object; }} requestBody
-     * @param {string} [cid]
-     * @param {*} [options] Override http request option.
-     * @throws {RequiredError}
-     */
-    createInstance(name: string, requestBody: {
-        [key: string]: object;
-    }, cid?: string, options?: any): AxiosPromise<InstanceObject>;
-    /**
-     *
-     * @summary 发布消息
-     * @param {string} name
-     * @param {string} key
-     * @param {string} [cid]
-     * @param {*} [options] Override http request option.
-     * @throws {RequiredError}
-     */
-    createMessage(name: string, key: string, cid?: string, options?: any): AxiosPromise<void>;
+export declare const ProcessesApiFactory: (configuration?: Configuration, basePath?: string, axios?: AxiosInstance) => {
     /**
      *
      * @summary 创建流程
@@ -408,28 +608,6 @@ export declare const DefaultApiFactory: (configuration?: Configuration, basePath
      * @throws {RequiredError}
      */
     createProcess(body: string, cid?: string, base64?: boolean, options?: any): AxiosPromise<void>;
-    /**
-     *
-     * @summary 通过 ID 获取流程实例
-     * @param {number} id
-     * @param {string} [cid]
-     * @param {*} [options] Override http request option.
-     * @throws {RequiredError}
-     */
-    getInstance(id: number, cid?: string, options?: any): AxiosPromise<InstanceObject>;
-    /**
-     *
-     * @summary 查询流程实例
-     * @param {string} [name]
-     * @param {number} [version]
-     * @param {Set<'ACTIVE' | 'CANCELED' | 'COMPLETED' | 'INCIDENT' | 'RESOLVED'>} [status]
-     * @param {number} [page]
-     * @param {number} [size]
-     * @param {string} [cid]
-     * @param {*} [options] Override http request option.
-     * @throws {RequiredError}
-     */
-    getInstances(name?: string, version?: number, status?: Set<'ACTIVE' | 'CANCELED' | 'COMPLETED' | 'INCIDENT' | 'RESOLVED'>, page?: number, size?: number, cid?: string, options?: any): AxiosPromise<Array<InstanceObject>>;
     /**
      *
      * @summary 通过名称获取流程
@@ -462,46 +640,12 @@ export declare const DefaultApiFactory: (configuration?: Configuration, basePath
     getProcesses(q?: string, cid?: string, page?: number, size?: number, options?: any): AxiosPromise<Array<ProcessObject>>;
 };
 /**
- * DefaultApi - object-oriented interface
+ * ProcessesApi - object-oriented interface
  * @export
- * @class DefaultApi
+ * @class ProcessesApi
  * @extends {BaseAPI}
  */
-export declare class DefaultApi extends BaseAPI {
-    /**
-     *
-     * @summary 通过 ID 取消运行实例
-     * @param {number} id
-     * @param {string} [cid]
-     * @param {*} [options] Override http request option.
-     * @throws {RequiredError}
-     * @memberof DefaultApi
-     */
-    cancelInstance(id: number, cid?: string, options?: any): Promise<import("axios").AxiosResponse<void>>;
-    /**
-     *
-     * @summary 创建流程实例
-     * @param {string} name
-     * @param {{ [key: string]: object; }} requestBody
-     * @param {string} [cid]
-     * @param {*} [options] Override http request option.
-     * @throws {RequiredError}
-     * @memberof DefaultApi
-     */
-    createInstance(name: string, requestBody: {
-        [key: string]: object;
-    }, cid?: string, options?: any): Promise<import("axios").AxiosResponse<InstanceObject>>;
-    /**
-     *
-     * @summary 发布消息
-     * @param {string} name
-     * @param {string} key
-     * @param {string} [cid]
-     * @param {*} [options] Override http request option.
-     * @throws {RequiredError}
-     * @memberof DefaultApi
-     */
-    createMessage(name: string, key: string, cid?: string, options?: any): Promise<import("axios").AxiosResponse<void>>;
+export declare class ProcessesApi extends BaseAPI {
     /**
      *
      * @summary 创建流程
@@ -510,33 +654,9 @@ export declare class DefaultApi extends BaseAPI {
      * @param {boolean} [base64]
      * @param {*} [options] Override http request option.
      * @throws {RequiredError}
-     * @memberof DefaultApi
+     * @memberof ProcessesApi
      */
     createProcess(body: string, cid?: string, base64?: boolean, options?: any): Promise<import("axios").AxiosResponse<void>>;
-    /**
-     *
-     * @summary 通过 ID 获取流程实例
-     * @param {number} id
-     * @param {string} [cid]
-     * @param {*} [options] Override http request option.
-     * @throws {RequiredError}
-     * @memberof DefaultApi
-     */
-    getInstance(id: number, cid?: string, options?: any): Promise<import("axios").AxiosResponse<InstanceObject>>;
-    /**
-     *
-     * @summary 查询流程实例
-     * @param {string} [name]
-     * @param {number} [version]
-     * @param {Set<'ACTIVE' | 'CANCELED' | 'COMPLETED' | 'INCIDENT' | 'RESOLVED'>} [status]
-     * @param {number} [page]
-     * @param {number} [size]
-     * @param {string} [cid]
-     * @param {*} [options] Override http request option.
-     * @throws {RequiredError}
-     * @memberof DefaultApi
-     */
-    getInstances(name?: string, version?: number, status?: Set<'ACTIVE' | 'CANCELED' | 'COMPLETED' | 'INCIDENT' | 'RESOLVED'>, page?: number, size?: number, cid?: string, options?: any): Promise<import("axios").AxiosResponse<InstanceObject[]>>;
     /**
      *
      * @summary 通过名称获取流程
@@ -544,7 +664,7 @@ export declare class DefaultApi extends BaseAPI {
      * @param {string} [cid]
      * @param {*} [options] Override http request option.
      * @throws {RequiredError}
-     * @memberof DefaultApi
+     * @memberof ProcessesApi
      */
     getProcess(name: string, cid?: string, options?: any): Promise<import("axios").AxiosResponse<ProcessObject>>;
     /**
@@ -555,7 +675,7 @@ export declare class DefaultApi extends BaseAPI {
      * @param {string} [cid]
      * @param {*} [options] Override http request option.
      * @throws {RequiredError}
-     * @memberof DefaultApi
+     * @memberof ProcessesApi
      */
     getProcess1(name: string, version: number, cid?: string, options?: any): Promise<import("axios").AxiosResponse<ProcessObject>>;
     /**
@@ -567,7 +687,148 @@ export declare class DefaultApi extends BaseAPI {
      * @param {number} [size]
      * @param {*} [options] Override http request option.
      * @throws {RequiredError}
-     * @memberof DefaultApi
+     * @memberof ProcessesApi
      */
     getProcesses(q?: string, cid?: string, page?: number, size?: number, options?: any): Promise<import("axios").AxiosResponse<ProcessObject[]>>;
+}
+/**
+ * UserTasksApi - axios parameter creator
+ * @export
+ */
+export declare const UserTasksApiAxiosParamCreator: (configuration?: Configuration) => {
+    /**
+     *
+     * @summary 完成用户任务
+     * @param {number} id
+     * @param {{ [key: string]: object; }} requestBody
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     */
+    completeUserTask: (id: number, requestBody: {
+        [key: string]: object;
+    }, options?: any) => Promise<RequestArgs>;
+    /**
+     *
+     * @summary 获取用户任务
+     * @param {number} id
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     */
+    getUserTask: (id: number, options?: any) => Promise<RequestArgs>;
+    /**
+     *
+     * @summary 获取用户任务
+     * @param {number} [page]
+     * @param {number} [size]
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     */
+    getUserTasks: (page?: number, size?: number, options?: any) => Promise<RequestArgs>;
+};
+/**
+ * UserTasksApi - functional programming interface
+ * @export
+ */
+export declare const UserTasksApiFp: (configuration?: Configuration) => {
+    /**
+     *
+     * @summary 完成用户任务
+     * @param {number} id
+     * @param {{ [key: string]: object; }} requestBody
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     */
+    completeUserTask(id: number, requestBody: {
+        [key: string]: object;
+    }, options?: any): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<void>>;
+    /**
+     *
+     * @summary 获取用户任务
+     * @param {number} id
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     */
+    getUserTask(id: number, options?: any): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<UserTask>>;
+    /**
+     *
+     * @summary 获取用户任务
+     * @param {number} [page]
+     * @param {number} [size]
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     */
+    getUserTasks(page?: number, size?: number, options?: any): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<Array<UserTask>>>;
+};
+/**
+ * UserTasksApi - factory interface
+ * @export
+ */
+export declare const UserTasksApiFactory: (configuration?: Configuration, basePath?: string, axios?: AxiosInstance) => {
+    /**
+     *
+     * @summary 完成用户任务
+     * @param {number} id
+     * @param {{ [key: string]: object; }} requestBody
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     */
+    completeUserTask(id: number, requestBody: {
+        [key: string]: object;
+    }, options?: any): AxiosPromise<void>;
+    /**
+     *
+     * @summary 获取用户任务
+     * @param {number} id
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     */
+    getUserTask(id: number, options?: any): AxiosPromise<UserTask>;
+    /**
+     *
+     * @summary 获取用户任务
+     * @param {number} [page]
+     * @param {number} [size]
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     */
+    getUserTasks(page?: number, size?: number, options?: any): AxiosPromise<Array<UserTask>>;
+};
+/**
+ * UserTasksApi - object-oriented interface
+ * @export
+ * @class UserTasksApi
+ * @extends {BaseAPI}
+ */
+export declare class UserTasksApi extends BaseAPI {
+    /**
+     *
+     * @summary 完成用户任务
+     * @param {number} id
+     * @param {{ [key: string]: object; }} requestBody
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     * @memberof UserTasksApi
+     */
+    completeUserTask(id: number, requestBody: {
+        [key: string]: object;
+    }, options?: any): Promise<import("axios").AxiosResponse<void>>;
+    /**
+     *
+     * @summary 获取用户任务
+     * @param {number} id
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     * @memberof UserTasksApi
+     */
+    getUserTask(id: number, options?: any): Promise<import("axios").AxiosResponse<UserTask>>;
+    /**
+     *
+     * @summary 获取用户任务
+     * @param {number} [page]
+     * @param {number} [size]
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     * @memberof UserTasksApi
+     */
+    getUserTasks(page?: number, size?: number, options?: any): Promise<import("axios").AxiosResponse<UserTask[]>>;
 }
