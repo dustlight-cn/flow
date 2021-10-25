@@ -23,6 +23,7 @@ import plus.flow.core.flow.process.ProcessService;
 import plus.flow.zeebe.entities.DefaultAdapterContext;
 import plus.flow.zeebe.entities.ZeebeProcess;
 import plus.flow.zeebe.entities.ZeebeProcessEntity;
+import plus.flow.zeebe.services.adapters.ZeebeProcessAdapter;
 import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
 import reactor.core.publisher.MonoSink;

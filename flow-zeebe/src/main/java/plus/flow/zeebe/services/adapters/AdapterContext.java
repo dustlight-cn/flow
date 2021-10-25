@@ -1,4 +1,4 @@
-package plus.flow.zeebe.services;
+package plus.flow.zeebe.services.adapters;
 
 /**
  * 适配器上下文
