@@ -5,7 +5,7 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 import org.springframework.util.StringUtils;
-import plus.flow.core.flow.Instance;
+import plus.flow.core.flow.instance.Instance;
 
 import java.util.List;
 

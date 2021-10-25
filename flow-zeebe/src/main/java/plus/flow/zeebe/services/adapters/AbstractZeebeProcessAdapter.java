@@ -1,4 +1,4 @@
-package plus.flow.zeebe.services;
+package plus.flow.zeebe.services.adapters;
 
 public abstract class AbstractZeebeProcessAdapter implements ZeebeProcessAdapter {
 

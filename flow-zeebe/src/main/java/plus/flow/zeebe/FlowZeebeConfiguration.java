@@ -1,6 +1,5 @@
 package plus.flow.zeebe;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
 import io.camunda.zeebe.client.CredentialsProvider;
 import io.camunda.zeebe.client.ZeebeClient;
 import io.camunda.zeebe.client.ZeebeClientBuilder;
@@ -13,6 +12,9 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.data.elasticsearch.core.ReactiveElasticsearchOperations;
 import plus.flow.zeebe.services.*;
+import plus.flow.zeebe.services.adapters.MultiTenantAdapter;
+import plus.flow.zeebe.services.adapters.UserTaskFormAdapter;
+import plus.flow.zeebe.services.adapters.ZeebeProcessAdapter;
 
 import java.util.Set;
 
@@ -39,11 +41,6 @@ public class FlowZeebeConfiguration {
     }
 
     @Bean
-    public MultiTenantAdapter multiTenantAdapter(@Autowired ZeebeProperties properties) {
-        return new MultiTenantAdapter(properties.getSystemPrefix());
-    }
-
-    @Bean
     public ZeebeProcessService zeebeProcessService(@Autowired ZeebeClient zeebeClient,
                                                    @Autowired ReactiveElasticsearchOperations elasticsearchOperations,
                                                    @Autowired ApplicationContext context,
@@ -65,4 +62,16 @@ public class FlowZeebeConfiguration {
     public ZeebeMessageService zeebeMessageService(@Autowired ZeebeClient zeebeClient) {
         return new ZeebeMessageService(zeebeClient);
     }
+
+
+    @Bean
+    public MultiTenantAdapter multiTenantAdapter(@Autowired ZeebeProperties properties) {
+        return new MultiTenantAdapter(properties.getSystemPrefix());
+    }
+
+    @Bean
+    public UserTaskFormAdapter userTaskFormAdapter(@Autowired ZeebeProperties properties) {
+        return new UserTaskFormAdapter(properties.getUserTaskFormKeyPrefix());
+    }
+
 }

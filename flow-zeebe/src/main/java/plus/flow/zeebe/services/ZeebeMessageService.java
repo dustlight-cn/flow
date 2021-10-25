@@ -1,7 +1,7 @@
 package plus.flow.zeebe.services;
 
 import io.camunda.zeebe.client.ZeebeClient;
-import plus.flow.core.flow.MessageService;
+import plus.flow.core.flow.message.MessageService;
 import reactor.core.publisher.Mono;
 
 public class ZeebeMessageService implements MessageService {

@@ -16,4 +16,6 @@ public class ZeebeProperties {
     private boolean plaintext = true;
     private String processIndex = "zeebe-record-process";
     private Set<String> systemPrefix = new HashSet<>();
+
+    private String userTaskFormKeyPrefix = "camunda-forms:bpmn:";
 }

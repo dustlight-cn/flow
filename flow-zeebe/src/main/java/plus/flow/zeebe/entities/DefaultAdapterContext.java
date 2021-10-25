@@ -3,7 +3,7 @@ package plus.flow.zeebe.entities;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.Setter;
-import plus.flow.zeebe.services.AdapterContext;
+import plus.flow.zeebe.services.adapters.AdapterContext;
 
 
 @Getter

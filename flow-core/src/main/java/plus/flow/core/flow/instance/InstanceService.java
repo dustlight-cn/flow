@@ -1,4 +1,4 @@
-package plus.flow.core.flow;
+package plus.flow.core.flow.instance;
 
 import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;

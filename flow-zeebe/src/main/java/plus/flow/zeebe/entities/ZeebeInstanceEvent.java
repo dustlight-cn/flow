@@ -3,8 +3,8 @@ package plus.flow.zeebe.entities;
 import lombok.AllArgsConstructor;
 import lombok.NoArgsConstructor;
 import org.springframework.util.StringUtils;
-import plus.flow.core.flow.InstanceError;
-import plus.flow.core.flow.InstanceEvent;
+import plus.flow.core.flow.instance.InstanceError;
+import plus.flow.core.flow.instance.InstanceEvent;
 
 import java.time.Instant;
 import java.util.Collection;

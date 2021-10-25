@@ -8,6 +8,7 @@ import lombok.Getter;
 import lombok.Setter;
 import org.elasticsearch.index.query.*;
 import org.elasticsearch.search.sort.FieldSortBuilder;
+import org.elasticsearch.search.sort.SortOrder;
 import org.springframework.core.Ordered;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.elasticsearch.core.ReactiveElasticsearchOperations;
@@ -18,11 +19,12 @@ import org.springframework.data.elasticsearch.core.query.NativeSearchQueryBuilde
 import org.springframework.util.StringUtils;
 import plus.flow.core.exceptions.ErrorEnum;
 import plus.flow.core.exceptions.FlowException;
-import plus.flow.core.flow.Process;
-import plus.flow.core.flow.ProcessService;
+import plus.flow.core.flow.process.Process;
+import plus.flow.core.flow.process.ProcessService;
 import plus.flow.zeebe.entities.DefaultAdapterContext;
 import plus.flow.zeebe.entities.ZeebeProcess;
 import plus.flow.zeebe.entities.ZeebeProcessEntity;
+import plus.flow.zeebe.services.adapters.ZeebeProcessAdapter;
 import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
 import reactor.core.publisher.MonoSink;
@@ -100,7 +102,7 @@ public class ZeebeProcessService implements ProcessService<String> {
             boolQueryBuilder.filter(new MatchQueryBuilder("value.version", version));
         NativeSearchQuery q = new NativeSearchQueryBuilder().withQuery(boolQueryBuilder)
                 .withMaxResults(1)
-                .withSort(new FieldSortBuilder("value.version"))
+                .withSort(new FieldSortBuilder("value.version").order(SortOrder.DESC))
                 .build();
         return operations.search(q,
                         ZeebeProcessEntity.class,

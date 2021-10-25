@@ -1,4 +1,4 @@
-package plus.flow.zeebe.services;
+package plus.flow.zeebe.services.adapters;
 
 import io.camunda.zeebe.model.bpmn.BpmnModelInstance;
 import org.springframework.core.Ordered;

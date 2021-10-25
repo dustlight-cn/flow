@@ -8,7 +8,7 @@ import org.springframework.web.bind.annotation.*;
 import plus.auth.client.reactive.ReactiveAuthClient;
 import plus.auth.resources.core.AuthPrincipal;
 import plus.flow.application.ClientUtils;
-import plus.flow.core.flow.MessageService;
+import plus.flow.core.flow.message.MessageService;
 import reactor.core.publisher.Mono;
 
 @RestController
