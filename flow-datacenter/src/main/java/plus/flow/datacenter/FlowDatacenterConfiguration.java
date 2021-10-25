@@ -10,4 +10,10 @@ public class FlowDatacenterConfiguration {
     public DatacenterWatcher datacenterWatcher() {
         return new DatacenterWatcher();
     }
+
+    @Bean
+    public DatacenterRecordValidator datacenterRecordValidator() {
+        return new DatacenterRecordValidator();
+    }
+
 }

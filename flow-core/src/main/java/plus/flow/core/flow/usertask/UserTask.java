@@ -1,11 +1,21 @@
 package plus.flow.core.flow.usertask;
 
-public interface UserTask<T> {
+import java.time.Instant;
 
-    T getSchema();
+public interface UserTask {
+
+    String getForm();
+
+    Long getProcessId();
+
+    Long getInstanceId();
 
     Long getId();
 
-    Long getUser();
+    String getUser();
+
+    Instant getCompletedAt();
+
+    UserTaskTarget getTarget();
 
 }

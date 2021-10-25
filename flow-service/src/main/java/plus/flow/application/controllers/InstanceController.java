@@ -20,7 +20,7 @@ import java.util.Set;
 @RestController
 @RequestMapping("/v1")
 @SecurityRequirement(name = "auth")
-@Tag(name = "流程实例资源", description = "创建和查询流程实例")
+@Tag(name = "Instances", description = "流程实例资源")
 @CrossOrigin
 public class InstanceController {
 

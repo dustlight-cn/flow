@@ -14,7 +14,7 @@ import reactor.core.publisher.Mono;
 @RestController
 @RequestMapping("/v1")
 @SecurityRequirement(name = "auth")
-@Tag(name = "消息资源", description = "-")
+@Tag(name = "Messages", description = "消息资源")
 @CrossOrigin
 public class MessageController {
 
