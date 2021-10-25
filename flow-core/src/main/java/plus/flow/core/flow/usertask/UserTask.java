@@ -1,11 +1,16 @@
 package plus.flow.core.flow.usertask;
 
-public interface UserTask<T> {
+public interface UserTask {
 
-    T getSchema();
+    String getForm();
+
+    Long getProcessId();
+
+    Long getInstanceId();
 
     Long getId();
 
     Long getUser();
 
+    UserTaskTarget getTarget();
 }

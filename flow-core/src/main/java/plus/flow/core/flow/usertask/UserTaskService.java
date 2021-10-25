@@ -5,8 +5,8 @@ import reactor.core.publisher.Flux;
 /**
  * 用户任务服务
  */
-public interface UserTaskService<T> {
+public interface UserTaskService {
 
-    Flux<UserTask<T>> getUserTask(String clientId, int page, int size);
+    Flux<UserTask> getUserTask(String clientId, String user, int page, int size);
 
 }
