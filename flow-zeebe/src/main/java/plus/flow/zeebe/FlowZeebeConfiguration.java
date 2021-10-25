@@ -12,11 +12,13 @@ import org.springframework.context.ApplicationContext;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.data.elasticsearch.core.ReactiveElasticsearchOperations;
+import plus.flow.core.flow.usertask.UserTaskDataValidator;
 import plus.flow.zeebe.services.*;
 import plus.flow.zeebe.services.adapters.MultiTenantAdapter;
 import plus.flow.zeebe.services.adapters.UserTaskFormAdapter;
 import plus.flow.zeebe.services.adapters.ZeebeProcessAdapter;
 import plus.flow.zeebe.services.usertask.UserTaskWorker;
+import plus.flow.zeebe.services.usertask.ZeebeUserTaskService;
 
 import java.util.Set;
 
@@ -66,10 +68,21 @@ public class FlowZeebeConfiguration {
     }
 
     @Bean
+    public ZeebeUserTaskService zeebeUserTaskService(@Autowired ZeebeProperties properties,
+                                                     @Autowired UserTaskDataValidator validator,
+                                                     @Autowired ReactiveElasticsearchOperations operations) {
+        ZeebeUserTaskService zeebeInstanceService = new ZeebeUserTaskService(validator, operations);
+        zeebeInstanceService.setIndex(properties.getUserTaskIndex());
+        return zeebeInstanceService;
+    }
+
+    @Bean
     @ConditionalOnProperty(prefix = "plus.flow.zeebe", name = "enable-user-task-worker", matchIfMissing = true)
-    public UserTaskWorker userTaskWorkker(@Autowired ZeebeClient zeebeClient,
+    public UserTaskWorker userTaskWorkker(@Autowired ZeebeProperties properties,
+                                          @Autowired ZeebeClient zeebeClient,
                                           @Autowired ReactiveElasticsearchOperations operations) {
         UserTaskWorker worker = new UserTaskWorker(zeebeClient, operations);
+        worker.setIndex(properties.getUserTaskIndex());
         worker.start();
         return worker;
     }

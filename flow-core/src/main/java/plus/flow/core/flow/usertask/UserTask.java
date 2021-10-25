@@ -1,5 +1,7 @@
 package plus.flow.core.flow.usertask;
 
+import java.time.Instant;
+
 public interface UserTask {
 
     String getForm();
@@ -10,7 +12,10 @@ public interface UserTask {
 
     Long getId();
 
-    Long getUser();
+    String getUser();
+
+    Instant getCompletedAt();
 
     UserTaskTarget getTarget();
+
 }

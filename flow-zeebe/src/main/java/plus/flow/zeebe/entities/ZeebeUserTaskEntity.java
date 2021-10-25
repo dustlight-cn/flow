@@ -18,8 +18,9 @@ import java.util.Set;
 public class ZeebeUserTaskEntity implements Cloneable {
 
     private static final ZeebeUserTaskEntity t = new ZeebeUserTaskEntity();
-    private static final String TARGET_USERS = "plus.flow:users";
-    private static final String TARGET_ROLES = "plus.flow:roles";
+    static final String TARGET_USERS = "plus.flow:users";
+    static final String TARGET_ROLES = "plus.flow:roles";
+    static final String FORM_KEY = "io.camunda.zeebe:formKey";
 
     @Id
     private long key;

@@ -5,6 +5,8 @@ import io.camunda.zeebe.client.api.response.ActivatedJob;
 import io.camunda.zeebe.client.api.worker.JobClient;
 import io.camunda.zeebe.client.api.worker.JobHandler;
 import io.camunda.zeebe.client.api.worker.JobWorker;
+import lombok.Getter;
+import lombok.Setter;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.springframework.data.elasticsearch.core.ReactiveElasticsearchOperations;
@@ -20,6 +22,9 @@ public class UserTaskWorker implements JobHandler {
     private String workerName = "UserTask";
     private JobWorker worker;
     private ReactiveElasticsearchOperations operations;
+
+    @Getter
+    @Setter
     private String index = "flow-user-task";
 
     private static final Log logger = LogFactory.getLog(UserTaskWorker.class);
