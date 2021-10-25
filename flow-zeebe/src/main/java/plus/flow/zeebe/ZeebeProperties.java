@@ -18,4 +18,5 @@ public class ZeebeProperties {
     private Set<String> systemPrefix = new HashSet<>();
 
     private String userTaskFormKeyPrefix = "camunda-forms:bpmn:";
+    private boolean enableUserTaskWorker = true;
 }

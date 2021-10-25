@@ -6,6 +6,7 @@ import io.camunda.zeebe.client.ZeebeClientBuilder;
 import io.camunda.zeebe.client.impl.NoopCredentialsProvider;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnMissingBean;
+import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.boot.context.properties.EnableConfigurationProperties;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.annotation.Bean;
@@ -15,6 +16,7 @@ import plus.flow.zeebe.services.*;
 import plus.flow.zeebe.services.adapters.MultiTenantAdapter;
 import plus.flow.zeebe.services.adapters.UserTaskFormAdapter;
 import plus.flow.zeebe.services.adapters.ZeebeProcessAdapter;
+import plus.flow.zeebe.services.usertask.UserTaskWorker;
 
 import java.util.Set;
 
@@ -63,6 +65,14 @@ public class FlowZeebeConfiguration {
         return new ZeebeMessageService(zeebeClient);
     }
 
+    @Bean
+    @ConditionalOnProperty(prefix = "plus.flow.zeebe", name = "enable-user-task-worker", matchIfMissing = true)
+    public UserTaskWorker userTaskWorkker(@Autowired ZeebeClient zeebeClient,
+                                          @Autowired ReactiveElasticsearchOperations operations) {
+        UserTaskWorker worker = new UserTaskWorker(zeebeClient, operations);
+        worker.start();
+        return worker;
+    }
 
     @Bean
     public MultiTenantAdapter multiTenantAdapter(@Autowired ZeebeProperties properties) {
