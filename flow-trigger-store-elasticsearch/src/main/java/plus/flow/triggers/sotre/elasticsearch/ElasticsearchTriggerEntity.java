@@ -1,6 +1,5 @@
 package plus.flow.triggers.sotre.elasticsearch;
 
-import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
@@ -11,19 +10,29 @@ import java.util.Set;
 
 @Getter
 @Setter
-@AllArgsConstructor
 @NoArgsConstructor
 public class ElasticsearchTriggerEntity implements Serializable {
 
-    @Id
     private String key;
 
-    @Id
     private String operation;
 
-    @Id
     private String clientId;
 
     private Set<String> process;
 
+    @Id
+    private String id;
+
+    public ElasticsearchTriggerEntity(String key, String operation, String clientId, Set<String> process) {
+        this.key = key;
+        this.operation = operation;
+        this.clientId = clientId;
+        this.process = process;
+        resetId();
+    }
+
+    public void resetId() {
+        this.id = String.format("%s-%s-%s", clientId, key, operation);
+    }
 }

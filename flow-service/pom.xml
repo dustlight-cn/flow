@@ -62,6 +62,10 @@
 
         <dependency>
             <groupId>plus.flow</groupId>
+            <artifactId>flow-trigger-store-elasticsearch</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>plus.flow</groupId>
             <artifactId>flow-core</artifactId>
         </dependency>
         <dependency>

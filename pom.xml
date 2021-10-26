@@ -73,7 +73,7 @@
             </dependency>
             <dependency>
                 <groupId>plus.flow</groupId>
-                <artifactId>flow-trigger-sotre-elasticsearch</artifactId>
+                <artifactId>flow-trigger-store-elasticsearch</artifactId>
                 <version>${project.version}</version>
             </dependency>
             <dependency>
