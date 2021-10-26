@@ -1,7 +1,9 @@
 package plus.flow.core.exceptions;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import lombok.NoArgsConstructor;
 
+@NoArgsConstructor
 public class ErrorDetails {
 
     private String message;
