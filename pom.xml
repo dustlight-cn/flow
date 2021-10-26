@@ -34,6 +34,7 @@
         <module>flow-core</module>
         <module>flow-zeebe</module>
         <module>flow-datacenter</module>
+        <module>flow-trigger-store-elasticsearch</module>
         <module>flow-service</module>
     </modules>
 
@@ -68,6 +69,11 @@
             <dependency>
                 <groupId>plus.flow</groupId>
                 <artifactId>flow-datacenter</artifactId>
+                <version>${project.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>plus.flow</groupId>
+                <artifactId>flow-trigger-store-elasticsearch</artifactId>
                 <version>${project.version}</version>
             </dependency>
             <dependency>

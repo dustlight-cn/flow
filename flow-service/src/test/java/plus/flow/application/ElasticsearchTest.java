@@ -19,11 +19,13 @@ import org.springframework.data.elasticsearch.core.mapping.IndexCoordinates;
 import org.springframework.data.elasticsearch.core.query.FetchSourceFilterBuilder;
 import org.springframework.data.elasticsearch.core.query.NativeSearchQuery;
 import org.springframework.data.elasticsearch.core.query.NativeSearchQueryBuilder;
+import plus.flow.core.flow.trigger.TriggerStore;
 import plus.flow.zeebe.entities.*;
 import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
 
 import java.util.List;
+import java.util.Set;
 
 @SpringBootTest
 public class ElasticsearchTest {
@@ -126,5 +128,20 @@ public class ElasticsearchTest {
                 .block();
 
         System.out.println(mapper.writeValueAsString(instance));
+    }
+
+    @Test
+    public void testTriggerStore(@Autowired TriggerStore store) {
+        System.out.println(store.setSubscription("gg", "qwe", "zzz", Set.of("qq", "xx", "ee")).block());
+    }
+
+    @Test
+    public void testTriggerStore2(@Autowired TriggerStore store, @Autowired ObjectMapper mapper) throws JsonProcessingException {
+        System.out.println(mapper.writeValueAsString(store.getProcess("gg", "qwe").collectList().block()));
+    }
+
+    @Test
+    public void testTriggerStore3(@Autowired TriggerStore store, @Autowired ObjectMapper mapper) throws JsonProcessingException {
+        System.out.println(mapper.writeValueAsString(store.getSubscription("gg", "qq").collectList().block()));
     }
 }

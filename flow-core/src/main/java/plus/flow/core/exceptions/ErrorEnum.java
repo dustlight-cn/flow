@@ -14,6 +14,7 @@ public enum ErrorEnum {
     PROCESS_NOT_FOUND(2001, "Process not found"),
     INSTANCE_NOT_FOUND(2002, "Instance not found"),
     USER_TASK_NOT_FOUND(2003, "User task not found"),
+    TRIGGER_OPERATION_NOT_FOUND(2004, "Trigger operation not found"),
 
     RESOURCE_EXISTS(3000, "Resource already exists"),
     PROCESS_EXISTS(3001, "Process already exists"),
