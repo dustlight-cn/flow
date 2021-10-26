@@ -25,7 +25,7 @@ plus:
       address: zeebe.svc:26500
       plaintext: true
       system-prefix:
-        - "system."
+        - "csystem-"
   messenger:
     client:
       client-id: 8906c510dc30000
