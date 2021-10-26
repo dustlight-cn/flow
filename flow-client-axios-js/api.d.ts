@@ -202,16 +202,16 @@ export interface UserTask {
     form?: string;
     /**
      *
-     * @type {string}
-     * @memberof UserTask
-     */
-    completedAt?: string;
-    /**
-     *
      * @type {number}
      * @memberof UserTask
      */
     instanceId?: number;
+    /**
+     *
+     * @type {string}
+     * @memberof UserTask
+     */
+    completedAt?: string;
 }
 /**
  *
@@ -690,6 +690,188 @@ export declare class ProcessesApi extends BaseAPI {
      * @memberof ProcessesApi
      */
     getProcesses(q?: string, cid?: string, page?: number, size?: number, options?: any): Promise<import("axios").AxiosResponse<ProcessObject[]>>;
+}
+/**
+ * TriggersApi - axios parameter creator
+ * @export
+ */
+export declare const TriggersApiAxiosParamCreator: (configuration?: Configuration) => {
+    /**
+     *
+     * @summary 获取触发器支持的事件
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     */
+    getOperations: (options?: any) => Promise<RequestArgs>;
+    /**
+     *
+     * @summary 获取流程关联的触发器
+     * @param {string} process
+     * @param {string} [opt]
+     * @param {string} [cid]
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     */
+    getTriggerKeys: (process: string, opt?: string, cid?: string, options?: any) => Promise<RequestArgs>;
+    /**
+     *
+     * @summary 获取触发器的目标流程
+     * @param {string} key
+     * @param {string} [opt]
+     * @param {string} [cid]
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     */
+    getTriggerProcess: (key: string, opt?: string, cid?: string, options?: any) => Promise<RequestArgs>;
+    /**
+     *
+     * @summary 设置触发器
+     * @param {string} key
+     * @param {string} opt
+     * @param {Set<string>} requestBody
+     * @param {string} [cid]
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     */
+    setTriggerProcess: (key: string, opt: string, requestBody: Set<string>, cid?: string, options?: any) => Promise<RequestArgs>;
+};
+/**
+ * TriggersApi - functional programming interface
+ * @export
+ */
+export declare const TriggersApiFp: (configuration?: Configuration) => {
+    /**
+     *
+     * @summary 获取触发器支持的事件
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     */
+    getOperations(options?: any): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<Array<string>>>;
+    /**
+     *
+     * @summary 获取流程关联的触发器
+     * @param {string} process
+     * @param {string} [opt]
+     * @param {string} [cid]
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     */
+    getTriggerKeys(process: string, opt?: string, cid?: string, options?: any): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<Array<string>>>;
+    /**
+     *
+     * @summary 获取触发器的目标流程
+     * @param {string} key
+     * @param {string} [opt]
+     * @param {string} [cid]
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     */
+    getTriggerProcess(key: string, opt?: string, cid?: string, options?: any): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<Array<string>>>;
+    /**
+     *
+     * @summary 设置触发器
+     * @param {string} key
+     * @param {string} opt
+     * @param {Set<string>} requestBody
+     * @param {string} [cid]
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     */
+    setTriggerProcess(key: string, opt: string, requestBody: Set<string>, cid?: string, options?: any): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<void>>;
+};
+/**
+ * TriggersApi - factory interface
+ * @export
+ */
+export declare const TriggersApiFactory: (configuration?: Configuration, basePath?: string, axios?: AxiosInstance) => {
+    /**
+     *
+     * @summary 获取触发器支持的事件
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     */
+    getOperations(options?: any): AxiosPromise<Array<string>>;
+    /**
+     *
+     * @summary 获取流程关联的触发器
+     * @param {string} process
+     * @param {string} [opt]
+     * @param {string} [cid]
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     */
+    getTriggerKeys(process: string, opt?: string, cid?: string, options?: any): AxiosPromise<Array<string>>;
+    /**
+     *
+     * @summary 获取触发器的目标流程
+     * @param {string} key
+     * @param {string} [opt]
+     * @param {string} [cid]
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     */
+    getTriggerProcess(key: string, opt?: string, cid?: string, options?: any): AxiosPromise<Array<string>>;
+    /**
+     *
+     * @summary 设置触发器
+     * @param {string} key
+     * @param {string} opt
+     * @param {Set<string>} requestBody
+     * @param {string} [cid]
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     */
+    setTriggerProcess(key: string, opt: string, requestBody: Set<string>, cid?: string, options?: any): AxiosPromise<void>;
+};
+/**
+ * TriggersApi - object-oriented interface
+ * @export
+ * @class TriggersApi
+ * @extends {BaseAPI}
+ */
+export declare class TriggersApi extends BaseAPI {
+    /**
+     *
+     * @summary 获取触发器支持的事件
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     * @memberof TriggersApi
+     */
+    getOperations(options?: any): Promise<import("axios").AxiosResponse<string[]>>;
+    /**
+     *
+     * @summary 获取流程关联的触发器
+     * @param {string} process
+     * @param {string} [opt]
+     * @param {string} [cid]
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     * @memberof TriggersApi
+     */
+    getTriggerKeys(process: string, opt?: string, cid?: string, options?: any): Promise<import("axios").AxiosResponse<string[]>>;
+    /**
+     *
+     * @summary 获取触发器的目标流程
+     * @param {string} key
+     * @param {string} [opt]
+     * @param {string} [cid]
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     * @memberof TriggersApi
+     */
+    getTriggerProcess(key: string, opt?: string, cid?: string, options?: any): Promise<import("axios").AxiosResponse<string[]>>;
+    /**
+     *
+     * @summary 设置触发器
+     * @param {string} key
+     * @param {string} opt
+     * @param {Set<string>} requestBody
+     * @param {string} [cid]
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     * @memberof TriggersApi
+     */
+    setTriggerProcess(key: string, opt: string, requestBody: Set<string>, cid?: string, options?: any): Promise<import("axios").AxiosResponse<void>>;
 }
 /**
  * UserTasksApi - axios parameter creator

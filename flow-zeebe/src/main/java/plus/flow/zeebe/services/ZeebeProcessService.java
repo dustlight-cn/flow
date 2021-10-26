@@ -115,6 +115,22 @@ public class ZeebeProcessService implements ProcessService<String> {
     }
 
     @Override
+    public Mono<Boolean> isProcessExists(String clientId, Collection<String> name) {
+        if (name == null || name.size() == 0)
+            return Mono.just(false);
+        Set<String> terms = new HashSet<>();
+        for (String n : name)
+            terms.add(String.format("c%s-%s", clientId, n.trim()));
+        NativeSearchQuery query = new NativeSearchQueryBuilder()
+                .withQuery(new BoolQueryBuilder().filter(new TermsQueryBuilder("value.bpmnProcessId", terms)))
+                .withSourceFilter(new FetchSourceFilterBuilder().withIncludes("value.bpmnProcessId").build())
+                .withCollapseField("value.bpmnProcessId")
+                .build();
+        return operations.searchForPage(query, ZeebeProcessEntity.class, IndexCoordinates.of(processIndex))
+                .map(x -> x.getSize() == name.size());
+    }
+
+    @Override
     public Flux<Process<String>> findProcess(String clientId, String keyword, int page, int size) {
         BoolQueryBuilder boolQueryBuilder = new BoolQueryBuilder()
                 .filter(StringUtils.hasText(keyword) ? new MatchQueryBuilder("value.bpmnProcessId", keyword) :

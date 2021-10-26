@@ -25,7 +25,7 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.UserTasksApi = exports.UserTasksApiFactory = exports.UserTasksApiFp = exports.UserTasksApiAxiosParamCreator = exports.ProcessesApi = exports.ProcessesApiFactory = exports.ProcessesApiFp = exports.ProcessesApiAxiosParamCreator = exports.MessagesApi = exports.MessagesApiFactory = exports.MessagesApiFp = exports.MessagesApiAxiosParamCreator = exports.InstancesApi = exports.InstancesApiFactory = exports.InstancesApiFp = exports.InstancesApiAxiosParamCreator = exports.InstanceObjectStatusEnum = void 0;
+exports.UserTasksApi = exports.UserTasksApiFactory = exports.UserTasksApiFp = exports.UserTasksApiAxiosParamCreator = exports.TriggersApi = exports.TriggersApiFactory = exports.TriggersApiFp = exports.TriggersApiAxiosParamCreator = exports.ProcessesApi = exports.ProcessesApiFactory = exports.ProcessesApiFp = exports.ProcessesApiAxiosParamCreator = exports.MessagesApi = exports.MessagesApiFactory = exports.MessagesApiFp = exports.MessagesApiAxiosParamCreator = exports.InstancesApi = exports.InstancesApiFactory = exports.InstancesApiFp = exports.InstancesApiAxiosParamCreator = exports.InstanceObjectStatusEnum = void 0;
 const axios_1 = __importDefault(require("axios"));
 // Some imports not used depending on template conditions
 // @ts-ignore
@@ -893,6 +893,353 @@ class ProcessesApi extends base_1.BaseAPI {
     }
 }
 exports.ProcessesApi = ProcessesApi;
+/**
+ * TriggersApi - axios parameter creator
+ * @export
+ */
+const TriggersApiAxiosParamCreator = function (configuration) {
+    return {
+        /**
+         *
+         * @summary 获取触发器支持的事件
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        getOperations: (options = {}) => __awaiter(this, void 0, void 0, function* () {
+            const localVarPath = `/v1/trigger-operations`;
+            // use dummy base URL string because the URL constructor only accepts absolute URLs.
+            const localVarUrlObj = new URL(localVarPath, common_1.DUMMY_BASE_URL);
+            let baseOptions;
+            if (configuration) {
+                baseOptions = configuration.baseOptions;
+            }
+            const localVarRequestOptions = Object.assign(Object.assign({ method: 'GET' }, baseOptions), options);
+            const localVarHeaderParameter = {};
+            const localVarQueryParameter = {};
+            // authentication auth required
+            // oauth required
+            yield common_1.setOAuthToObject(localVarHeaderParameter, "auth", [], configuration);
+            common_1.setSearchParams(localVarUrlObj, localVarQueryParameter, options.query);
+            let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {};
+            localVarRequestOptions.headers = Object.assign(Object.assign(Object.assign({}, localVarHeaderParameter), headersFromBaseOptions), options.headers);
+            return {
+                url: common_1.toPathString(localVarUrlObj),
+                options: localVarRequestOptions,
+            };
+        }),
+        /**
+         *
+         * @summary 获取流程关联的触发器
+         * @param {string} process
+         * @param {string} [opt]
+         * @param {string} [cid]
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        getTriggerKeys: (process, opt, cid, options = {}) => __awaiter(this, void 0, void 0, function* () {
+            // verify required parameter 'process' is not null or undefined
+            common_1.assertParamExists('getTriggerKeys', 'process', process);
+            const localVarPath = `/v1/process/{process}/trigger`
+                .replace(`{${"process"}}`, encodeURIComponent(String(process)));
+            // use dummy base URL string because the URL constructor only accepts absolute URLs.
+            const localVarUrlObj = new URL(localVarPath, common_1.DUMMY_BASE_URL);
+            let baseOptions;
+            if (configuration) {
+                baseOptions = configuration.baseOptions;
+            }
+            const localVarRequestOptions = Object.assign(Object.assign({ method: 'GET' }, baseOptions), options);
+            const localVarHeaderParameter = {};
+            const localVarQueryParameter = {};
+            // authentication auth required
+            // oauth required
+            yield common_1.setOAuthToObject(localVarHeaderParameter, "auth", [], configuration);
+            if (opt !== undefined) {
+                localVarQueryParameter['opt'] = opt;
+            }
+            if (cid !== undefined) {
+                localVarQueryParameter['cid'] = cid;
+            }
+            common_1.setSearchParams(localVarUrlObj, localVarQueryParameter, options.query);
+            let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {};
+            localVarRequestOptions.headers = Object.assign(Object.assign(Object.assign({}, localVarHeaderParameter), headersFromBaseOptions), options.headers);
+            return {
+                url: common_1.toPathString(localVarUrlObj),
+                options: localVarRequestOptions,
+            };
+        }),
+        /**
+         *
+         * @summary 获取触发器的目标流程
+         * @param {string} key
+         * @param {string} [opt]
+         * @param {string} [cid]
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        getTriggerProcess: (key, opt, cid, options = {}) => __awaiter(this, void 0, void 0, function* () {
+            // verify required parameter 'key' is not null or undefined
+            common_1.assertParamExists('getTriggerProcess', 'key', key);
+            const localVarPath = `/v1/trigger/{key}`
+                .replace(`{${"key"}}`, encodeURIComponent(String(key)));
+            // use dummy base URL string because the URL constructor only accepts absolute URLs.
+            const localVarUrlObj = new URL(localVarPath, common_1.DUMMY_BASE_URL);
+            let baseOptions;
+            if (configuration) {
+                baseOptions = configuration.baseOptions;
+            }
+            const localVarRequestOptions = Object.assign(Object.assign({ method: 'GET' }, baseOptions), options);
+            const localVarHeaderParameter = {};
+            const localVarQueryParameter = {};
+            // authentication auth required
+            // oauth required
+            yield common_1.setOAuthToObject(localVarHeaderParameter, "auth", [], configuration);
+            if (opt !== undefined) {
+                localVarQueryParameter['opt'] = opt;
+            }
+            if (cid !== undefined) {
+                localVarQueryParameter['cid'] = cid;
+            }
+            common_1.setSearchParams(localVarUrlObj, localVarQueryParameter, options.query);
+            let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {};
+            localVarRequestOptions.headers = Object.assign(Object.assign(Object.assign({}, localVarHeaderParameter), headersFromBaseOptions), options.headers);
+            return {
+                url: common_1.toPathString(localVarUrlObj),
+                options: localVarRequestOptions,
+            };
+        }),
+        /**
+         *
+         * @summary 设置触发器
+         * @param {string} key
+         * @param {string} opt
+         * @param {Set<string>} requestBody
+         * @param {string} [cid]
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        setTriggerProcess: (key, opt, requestBody, cid, options = {}) => __awaiter(this, void 0, void 0, function* () {
+            // verify required parameter 'key' is not null or undefined
+            common_1.assertParamExists('setTriggerProcess', 'key', key);
+            // verify required parameter 'opt' is not null or undefined
+            common_1.assertParamExists('setTriggerProcess', 'opt', opt);
+            // verify required parameter 'requestBody' is not null or undefined
+            common_1.assertParamExists('setTriggerProcess', 'requestBody', requestBody);
+            const localVarPath = `/v1/trigger/{key}`
+                .replace(`{${"key"}}`, encodeURIComponent(String(key)));
+            // use dummy base URL string because the URL constructor only accepts absolute URLs.
+            const localVarUrlObj = new URL(localVarPath, common_1.DUMMY_BASE_URL);
+            let baseOptions;
+            if (configuration) {
+                baseOptions = configuration.baseOptions;
+            }
+            const localVarRequestOptions = Object.assign(Object.assign({ method: 'PUT' }, baseOptions), options);
+            const localVarHeaderParameter = {};
+            const localVarQueryParameter = {};
+            // authentication auth required
+            // oauth required
+            yield common_1.setOAuthToObject(localVarHeaderParameter, "auth", [], configuration);
+            if (opt !== undefined) {
+                localVarQueryParameter['opt'] = opt;
+            }
+            if (cid !== undefined) {
+                localVarQueryParameter['cid'] = cid;
+            }
+            localVarHeaderParameter['Content-Type'] = 'application/json';
+            common_1.setSearchParams(localVarUrlObj, localVarQueryParameter, options.query);
+            let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {};
+            localVarRequestOptions.headers = Object.assign(Object.assign(Object.assign({}, localVarHeaderParameter), headersFromBaseOptions), options.headers);
+            localVarRequestOptions.data = common_1.serializeDataIfNeeded(requestBody, localVarRequestOptions, configuration);
+            return {
+                url: common_1.toPathString(localVarUrlObj),
+                options: localVarRequestOptions,
+            };
+        }),
+    };
+};
+exports.TriggersApiAxiosParamCreator = TriggersApiAxiosParamCreator;
+/**
+ * TriggersApi - functional programming interface
+ * @export
+ */
+const TriggersApiFp = function (configuration) {
+    const localVarAxiosParamCreator = exports.TriggersApiAxiosParamCreator(configuration);
+    return {
+        /**
+         *
+         * @summary 获取触发器支持的事件
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        getOperations(options) {
+            return __awaiter(this, void 0, void 0, function* () {
+                const localVarAxiosArgs = yield localVarAxiosParamCreator.getOperations(options);
+                return common_1.createRequestFunction(localVarAxiosArgs, axios_1.default, base_1.BASE_PATH, configuration);
+            });
+        },
+        /**
+         *
+         * @summary 获取流程关联的触发器
+         * @param {string} process
+         * @param {string} [opt]
+         * @param {string} [cid]
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        getTriggerKeys(process, opt, cid, options) {
+            return __awaiter(this, void 0, void 0, function* () {
+                const localVarAxiosArgs = yield localVarAxiosParamCreator.getTriggerKeys(process, opt, cid, options);
+                return common_1.createRequestFunction(localVarAxiosArgs, axios_1.default, base_1.BASE_PATH, configuration);
+            });
+        },
+        /**
+         *
+         * @summary 获取触发器的目标流程
+         * @param {string} key
+         * @param {string} [opt]
+         * @param {string} [cid]
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        getTriggerProcess(key, opt, cid, options) {
+            return __awaiter(this, void 0, void 0, function* () {
+                const localVarAxiosArgs = yield localVarAxiosParamCreator.getTriggerProcess(key, opt, cid, options);
+                return common_1.createRequestFunction(localVarAxiosArgs, axios_1.default, base_1.BASE_PATH, configuration);
+            });
+        },
+        /**
+         *
+         * @summary 设置触发器
+         * @param {string} key
+         * @param {string} opt
+         * @param {Set<string>} requestBody
+         * @param {string} [cid]
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        setTriggerProcess(key, opt, requestBody, cid, options) {
+            return __awaiter(this, void 0, void 0, function* () {
+                const localVarAxiosArgs = yield localVarAxiosParamCreator.setTriggerProcess(key, opt, requestBody, cid, options);
+                return common_1.createRequestFunction(localVarAxiosArgs, axios_1.default, base_1.BASE_PATH, configuration);
+            });
+        },
+    };
+};
+exports.TriggersApiFp = TriggersApiFp;
+/**
+ * TriggersApi - factory interface
+ * @export
+ */
+const TriggersApiFactory = function (configuration, basePath, axios) {
+    const localVarFp = exports.TriggersApiFp(configuration);
+    return {
+        /**
+         *
+         * @summary 获取触发器支持的事件
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        getOperations(options) {
+            return localVarFp.getOperations(options).then((request) => request(axios, basePath));
+        },
+        /**
+         *
+         * @summary 获取流程关联的触发器
+         * @param {string} process
+         * @param {string} [opt]
+         * @param {string} [cid]
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        getTriggerKeys(process, opt, cid, options) {
+            return localVarFp.getTriggerKeys(process, opt, cid, options).then((request) => request(axios, basePath));
+        },
+        /**
+         *
+         * @summary 获取触发器的目标流程
+         * @param {string} key
+         * @param {string} [opt]
+         * @param {string} [cid]
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        getTriggerProcess(key, opt, cid, options) {
+            return localVarFp.getTriggerProcess(key, opt, cid, options).then((request) => request(axios, basePath));
+        },
+        /**
+         *
+         * @summary 设置触发器
+         * @param {string} key
+         * @param {string} opt
+         * @param {Set<string>} requestBody
+         * @param {string} [cid]
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        setTriggerProcess(key, opt, requestBody, cid, options) {
+            return localVarFp.setTriggerProcess(key, opt, requestBody, cid, options).then((request) => request(axios, basePath));
+        },
+    };
+};
+exports.TriggersApiFactory = TriggersApiFactory;
+/**
+ * TriggersApi - object-oriented interface
+ * @export
+ * @class TriggersApi
+ * @extends {BaseAPI}
+ */
+class TriggersApi extends base_1.BaseAPI {
+    /**
+     *
+     * @summary 获取触发器支持的事件
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     * @memberof TriggersApi
+     */
+    getOperations(options) {
+        return exports.TriggersApiFp(this.configuration).getOperations(options).then((request) => request(this.axios, this.basePath));
+    }
+    /**
+     *
+     * @summary 获取流程关联的触发器
+     * @param {string} process
+     * @param {string} [opt]
+     * @param {string} [cid]
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     * @memberof TriggersApi
+     */
+    getTriggerKeys(process, opt, cid, options) {
+        return exports.TriggersApiFp(this.configuration).getTriggerKeys(process, opt, cid, options).then((request) => request(this.axios, this.basePath));
+    }
+    /**
+     *
+     * @summary 获取触发器的目标流程
+     * @param {string} key
+     * @param {string} [opt]
+     * @param {string} [cid]
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     * @memberof TriggersApi
+     */
+    getTriggerProcess(key, opt, cid, options) {
+        return exports.TriggersApiFp(this.configuration).getTriggerProcess(key, opt, cid, options).then((request) => request(this.axios, this.basePath));
+    }
+    /**
+     *
+     * @summary 设置触发器
+     * @param {string} key
+     * @param {string} opt
+     * @param {Set<string>} requestBody
+     * @param {string} [cid]
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     * @memberof TriggersApi
+     */
+    setTriggerProcess(key, opt, requestBody, cid, options) {
+        return exports.TriggersApiFp(this.configuration).setTriggerProcess(key, opt, requestBody, cid, options).then((request) => request(this.axios, this.basePath));
+    }
+}
+exports.TriggersApi = TriggersApi;
 /**
  * UserTasksApi - axios parameter creator
  * @export
