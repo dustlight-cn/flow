@@ -32,7 +32,7 @@ public class TriggerController {
     public Mono<Void> setTrigger(@PathVariable(name = "name") String processes,
                                  @RequestParam(name = "key") String key,
                                  @RequestParam(name = "opt") String operation,
-                                 @RequestParam(name = "cid") String clientId,
+                                 @RequestParam(name = "cid", required = false) String clientId,
                                  AuthPrincipal principal,
                                  ReactiveAuthClient client) {
         if (!trigger.getSupportOperations().contains(operation))
