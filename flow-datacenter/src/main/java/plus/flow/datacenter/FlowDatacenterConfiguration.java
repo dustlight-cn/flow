@@ -6,6 +6,7 @@ import org.springframework.boot.autoconfigure.condition.ConditionalOnBean;
 import org.springframework.boot.context.properties.EnableConfigurationProperties;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import plus.flow.core.flow.trigger.FlowTrigger;
 import plus.flow.core.security.AccessTokenHolder;
 
 @Configuration
@@ -13,8 +14,9 @@ import plus.flow.core.security.AccessTokenHolder;
 public class FlowDatacenterConfiguration {
 
     @Bean
-    public DatacenterWatcher datacenterWatcher() {
-        return new DatacenterWatcher();
+    @ConditionalOnBean({FlowTrigger.class})
+    public DatacenterWatcher datacenterWatcher(@Autowired FlowTrigger flowTrigger) {
+        return new DatacenterWatcher(flowTrigger);
     }
 
     @Bean
