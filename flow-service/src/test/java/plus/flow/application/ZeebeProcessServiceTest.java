@@ -16,10 +16,7 @@ import plus.flow.core.flow.process.ProcessService;
 import java.io.BufferedInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
-import java.util.Base64;
-import java.util.Collection;
-import java.util.HashMap;
-import java.util.Map;
+import java.util.*;
 
 @SpringBootTest
 public class ZeebeProcessServiceTest {
@@ -104,5 +101,10 @@ public class ZeebeProcessServiceTest {
     public void ct() {
         Void x = instanceService.cancel("86c3e34e2030000", 4503599627460943L)
                 .block();
+    }
+
+    @Test
+    public void exists() {
+        System.out.println(processService.isProcessExists("86c3e34e2030000", Set.of("wtf")).block());
     }
 }

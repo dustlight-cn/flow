@@ -3,6 +3,8 @@ package plus.flow.core.flow.process;
 import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
 
+import java.util.Collection;
+
 public interface ProcessService<T> {
 
     /**
@@ -33,6 +35,15 @@ public interface ProcessService<T> {
      * @return
      */
     Mono<Process<T>> getProcess(String clientId, String name, Integer version);
+
+    /**
+     * 过程是否存在
+     *
+     * @param clientId
+     * @param name
+     * @return
+     */
+    Mono<Boolean> isProcessExists(String clientId, Collection<String> name);
 
     /**
      * 查找过程
