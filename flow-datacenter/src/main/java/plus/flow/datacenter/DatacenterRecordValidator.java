@@ -9,7 +9,7 @@ import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.web.reactive.function.client.*;
-import plus.datacenter.core.ErrorDetails;
+import plus.flow.core.exceptions.ErrorDetails;
 import plus.flow.core.exceptions.ErrorEnum;
 import plus.flow.core.flow.usertask.UserTaskDataValidator;
 import plus.flow.core.security.AccessTokenHolder;
@@ -31,7 +31,7 @@ public class DatacenterRecordValidator implements UserTaskDataValidator {
         this.webClient = WebClient
                 .builder()
                 .baseUrl(baseUrl)
-                .filter((request, next) -> accessTokenHolder.getAccessToken()
+                .filter((request, next) -> this.accessTokenHolder.getAccessToken()
                         .flatMap(token -> next.exchange(ClientRequest.from(request)
                                 .header(HttpHeaders.AUTHORIZATION, String.format("Bearer %s", token))
                                 .build())))
@@ -44,15 +44,13 @@ public class DatacenterRecordValidator implements UserTaskDataValidator {
                 .uri("/v1/validation")
                 .header(HttpHeaders.CONTENT_TYPE, MediaType.APPLICATION_JSON_VALUE)
                 .bodyValue(new Record(form, data).toJson())
-                .retrieve()
-                .bodyToMono(ClientResponse.class)
-                .flatMap(clientResponse -> {
-                    if (clientResponse.statusCode() == HttpStatus.OK)
-                        return Mono.just(true);
-                    return clientResponse.bodyToMono(ErrorDetails.class)
-                            .map(errorDetails -> ErrorEnum.UNKNOWN.details(errorDetails.getMessage()).getException())
-                            .flatMap(e -> Mono.error(e));
-                });
+                .exchangeToMono(clientResponse -> clientResponse.statusCode() == HttpStatus.OK ?
+                        Mono.just(true) :
+                        clientResponse.bodyToMono(ErrorDetails.class)
+                                .map(errorDetails -> ErrorEnum.USER_TASK_DATA_INVALID
+                                        .details(String.format("(#%d) %s, %s", errorDetails.getCode(), errorDetails.getMessage(), errorDetails.getDetails()))
+                                        .getException())
+                                .flatMap(e -> Mono.error(e)));
     }
 
     @Getter
@@ -60,7 +58,7 @@ public class DatacenterRecordValidator implements UserTaskDataValidator {
     @AllArgsConstructor
     private class Record {
 
-        private String form;
+        private String formName;
         private Map<String, Object> data;
 
         @SneakyThrows
