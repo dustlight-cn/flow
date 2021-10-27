@@ -6,8 +6,8 @@ import io.swagger.v3.oas.annotations.tags.Tag;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 import plus.auth.client.reactive.ReactiveAuthClient;
+import plus.auth.resources.AuthPrincipalUtil;
 import plus.auth.resources.core.AuthPrincipal;
-import plus.flow.application.ClientUtils;
 import plus.flow.core.flow.instance.Instance;
 import plus.flow.core.flow.instance.InstanceEvent;
 import plus.flow.core.flow.instance.InstanceService;
@@ -34,7 +34,7 @@ public class InstanceController {
                                          @RequestBody Map<String, Object> variables,
                                          ReactiveAuthClient reactiveAuthClient,
                                          AuthPrincipal principal) {
-        return ClientUtils.obtainClientId(reactiveAuthClient, clientId, principal)
+        return AuthPrincipalUtil.obtainClientId(reactiveAuthClient, clientId, principal)
                 .flatMap(cid -> instanceService.start(cid, name, variables));
     }
 
@@ -48,7 +48,7 @@ public class InstanceController {
                                        @RequestParam(name = "cid", required = false) String clientId,
                                        ReactiveAuthClient reactiveAuthClient,
                                        AuthPrincipal principal) {
-        return ClientUtils.obtainClientId(reactiveAuthClient, clientId, principal)
+        return AuthPrincipalUtil.obtainClientId(reactiveAuthClient, clientId, principal)
                 .flatMapMany(cid -> instanceService.list(cid, name, version, status, page, size));
     }
 
@@ -58,7 +58,7 @@ public class InstanceController {
                                       @RequestParam(name = "cid", required = false) String clientId,
                                       ReactiveAuthClient reactiveAuthClient,
                                       AuthPrincipal principal) {
-        return ClientUtils.obtainClientId(reactiveAuthClient, clientId, principal)
+        return AuthPrincipalUtil.obtainClientId(reactiveAuthClient, clientId, principal)
                 .flatMap(cid -> instanceService.get(cid, id));
     }
 
@@ -68,7 +68,7 @@ public class InstanceController {
                                      @RequestParam(name = "cid", required = false) String clientId,
                                      ReactiveAuthClient reactiveAuthClient,
                                      AuthPrincipal principal) {
-        return ClientUtils.obtainClientId(reactiveAuthClient, clientId, principal)
+        return AuthPrincipalUtil.obtainClientId(reactiveAuthClient, clientId, principal)
                 .flatMap(cid -> instanceService.cancel(cid, id));
     }
 

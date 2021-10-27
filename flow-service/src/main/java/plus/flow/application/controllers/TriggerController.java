@@ -7,8 +7,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.util.StringUtils;
 import org.springframework.web.bind.annotation.*;
 import plus.auth.client.reactive.ReactiveAuthClient;
+import plus.auth.resources.AuthPrincipalUtil;
 import plus.auth.resources.core.AuthPrincipal;
-import plus.flow.application.ClientUtils;
 import plus.flow.core.exceptions.ErrorEnum;
 import plus.flow.core.flow.process.ProcessService;
 import plus.flow.core.flow.trigger.FlowTrigger;
@@ -44,7 +44,7 @@ public class TriggerController {
                                         ReactiveAuthClient client) {
         if (!trigger.getSupportOperations().contains(operation))
             return Mono.error(ErrorEnum.TRIGGER_OPERATION_NOT_FOUND.getException());
-        return ClientUtils.obtainClientId(client, clientId, principal)
+        return AuthPrincipalUtil.obtainClientId(client, clientId, principal)
                 .flatMap(cid ->
                         processService.isProcessExists(cid, processes)
                                 .flatMap(flag -> (Boolean) flag ?
@@ -65,7 +65,7 @@ public class TriggerController {
         if (StringUtils.hasText(operation) && !trigger.getSupportOperations().contains(operation))
             return Mono.error(ErrorEnum.TRIGGER_OPERATION_NOT_FOUND.getException());
         String finalOperation = operation;
-        return ClientUtils.obtainClientId(client, clientId, principal)
+        return AuthPrincipalUtil.obtainClientId(client, clientId, principal)
                 .flatMap(cid -> triggerStore.getProcess(cid, key, finalOperation).collectList());
     }
 
@@ -81,7 +81,7 @@ public class TriggerController {
         if (StringUtils.hasText(operation) && !trigger.getSupportOperations().contains(operation))
             return Mono.error(ErrorEnum.TRIGGER_OPERATION_NOT_FOUND.getException());
         String finalOperation = operation;
-        return ClientUtils.obtainClientId(client, clientId, principal)
+        return AuthPrincipalUtil.obtainClientId(client, clientId, principal)
                 .flatMap(cid -> triggerStore.getSubscription(cid, process, finalOperation).collectList());
     }
 

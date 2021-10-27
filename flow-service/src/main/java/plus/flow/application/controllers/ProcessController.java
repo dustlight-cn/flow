@@ -7,8 +7,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;
 import org.springframework.web.bind.annotation.*;
 import plus.auth.client.reactive.ReactiveAuthClient;
+import plus.auth.resources.AuthPrincipalUtil;
 import plus.auth.resources.core.AuthPrincipal;
-import plus.flow.application.ClientUtils;
 import plus.flow.core.flow.process.Process;
 import plus.flow.core.flow.process.ProcessService;
 import reactor.core.publisher.Flux;
@@ -36,7 +36,7 @@ public class ProcessController {
                                     @RequestBody String data,
                                     ReactiveAuthClient reactiveAuthClient,
                                     AuthPrincipal principal) {
-        return ClientUtils.obtainClientId(reactiveAuthClient, clientId, principal)
+        return AuthPrincipalUtil.obtainClientId(reactiveAuthClient, clientId, principal)
                 .flatMap(cid -> processService.createProcess(cid,
                         principal.getUidString(),
                         isBase64 ? data : Base64.getEncoder().encodeToString(data.getBytes(StandardCharsets.UTF_8))
@@ -50,7 +50,7 @@ public class ProcessController {
                                     @RequestParam(name = "cid", required = false) String clientId,
                                     ReactiveAuthClient reactiveAuthClient,
                                     AuthPrincipal principal) {
-        return ClientUtils.obtainClientId(reactiveAuthClient, clientId, principal)
+        return AuthPrincipalUtil.obtainClientId(reactiveAuthClient, clientId, principal)
                 .flatMap(cid -> processService.getProcess(cid, name, null));
     }
 
@@ -61,7 +61,7 @@ public class ProcessController {
                                     @RequestParam(name = "cid", required = false) String clientId,
                                     ReactiveAuthClient reactiveAuthClient,
                                     AuthPrincipal principal) {
-        return ClientUtils.obtainClientId(reactiveAuthClient, clientId, principal)
+        return AuthPrincipalUtil.obtainClientId(reactiveAuthClient, clientId, principal)
                 .flatMap(cid -> processService.getProcess(cid, name, version));
     }
 
@@ -73,7 +73,7 @@ public class ProcessController {
                                       @RequestParam(name = "size", required = false, defaultValue = "10") int size,
                                       ReactiveAuthClient reactiveAuthClient,
                                       AuthPrincipal principal) {
-        return ClientUtils.obtainClientId(reactiveAuthClient, clientId, principal)
+        return AuthPrincipalUtil.obtainClientId(reactiveAuthClient, clientId, principal)
                 .flatMapMany(cid -> processService.findProcess(cid, keyword, page, size));
     }
 }
