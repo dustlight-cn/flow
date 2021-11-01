@@ -9,6 +9,7 @@ import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.core.io.ClassPathResource;
+import plus.flow.core.flow.QueryResult;
 import plus.flow.core.flow.instance.Instance;
 import plus.flow.core.flow.instance.InstanceService;
 import plus.flow.core.flow.process.ProcessService;
@@ -76,23 +77,22 @@ public class ZeebeProcessServiceTest {
 
     @Test
     public void findProcess() throws JsonProcessingException {
-        Collection list = (Collection) processService.findProcess("86c3e34e2030000", "", 0, 10).collectList().block();
-        for (Object obj : list) {
+        QueryResult list = (QueryResult) processService.findProcess("86c3e34e2030000", "", 0, 10).block();
+        for (Object obj : list.getData()) {
             logger.info(mapper.writeValueAsString(obj));
         }
     }
 
     @Test
     public void findInstance() throws JsonProcessingException {
-        Collection<Instance> list = instanceService.list("86c3e34e2030000",
+        QueryResult<Instance> list = instanceService.list("86c3e34e2030000",
                         "",
                         null,
                         null,
                         1,
                         10)
-                .collectList()
                 .block();
-        for (Instance obj : list) {
+        for (Instance obj : list.getData()) {
             logger.info(mapper.writeValueAsString(obj));
         }
     }

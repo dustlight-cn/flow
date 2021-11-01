@@ -9,9 +9,9 @@ import org.springframework.web.bind.annotation.*;
 import plus.auth.client.reactive.ReactiveAuthClient;
 import plus.auth.resources.AuthPrincipalUtil;
 import plus.auth.resources.core.AuthPrincipal;
+import plus.flow.core.flow.QueryResult;
 import plus.flow.core.flow.process.Process;
 import plus.flow.core.flow.process.ProcessService;
-import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
 
 import java.nio.charset.StandardCharsets;
@@ -67,13 +67,13 @@ public class ProcessController {
 
     @Operation(summary = "获取流程列表")
     @GetMapping("/processes")
-    public Flux<Process> getProcesses(@RequestParam(name = "q", required = false) String keyword,
-                                      @RequestParam(name = "cid", required = false) String clientId,
-                                      @RequestParam(name = "page", required = false, defaultValue = "0") int page,
-                                      @RequestParam(name = "size", required = false, defaultValue = "10") int size,
-                                      ReactiveAuthClient reactiveAuthClient,
-                                      AuthPrincipal principal) {
+    public Mono<QueryResult<Process>> getProcesses(@RequestParam(name = "q", required = false) String keyword,
+                                                   @RequestParam(name = "cid", required = false) String clientId,
+                                                   @RequestParam(name = "page", required = false, defaultValue = "0") int page,
+                                                   @RequestParam(name = "size", required = false, defaultValue = "10") int size,
+                                                   ReactiveAuthClient reactiveAuthClient,
+                                                   AuthPrincipal principal) {
         return AuthPrincipalUtil.obtainClientId(reactiveAuthClient, clientId, principal)
-                .flatMapMany(cid -> processService.findProcess(cid, keyword, page, size));
+                .flatMap(cid -> processService.findProcess(cid, keyword, page, size));
     }
 }

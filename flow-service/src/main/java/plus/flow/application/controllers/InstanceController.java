@@ -8,10 +8,10 @@ import org.springframework.web.bind.annotation.*;
 import plus.auth.client.reactive.ReactiveAuthClient;
 import plus.auth.resources.AuthPrincipalUtil;
 import plus.auth.resources.core.AuthPrincipal;
+import plus.flow.core.flow.QueryResult;
 import plus.flow.core.flow.instance.Instance;
 import plus.flow.core.flow.instance.InstanceEvent;
 import plus.flow.core.flow.instance.InstanceService;
-import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
 
 import java.util.Map;
@@ -40,16 +40,16 @@ public class InstanceController {
 
     @Operation(summary = "查询流程实例")
     @GetMapping(value = "/instances")
-    public Flux<Instance> getInstances(@RequestParam(name = "name", required = false) String name,
-                                       @RequestParam(name = "version", required = false) Integer version,
-                                       @RequestParam(name = "status", required = false) Set<InstanceEvent.Status> status,
-                                       @RequestParam(name = "page", required = false, defaultValue = "0") int page,
-                                       @RequestParam(name = "size", required = false, defaultValue = "10") int size,
-                                       @RequestParam(name = "cid", required = false) String clientId,
-                                       ReactiveAuthClient reactiveAuthClient,
-                                       AuthPrincipal principal) {
+    public Mono<QueryResult<Instance>> getInstances(@RequestParam(name = "name", required = false) String name,
+                                                    @RequestParam(name = "version", required = false) Integer version,
+                                                    @RequestParam(name = "status", required = false) Set<InstanceEvent.Status> status,
+                                                    @RequestParam(name = "page", required = false, defaultValue = "0") int page,
+                                                    @RequestParam(name = "size", required = false, defaultValue = "10") int size,
+                                                    @RequestParam(name = "cid", required = false) String clientId,
+                                                    ReactiveAuthClient reactiveAuthClient,
+                                                    AuthPrincipal principal) {
         return AuthPrincipalUtil.obtainClientId(reactiveAuthClient, clientId, principal)
-                .flatMapMany(cid -> instanceService.list(cid, name, version, status, page, size));
+                .flatMap(cid -> instanceService.list(cid, name, version, status, page, size));
     }
 
     @Operation(summary = "通过 ID 获取流程实例")

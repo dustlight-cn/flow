@@ -7,6 +7,8 @@ import io.camunda.zeebe.model.bpmn.BpmnModelInstance;
 import lombok.Getter;
 import lombok.Setter;
 import org.elasticsearch.index.query.*;
+import org.elasticsearch.search.aggregations.metrics.CardinalityAggregationBuilder;
+import org.elasticsearch.search.aggregations.metrics.ParsedCardinality;
 import org.elasticsearch.search.sort.FieldSortBuilder;
 import org.elasticsearch.search.sort.SortOrder;
 import org.springframework.core.Ordered;
@@ -19,6 +21,7 @@ import org.springframework.data.elasticsearch.core.query.NativeSearchQueryBuilde
 import org.springframework.util.StringUtils;
 import plus.flow.core.exceptions.ErrorEnum;
 import plus.flow.core.exceptions.FlowException;
+import plus.flow.core.flow.QueryResult;
 import plus.flow.core.flow.process.Process;
 import plus.flow.core.flow.process.ProcessService;
 import plus.flow.zeebe.entities.DefaultAdapterContext;
@@ -131,7 +134,7 @@ public class ZeebeProcessService implements ProcessService<String> {
     }
 
     @Override
-    public Flux<Process<String>> findProcess(String clientId, String keyword, int page, int size) {
+    public Mono<QueryResult<ZeebeProcess>> findProcess(String clientId, String keyword, int page, int size) {
         BoolQueryBuilder boolQueryBuilder = new BoolQueryBuilder()
                 .filter(StringUtils.hasText(keyword) ? new MatchQueryBuilder("value.bpmnProcessId", String.format("c%s-%s", clientId, keyword)) :
                         new MatchAllQueryBuilder())
@@ -142,18 +145,23 @@ public class ZeebeProcessService implements ProcessService<String> {
                 .withSort(new FieldSortBuilder("position").order(SortOrder.DESC))
                 .withPageable(Pageable.ofSize(size).withPage(page))
                 .withCollapseField("value.bpmnProcessId")
+                .addAggregation(new CardinalityAggregationBuilder("count").field("value.bpmnProcessId"))
                 .build();
-        return operations.search(q,
+
+        return operations.searchForPage(q,
                         ZeebeProcessEntity.class,
                         IndexCoordinates.of(processIndex))
-                .map(zeebeProcessEntitySearchHit -> zeebeProcessEntitySearchHit.getContent())
-                .map(ZeebeProcessService::cloneAndSet)
-                .flatMap(this::reverse);
-    }
-
-    @Override
-    public Flux<Process<String>> findProcessLatest(String clientId, String keyword, int page, int size) {
-        return null;
+                .flatMap(searchHits -> {
+                    long count = searchHits.getSearchHits().getAggregations().get("count") instanceof ParsedCardinality ?
+                            ((ParsedCardinality) searchHits.getSearchHits().getAggregations().get("count")).getValue() :
+                            searchHits.getTotalElements();
+                    return Flux.fromStream(searchHits.stream())
+                            .map(hit -> hit.getContent())
+                            .map(ZeebeProcessService::cloneAndSet)
+                            .flatMap(this::reverse)
+                            .collectList()
+                            .map(hits -> new QueryResult<>(count, hits));
+                });
     }
 
     protected String computeOwner(String clientId, String val) {

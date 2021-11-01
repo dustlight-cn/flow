@@ -1,6 +1,6 @@
 package plus.flow.core.flow.process;
 
-import reactor.core.publisher.Flux;
+import plus.flow.core.flow.QueryResult;
 import reactor.core.publisher.Mono;
 
 import java.util.Collection;
@@ -54,16 +54,6 @@ public interface ProcessService<T> {
      * @param size
      * @return
      */
-    Flux<Process<T>> findProcess(String clientId, String keyword, int page, int size);
+    <P extends Process<T>> Mono<QueryResult<P>> findProcess(String clientId, String keyword, int page, int size);
 
-    /**
-     * 查找最新版本过程
-     *
-     * @param clientId
-     * @param keyword
-     * @param page
-     * @param size
-     * @return
-     */
-    Flux<Process<T>> findProcessLatest(String clientId, String keyword, int page, int size);
 }

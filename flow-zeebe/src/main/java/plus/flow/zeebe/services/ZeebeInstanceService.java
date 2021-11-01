@@ -4,6 +4,8 @@ import io.camunda.zeebe.client.ZeebeClient;
 import lombok.Getter;
 import lombok.Setter;
 import org.elasticsearch.index.query.*;
+import org.elasticsearch.search.aggregations.metrics.CardinalityAggregationBuilder;
+import org.elasticsearch.search.aggregations.metrics.ParsedCardinality;
 import org.elasticsearch.search.collapse.CollapseBuilder;
 import org.elasticsearch.search.sort.FieldSortBuilder;
 import org.elasticsearch.search.sort.SortOrder;
@@ -16,6 +18,7 @@ import org.springframework.data.elasticsearch.core.query.NativeSearchQuery;
 import org.springframework.data.elasticsearch.core.query.NativeSearchQueryBuilder;
 import org.springframework.util.StringUtils;
 import plus.flow.core.exceptions.ErrorEnum;
+import plus.flow.core.flow.QueryResult;
 import plus.flow.core.flow.instance.Instance;
 import plus.flow.core.flow.instance.InstanceEvent;
 import plus.flow.core.flow.instance.InstanceService;
@@ -106,12 +109,12 @@ public class ZeebeInstanceService implements InstanceService {
 
 
     @Override
-    public Flux<Instance> list(String clientId,
-                               String name,
-                               Integer version,
-                               Set<Instance.Status> statuses,
-                               int page,
-                               int size) {
+    public Mono<QueryResult<Instance>> list(String clientId,
+                                            String name,
+                                            Integer version,
+                                            Set<Instance.Status> statuses,
+                                            int page,
+                                            int size) {
         BoolQueryBuilder statusFilter = null;
         if (statuses != null && !statuses.isEmpty()) {
             statusFilter = new BoolQueryBuilder();
@@ -176,12 +179,12 @@ public class ZeebeInstanceService implements InstanceService {
                 ));
     }
 
-    public Flux<Instance> listInstance(String clientId,
-                                       String name,
-                                       Integer version,
-                                       int page,
-                                       int size,
-                                       QueryBuilder... filters) {
+    public Mono<QueryResult<Instance>> listInstance(String clientId,
+                                                    String name,
+                                                    Integer version,
+                                                    int page,
+                                                    int size,
+                                                    QueryBuilder... filters) {
         QueryBuilder processId = StringUtils.hasText(name) ?
                 new TermQueryBuilder("value.bpmnProcessId", String.format("c%s-%s", clientId, name)) :
                 new PrefixQueryBuilder("value.bpmnProcessId", String.format("c%s-", clientId));
@@ -203,6 +206,7 @@ public class ZeebeInstanceService implements InstanceService {
 //                .withSort(new FieldSortBuilder("timestamp").order(SortOrder.ASC))
 //                .withSort(new FieldSortBuilder("position").order(SortOrder.ASC))
                 .withPageable(Pageable.ofSize(size).withPage(page))
+                .addAggregation(new CardinalityAggregationBuilder("count").field("value.processInstanceKey"))
                 .build();
 
 
@@ -220,12 +224,19 @@ public class ZeebeInstanceService implements InstanceService {
         return operations.searchForPage(query,
                         ZeebeInstanceEntity.class,
                         IndexCoordinates.of(incidentIndex, instanceIndex))
-                .flatMapMany(searchHits -> Flux.fromIterable(searchHits.getContent()))
-                .map(hit -> {
-                    ZeebeInstanceEntity start = ((SearchHits<ZeebeInstanceEntity>) hit.getInnerHits("start")).getSearchHit(0).getContent();
-                    SearchHits<ZeebeInstanceEntity> currentHits = (SearchHits<ZeebeInstanceEntity>) hit.getInnerHits("current");
-                    ZeebeInstanceEntity current = currentHits.hasSearchHits() ? currentHits.getSearchHit(0).getContent() : null;
-                    return new ZeebeInstance(start, current);
+                .flatMap(searchHits -> {
+                    long count = searchHits.getSearchHits().getAggregations().get("count") instanceof ParsedCardinality ?
+                            ((ParsedCardinality) searchHits.getSearchHits().getAggregations().get("count")).getValue() :
+                            searchHits.getTotalElements();
+                    return Flux.fromIterable(searchHits.getContent())
+                            .map(hit -> {
+                                ZeebeInstanceEntity start = ((SearchHits<ZeebeInstanceEntity>) hit.getInnerHits("start")).getSearchHit(0).getContent();
+                                SearchHits<ZeebeInstanceEntity> currentHits = (SearchHits<ZeebeInstanceEntity>) hit.getInnerHits("current");
+                                ZeebeInstanceEntity current = currentHits.hasSearchHits() ? currentHits.getSearchHit(0).getContent() : null;
+                                return new ZeebeInstance(start, current);
+                            })
+                            .collectList()
+                            .map(hits -> new QueryResult<>(count, hits));
                 });
     }
 

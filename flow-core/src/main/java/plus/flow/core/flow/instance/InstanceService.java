@@ -1,6 +1,6 @@
 package plus.flow.core.flow.instance;
 
-import reactor.core.publisher.Flux;
+import plus.flow.core.flow.QueryResult;
 import reactor.core.publisher.Mono;
 
 import java.util.Map;
@@ -44,12 +44,12 @@ public interface InstanceService {
      * @param size
      * @return
      */
-    Flux<Instance> list(String clientId,
-                        String name,
-                        Integer version,
-                        Set<Instance.Status> statuses,
-                        int page,
-                        int size);
+    Mono<QueryResult<Instance>> list(String clientId,
+                                       String name,
+                                       Integer version,
+                                       Set<Instance.Status> statuses,
+                                       int page,
+                                       int size);
 
     /**
      * 取消允许
