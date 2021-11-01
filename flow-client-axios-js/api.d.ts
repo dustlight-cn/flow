@@ -167,6 +167,44 @@ export interface ProcessObject {
 /**
  *
  * @export
+ * @interface QueryResultInstanceObject
+ */
+export interface QueryResultInstanceObject {
+    /**
+     *
+     * @type {number}
+     * @memberof QueryResultInstanceObject
+     */
+    count?: number;
+    /**
+     *
+     * @type {Array<InstanceObject>}
+     * @memberof QueryResultInstanceObject
+     */
+    data?: Array<InstanceObject>;
+}
+/**
+ *
+ * @export
+ * @interface QueryResultProcessObject
+ */
+export interface QueryResultProcessObject {
+    /**
+     *
+     * @type {number}
+     * @memberof QueryResultProcessObject
+     */
+    count?: number;
+    /**
+     *
+     * @type {Array<ProcessObject>}
+     * @memberof QueryResultProcessObject
+     */
+    data?: Array<ProcessObject>;
+}
+/**
+ *
+ * @export
  * @interface UserTask
  */
 export interface UserTask {
@@ -328,7 +366,7 @@ export declare const InstancesApiFp: (configuration?: Configuration) => {
      * @param {*} [options] Override http request option.
      * @throws {RequiredError}
      */
-    getInstances(name?: string, version?: number, status?: Set<'ACTIVE' | 'CANCELED' | 'COMPLETED' | 'INCIDENT' | 'RESOLVED'>, page?: number, size?: number, cid?: string, options?: any): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<Array<InstanceObject>>>;
+    getInstances(name?: string, version?: number, status?: Set<'ACTIVE' | 'CANCELED' | 'COMPLETED' | 'INCIDENT' | 'RESOLVED'>, page?: number, size?: number, cid?: string, options?: any): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<QueryResultInstanceObject>>;
 };
 /**
  * InstancesApi - factory interface
@@ -377,7 +415,7 @@ export declare const InstancesApiFactory: (configuration?: Configuration, basePa
      * @param {*} [options] Override http request option.
      * @throws {RequiredError}
      */
-    getInstances(name?: string, version?: number, status?: Set<'ACTIVE' | 'CANCELED' | 'COMPLETED' | 'INCIDENT' | 'RESOLVED'>, page?: number, size?: number, cid?: string, options?: any): AxiosPromise<Array<InstanceObject>>;
+    getInstances(name?: string, version?: number, status?: Set<'ACTIVE' | 'CANCELED' | 'COMPLETED' | 'INCIDENT' | 'RESOLVED'>, page?: number, size?: number, cid?: string, options?: any): AxiosPromise<QueryResultInstanceObject>;
 };
 /**
  * InstancesApi - object-oriented interface
@@ -432,7 +470,7 @@ export declare class InstancesApi extends BaseAPI {
      * @throws {RequiredError}
      * @memberof InstancesApi
      */
-    getInstances(name?: string, version?: number, status?: Set<'ACTIVE' | 'CANCELED' | 'COMPLETED' | 'INCIDENT' | 'RESOLVED'>, page?: number, size?: number, cid?: string, options?: any): Promise<import("axios").AxiosResponse<InstanceObject[]>>;
+    getInstances(name?: string, version?: number, status?: Set<'ACTIVE' | 'CANCELED' | 'COMPLETED' | 'INCIDENT' | 'RESOLVED'>, page?: number, size?: number, cid?: string, options?: any): Promise<import("axios").AxiosResponse<QueryResultInstanceObject>>;
 }
 /**
  * MessagesApi - axios parameter creator
@@ -591,7 +629,7 @@ export declare const ProcessesApiFp: (configuration?: Configuration) => {
      * @param {*} [options] Override http request option.
      * @throws {RequiredError}
      */
-    getProcesses(q?: string, cid?: string, page?: number, size?: number, options?: any): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<Array<ProcessObject>>>;
+    getProcesses(q?: string, cid?: string, page?: number, size?: number, options?: any): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<QueryResultProcessObject>>;
 };
 /**
  * ProcessesApi - factory interface
@@ -637,7 +675,7 @@ export declare const ProcessesApiFactory: (configuration?: Configuration, basePa
      * @param {*} [options] Override http request option.
      * @throws {RequiredError}
      */
-    getProcesses(q?: string, cid?: string, page?: number, size?: number, options?: any): AxiosPromise<Array<ProcessObject>>;
+    getProcesses(q?: string, cid?: string, page?: number, size?: number, options?: any): AxiosPromise<QueryResultProcessObject>;
 };
 /**
  * ProcessesApi - object-oriented interface
@@ -689,7 +727,7 @@ export declare class ProcessesApi extends BaseAPI {
      * @throws {RequiredError}
      * @memberof ProcessesApi
      */
-    getProcesses(q?: string, cid?: string, page?: number, size?: number, options?: any): Promise<import("axios").AxiosResponse<ProcessObject[]>>;
+    getProcesses(q?: string, cid?: string, page?: number, size?: number, options?: any): Promise<import("axios").AxiosResponse<QueryResultProcessObject>>;
 }
 /**
  * TriggersApi - axios parameter creator

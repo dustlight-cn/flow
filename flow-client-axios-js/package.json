@@ -1,6 +1,6 @@
 {
   "name": "@plus/flow-client-axios-js",
-  "version": "0.1.2-alpha",
+  "version": "0.1.2-alpha-1",
   "description": "Client SDK for Flow-Service",
   "main": "index.ts",
   "scripts": {

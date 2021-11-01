@@ -178,6 +178,44 @@ export interface ProcessObject {
 /**
  * 
  * @export
+ * @interface QueryResultInstanceObject
+ */
+export interface QueryResultInstanceObject {
+    /**
+     * 
+     * @type {number}
+     * @memberof QueryResultInstanceObject
+     */
+    count?: number;
+    /**
+     * 
+     * @type {Array<InstanceObject>}
+     * @memberof QueryResultInstanceObject
+     */
+    data?: Array<InstanceObject>;
+}
+/**
+ * 
+ * @export
+ * @interface QueryResultProcessObject
+ */
+export interface QueryResultProcessObject {
+    /**
+     * 
+     * @type {number}
+     * @memberof QueryResultProcessObject
+     */
+    count?: number;
+    /**
+     * 
+     * @type {Array<ProcessObject>}
+     * @memberof QueryResultProcessObject
+     */
+    data?: Array<ProcessObject>;
+}
+/**
+ * 
+ * @export
  * @interface UserTask
  */
 export interface UserTask {
@@ -511,7 +549,7 @@ export const InstancesApiFp = function(configuration?: Configuration) {
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
-        async getInstances(name?: string, version?: number, status?: Set<'ACTIVE' | 'CANCELED' | 'COMPLETED' | 'INCIDENT' | 'RESOLVED'>, page?: number, size?: number, cid?: string, options?: any): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<Array<InstanceObject>>> {
+        async getInstances(name?: string, version?: number, status?: Set<'ACTIVE' | 'CANCELED' | 'COMPLETED' | 'INCIDENT' | 'RESOLVED'>, page?: number, size?: number, cid?: string, options?: any): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<QueryResultInstanceObject>> {
             const localVarAxiosArgs = await localVarAxiosParamCreator.getInstances(name, version, status, page, size, cid, options);
             return createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration);
         },
@@ -571,7 +609,7 @@ export const InstancesApiFactory = function (configuration?: Configuration, base
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
-        getInstances(name?: string, version?: number, status?: Set<'ACTIVE' | 'CANCELED' | 'COMPLETED' | 'INCIDENT' | 'RESOLVED'>, page?: number, size?: number, cid?: string, options?: any): AxiosPromise<Array<InstanceObject>> {
+        getInstances(name?: string, version?: number, status?: Set<'ACTIVE' | 'CANCELED' | 'COMPLETED' | 'INCIDENT' | 'RESOLVED'>, page?: number, size?: number, cid?: string, options?: any): AxiosPromise<QueryResultInstanceObject> {
             return localVarFp.getInstances(name, version, status, page, size, cid, options).then((request) => request(axios, basePath));
         },
     };
@@ -1031,7 +1069,7 @@ export const ProcessesApiFp = function(configuration?: Configuration) {
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
-        async getProcesses(q?: string, cid?: string, page?: number, size?: number, options?: any): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<Array<ProcessObject>>> {
+        async getProcesses(q?: string, cid?: string, page?: number, size?: number, options?: any): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<QueryResultProcessObject>> {
             const localVarAxiosArgs = await localVarAxiosParamCreator.getProcesses(q, cid, page, size, options);
             return createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration);
         },
@@ -1090,7 +1128,7 @@ export const ProcessesApiFactory = function (configuration?: Configuration, base
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
-        getProcesses(q?: string, cid?: string, page?: number, size?: number, options?: any): AxiosPromise<Array<ProcessObject>> {
+        getProcesses(q?: string, cid?: string, page?: number, size?: number, options?: any): AxiosPromise<QueryResultProcessObject> {
             return localVarFp.getProcesses(q, cid, page, size, options).then((request) => request(axios, basePath));
         },
     };
