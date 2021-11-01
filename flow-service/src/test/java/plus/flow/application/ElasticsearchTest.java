@@ -144,4 +144,18 @@ public class ElasticsearchTest {
     public void testTriggerStore3(@Autowired TriggerStore store, @Autowired ObjectMapper mapper) throws JsonProcessingException {
         System.out.println(mapper.writeValueAsString(store.getSubscription("gg", "qq").collectList().block()));
     }
+
+    @Test
+    public void testIncident(@Autowired ReactiveElasticsearchOperations operations,
+                             @Autowired ObjectMapper mapper) throws JsonProcessingException {
+//        NativeSearchQuery query = new NativeSearchQueryBuilder()
+//                .withQuery(new BoolQueryBuilder()
+//                        .filter(new TermQueryBuilder("value.processInstanceKey", 6755399441312127L)))
+//                .build();
+//        List<ZeebeInstanceEntity> result = operations.search(query, ZeebeInstanceEntity.class, IndexCoordinates.of("zeebe-record-incident"))
+//                .map(zeebeInstanceEntitySearchHit -> zeebeInstanceEntitySearchHit.getContent())
+//                .map(entity -> new ZeebeInstanceEvent(entity))
+//                .collectList().block();
+//        System.out.println(mapper.writerWithDefaultPrettyPrinter().writeValueAsString(result));
+    }
 }

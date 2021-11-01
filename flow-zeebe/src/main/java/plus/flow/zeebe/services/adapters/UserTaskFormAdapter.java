@@ -36,9 +36,7 @@ public class UserTaskFormAdapter extends AbstractZeebeProcessAdapter {
                 String formKey = formDefinition.getFormKey();
                 if (formKey.startsWith(prefix))
                     formKey = formKey.substring(prefix.length());
-                System.out.println(formKey);
                 String form = userTaskIdMap.get(formKey);
-                System.out.println(form);
                 if (form != null)
                     formDefinition.setFormKey(form);
             });

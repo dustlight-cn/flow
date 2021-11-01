@@ -133,14 +133,15 @@ public class ZeebeProcessService implements ProcessService<String> {
     @Override
     public Flux<Process<String>> findProcess(String clientId, String keyword, int page, int size) {
         BoolQueryBuilder boolQueryBuilder = new BoolQueryBuilder()
-                .filter(StringUtils.hasText(keyword) ? new MatchQueryBuilder("value.bpmnProcessId", keyword) :
+                .filter(StringUtils.hasText(keyword) ? new MatchQueryBuilder("value.bpmnProcessId", String.format("c%s-%s", clientId, keyword)) :
                         new MatchAllQueryBuilder())
                 .filter(new PrefixQueryBuilder("value.bpmnProcessId", String.format("c%s-", clientId)));
 
         NativeSearchQuery q = new NativeSearchQueryBuilder().withQuery(boolQueryBuilder)
                 .withSourceFilter(new FetchSourceFilterBuilder().withExcludes("value.resource").build())
-                .withSort(new FieldSortBuilder("position"))
+                .withSort(new FieldSortBuilder("position").order(SortOrder.DESC))
                 .withPageable(Pageable.ofSize(size).withPage(page))
+                .withCollapseField("value.bpmnProcessId")
                 .build();
         return operations.search(q,
                         ZeebeProcessEntity.class,
