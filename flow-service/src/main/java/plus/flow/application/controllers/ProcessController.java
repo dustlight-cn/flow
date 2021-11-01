@@ -31,7 +31,7 @@ public class ProcessController {
     @PostMapping(value = "/process"
             , consumes = {"application/xml", "text/plain; charset: utf-8", "text/xml; charset: utf-8"}
             , produces = MediaType.APPLICATION_JSON_VALUE)
-    public Mono<Process> createProcess(@RequestParam(name = "cid", required = false) String clientId,
+    public Mono<Void> createProcess(@RequestParam(name = "cid", required = false) String clientId,
                                     @RequestParam(name = "base64", required = false, defaultValue = "false") boolean isBase64,
                                     @RequestBody String data,
                                     ReactiveAuthClient reactiveAuthClient,
@@ -40,7 +40,8 @@ public class ProcessController {
                 .flatMap(cid -> processService.createProcess(cid,
                         principal.getUidString(),
                         isBase64 ? data : Base64.getEncoder().encodeToString(data.getBytes(StandardCharsets.UTF_8))
-                ));
+                ))
+                .then();
     }
 
     @Operation(summary = "通过名称获取流程")
