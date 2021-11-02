@@ -278,8 +278,7 @@ public class ZeebeInstanceService implements InstanceService {
 
             ACTIVE = new BoolQueryBuilder()
                     .mustNot(CANCELED)
-                    .mustNot(COMPLETED)
-                    .mustNot(INCIDENT);
+                    .mustNot(COMPLETED);
         }
 
     }
