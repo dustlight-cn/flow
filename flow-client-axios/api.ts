@@ -105,13 +105,13 @@ export interface InstanceObject {
      * @type {string}
      * @memberof InstanceObject
      */
-    updatedAt?: string;
+    elementId?: string;
     /**
      * 
      * @type {string}
      * @memberof InstanceObject
      */
-    elementId?: string;
+    updatedAt?: string;
 }
 
 /**
@@ -428,6 +428,53 @@ export const InstancesApiAxiosParamCreator = function (configuration?: Configura
         },
         /**
          * 
+         * @summary 获取实例变量
+         * @param {number} id 
+         * @param {number} scope 
+         * @param {string} [cid] 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        getInstanceVariables: async (id: number, scope: number, cid?: string, options: any = {}): Promise<RequestArgs> => {
+            // verify required parameter 'id' is not null or undefined
+            assertParamExists('getInstanceVariables', 'id', id)
+            // verify required parameter 'scope' is not null or undefined
+            assertParamExists('getInstanceVariables', 'scope', scope)
+            const localVarPath = `/v1/instance/{id}/variables/{scope}`
+                .replace(`{${"id"}}`, encodeURIComponent(String(id)))
+                .replace(`{${"scope"}}`, encodeURIComponent(String(scope)));
+            // use dummy base URL string because the URL constructor only accepts absolute URLs.
+            const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL);
+            let baseOptions;
+            if (configuration) {
+                baseOptions = configuration.baseOptions;
+            }
+
+            const localVarRequestOptions = { method: 'GET', ...baseOptions, ...options};
+            const localVarHeaderParameter = {} as any;
+            const localVarQueryParameter = {} as any;
+
+            // authentication auth required
+            // oauth required
+            await setOAuthToObject(localVarHeaderParameter, "auth", [], configuration)
+
+            if (cid !== undefined) {
+                localVarQueryParameter['cid'] = cid;
+            }
+
+
+    
+            setSearchParams(localVarUrlObj, localVarQueryParameter, options.query);
+            let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {};
+            localVarRequestOptions.headers = {...localVarHeaderParameter, ...headersFromBaseOptions, ...options.headers};
+
+            return {
+                url: toPathString(localVarUrlObj),
+                options: localVarRequestOptions,
+            };
+        },
+        /**
+         * 
          * @summary 查询流程实例
          * @param {string} [name] 
          * @param {number} [version] 
@@ -539,6 +586,19 @@ export const InstancesApiFp = function(configuration?: Configuration) {
         },
         /**
          * 
+         * @summary 获取实例变量
+         * @param {number} id 
+         * @param {number} scope 
+         * @param {string} [cid] 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        async getInstanceVariables(id: number, scope: number, cid?: string, options?: any): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<{ [key: string]: object; }>> {
+            const localVarAxiosArgs = await localVarAxiosParamCreator.getInstanceVariables(id, scope, cid, options);
+            return createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration);
+        },
+        /**
+         * 
          * @summary 查询流程实例
          * @param {string} [name] 
          * @param {number} [version] 
@@ -596,6 +656,18 @@ export const InstancesApiFactory = function (configuration?: Configuration, base
          */
         getInstance(id: number, cid?: string, options?: any): AxiosPromise<InstanceObject> {
             return localVarFp.getInstance(id, cid, options).then((request) => request(axios, basePath));
+        },
+        /**
+         * 
+         * @summary 获取实例变量
+         * @param {number} id 
+         * @param {number} scope 
+         * @param {string} [cid] 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        getInstanceVariables(id: number, scope: number, cid?: string, options?: any): AxiosPromise<{ [key: string]: object; }> {
+            return localVarFp.getInstanceVariables(id, scope, cid, options).then((request) => request(axios, basePath));
         },
         /**
          * 
@@ -660,6 +732,20 @@ export class InstancesApi extends BaseAPI {
      */
     public getInstance(id: number, cid?: string, options?: any) {
         return InstancesApiFp(this.configuration).getInstance(id, cid, options).then((request) => request(this.axios, this.basePath));
+    }
+
+    /**
+     * 
+     * @summary 获取实例变量
+     * @param {number} id 
+     * @param {number} scope 
+     * @param {string} [cid] 
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     * @memberof InstancesApi
+     */
+    public getInstanceVariables(id: number, scope: number, cid?: string, options?: any) {
+        return InstancesApiFp(this.configuration).getInstanceVariables(id, scope, cid, options).then((request) => request(this.axios, this.basePath));
     }
 
     /**

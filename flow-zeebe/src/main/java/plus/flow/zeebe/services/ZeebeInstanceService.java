@@ -25,13 +25,11 @@ import plus.flow.core.flow.instance.InstanceService;
 import plus.flow.zeebe.entities.ZeebeInstance;
 import plus.flow.zeebe.entities.ZeebeInstanceEntity;
 import plus.flow.zeebe.entities.ZeebeInstanceEvent;
+import plus.flow.zeebe.entities.ZeebeVariableEntity;
 import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
 
-import java.util.Arrays;
-import java.util.HashSet;
-import java.util.Map;
-import java.util.Set;
+import java.util.*;
 
 public class ZeebeInstanceService implements InstanceService {
 
@@ -45,6 +43,10 @@ public class ZeebeInstanceService implements InstanceService {
     @Getter
     @Setter
     private String incidentIndex = "zeebe-record-incident";
+
+    @Getter
+    @Setter
+    private String variableIndex = "zeebe-record-variable";
 
     public ZeebeInstanceService(ZeebeClient zeebeClient,
                                 ReactiveElasticsearchOperations operations) {
@@ -177,6 +179,38 @@ public class ZeebeInstanceService implements InstanceService {
                                         sink.error(e);
                                 }))
                 ));
+    }
+
+    @Override
+    public Mono<Map<String, Object>> getVariables(String client, Long id, Long scope) {
+        NativeSearchQuery query = new NativeSearchQueryBuilder()
+                .withQuery(new BoolQueryBuilder()
+                        .filter(new PrefixQueryBuilder("value.bpmnProcessId", String.format("c%s-", client)))
+                        .filter(new TermQueryBuilder("value.processInstanceKey", id)))
+                .withPageable(Pageable.ofSize(1))
+                .build();
+        return operations.search(query, ZeebeInstanceEntity.class, IndexCoordinates.of(instanceIndex))
+                .singleOrEmpty()
+                .switchIfEmpty(Mono.error(ErrorEnum.INSTANCE_NOT_FOUND.getException()))
+                .map(hit -> hit.getContent())
+                .map(entity -> new NativeSearchQueryBuilder()
+                        .withQuery(new BoolQueryBuilder()
+                                .filter(new TermQueryBuilder("value.processInstanceKey", entity.getKey()))
+                                .filter(new TermQueryBuilder("value.scopeKey", scope)))
+                        .build())
+                .flatMapMany(nativeSearchQuery -> operations.search(nativeSearchQuery, ZeebeVariableEntity.class, IndexCoordinates.of(variableIndex)))
+                .map(zeebeVariableEntitySearchHit -> zeebeVariableEntitySearchHit.getContent())
+                .collectList()
+                .map(zeebeVariableEntities -> {
+                    Map<String, Object> result = new HashMap<>();
+                    for (ZeebeVariableEntity zeebeVariable : zeebeVariableEntities) {
+                        ZeebeVariableEntity.Value value;
+                        if (zeebeVariable == null || (value = zeebeVariable.getValue()) == null)
+                            continue;
+                        result.put(value.getName(), value.getValue());
+                    }
+                    return result;
+                });
     }
 
     public Mono<QueryResult<Instance>> listInstance(String clientId,

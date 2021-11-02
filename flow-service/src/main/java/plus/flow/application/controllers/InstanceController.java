@@ -72,4 +72,14 @@ public class InstanceController {
                 .flatMap(cid -> instanceService.cancel(cid, id));
     }
 
+    @Operation(summary = "获取实例变量")
+    @GetMapping(value = "/instance/{id}/variables/{scope}")
+    public Mono<Map<String, Object>> getInstanceVariables(@PathVariable Long id,
+                                                          @PathVariable Long scope,
+                                                          @RequestParam(name = "cid", required = false) String clientId,
+                                                          ReactiveAuthClient reactiveAuthClient,
+                                                          AuthPrincipal principal) {
+        return AuthPrincipalUtil.obtainClientId(reactiveAuthClient, clientId, principal)
+                .flatMap(cid -> instanceService.getVariables(cid, id, scope));
+    }
 }

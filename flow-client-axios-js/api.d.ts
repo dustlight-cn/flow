@@ -96,13 +96,13 @@ export interface InstanceObject {
      * @type {string}
      * @memberof InstanceObject
      */
-    updatedAt?: string;
+    elementId?: string;
     /**
      *
      * @type {string}
      * @memberof InstanceObject
      */
-    elementId?: string;
+    updatedAt?: string;
 }
 /**
     * @export
@@ -307,6 +307,16 @@ export declare const InstancesApiAxiosParamCreator: (configuration?: Configurati
     getInstance: (id: number, cid?: string, options?: any) => Promise<RequestArgs>;
     /**
      *
+     * @summary 获取实例变量
+     * @param {number} id
+     * @param {number} scope
+     * @param {string} [cid]
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     */
+    getInstanceVariables: (id: number, scope: number, cid?: string, options?: any) => Promise<RequestArgs>;
+    /**
+     *
      * @summary 查询流程实例
      * @param {string} [name]
      * @param {number} [version]
@@ -356,6 +366,18 @@ export declare const InstancesApiFp: (configuration?: Configuration) => {
     getInstance(id: number, cid?: string, options?: any): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<InstanceObject>>;
     /**
      *
+     * @summary 获取实例变量
+     * @param {number} id
+     * @param {number} scope
+     * @param {string} [cid]
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     */
+    getInstanceVariables(id: number, scope: number, cid?: string, options?: any): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<{
+        [key: string]: object;
+    }>>;
+    /**
+     *
      * @summary 查询流程实例
      * @param {string} [name]
      * @param {number} [version]
@@ -403,6 +425,18 @@ export declare const InstancesApiFactory: (configuration?: Configuration, basePa
      * @throws {RequiredError}
      */
     getInstance(id: number, cid?: string, options?: any): AxiosPromise<InstanceObject>;
+    /**
+     *
+     * @summary 获取实例变量
+     * @param {number} id
+     * @param {number} scope
+     * @param {string} [cid]
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     */
+    getInstanceVariables(id: number, scope: number, cid?: string, options?: any): AxiosPromise<{
+        [key: string]: object;
+    }>;
     /**
      *
      * @summary 查询流程实例
@@ -457,6 +491,19 @@ export declare class InstancesApi extends BaseAPI {
      * @memberof InstancesApi
      */
     getInstance(id: number, cid?: string, options?: any): Promise<import("axios").AxiosResponse<InstanceObject>>;
+    /**
+     *
+     * @summary 获取实例变量
+     * @param {number} id
+     * @param {number} scope
+     * @param {string} [cid]
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     * @memberof InstancesApi
+     */
+    getInstanceVariables(id: number, scope: number, cid?: string, options?: any): Promise<import("axios").AxiosResponse<{
+        [key: string]: object;
+    }>>;
     /**
      *
      * @summary 查询流程实例

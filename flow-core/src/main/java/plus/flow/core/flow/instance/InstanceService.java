@@ -45,11 +45,11 @@ public interface InstanceService {
      * @return
      */
     Mono<QueryResult<Instance>> list(String clientId,
-                                       String name,
-                                       Integer version,
-                                       Set<Instance.Status> statuses,
-                                       int page,
-                                       int size);
+                                     String name,
+                                     Integer version,
+                                     Set<Instance.Status> statuses,
+                                     int page,
+                                     int size);
 
     /**
      * 取消允许
@@ -69,4 +69,13 @@ public interface InstanceService {
      */
     Mono<Void> resolve(String client, Long id);
 
+    /**
+     * 获取变量
+     *
+     * @param client
+     * @param id
+     * @param scope
+     * @return
+     */
+    Mono<Map<String, Object>> getVariables(String client, Long id, Long scope);
 }
