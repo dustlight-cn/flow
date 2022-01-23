@@ -1,4 +1,4 @@
-FROM registry.cn-hangzhou.aliyuncs.com/wgv/openjdk:11.0.11-jre
+FROM openjdk:11.0.11-jre
 
 COPY app.jar app.jar
 
