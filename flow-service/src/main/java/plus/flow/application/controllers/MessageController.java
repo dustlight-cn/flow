@@ -5,9 +5,9 @@ import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
-import plus.auth.client.reactive.ReactiveAuthClient;
-import plus.auth.resources.AuthPrincipalUtil;
-import plus.auth.resources.core.AuthPrincipal;
+import cn.dustlight.auth.client.reactive.ReactiveAuthClient;
+import cn.dustlight.auth.resources.AuthPrincipalUtil;
+import cn.dustlight.auth.resources.core.AuthPrincipal;
 import plus.flow.core.flow.message.MessageService;
 import reactor.core.publisher.Mono;
 

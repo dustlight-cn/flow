@@ -5,7 +5,7 @@ import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
-import plus.auth.resources.core.AuthPrincipal;
+import cn.dustlight.auth.resources.core.AuthPrincipal;
 import plus.flow.core.flow.usertask.UserTask;
 import plus.flow.core.flow.usertask.UserTaskService;
 import reactor.core.publisher.Flux;

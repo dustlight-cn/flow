@@ -18,7 +18,7 @@ import org.springframework.context.annotation.Configuration;
                 description = "",
                 contact = @Contact(
                         name = "Hansin",
-                        email = "hansin@goodvoice.com"
+                        email = "hansin@dustlight.cn"
                 ),
                 version = "v1"
         )

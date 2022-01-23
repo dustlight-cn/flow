@@ -3,7 +3,7 @@
          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 https://maven.apache.org/xsd/maven-4.0.0.xsd">
     <modelVersion>4.0.0</modelVersion>
     <parent>
-        <groupId>plus.flow</groupId>
+        <groupId>cn.dustlight.flow</groupId>
         <artifactId>flow-parent</artifactId>
         <version>0.1.3-SNAPSHOT</version>
         <relativePath>../pom.xml</relativePath>
@@ -38,11 +38,11 @@
             <scope>test</scope>
         </dependency>
         <dependency>
-            <groupId>plus.flow</groupId>
+            <groupId>cn.dustlight.flow</groupId>
             <artifactId>flow-core</artifactId>
         </dependency>
         <dependency>
-            <groupId>plus.datacenter</groupId>
+            <groupId>cn.dustlight.datacenter</groupId>
             <artifactId>datacenter-amqp</artifactId>
         </dependency>
     </dependencies>

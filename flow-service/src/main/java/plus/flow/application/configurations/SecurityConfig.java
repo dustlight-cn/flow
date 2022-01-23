@@ -7,7 +7,7 @@ import org.springframework.security.config.annotation.method.configuration.Enabl
 import org.springframework.security.config.web.server.ServerHttpSecurity;
 import org.springframework.security.core.context.ReactiveSecurityContextHolder;
 import org.springframework.security.oauth2.server.resource.authentication.AbstractOAuth2TokenAuthenticationToken;
-import plus.auth.resources.AuthSecurityWebFilterChainConfiguration;
+import cn.dustlight.auth.resources.AuthSecurityWebFilterChainConfiguration;
 import plus.flow.core.security.AccessTokenHolder;
 import reactor.core.publisher.Mono;
 
