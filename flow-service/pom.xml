@@ -5,11 +5,12 @@
     <parent>
         <groupId>cn.dustlight.flow</groupId>
         <artifactId>flow-parent</artifactId>
-        <version>0.1.3-SNAPSHOT</version>
+        <version>0.1.3-alpha-SNAPSHOT</version>
         <relativePath>../pom.xml</relativePath>
     </parent>
     <artifactId>flow-service</artifactId>
-    <description>PLUS 流程服务</description>
+    <name>flow-service</name>
+    <description>流程服务</description>
 
     <dependencies>
         <dependency>
@@ -87,6 +88,22 @@
             <plugin>
                 <groupId>org.springframework.experimental</groupId>
                 <artifactId>spring-aot-maven-plugin</artifactId>
+            </plugin>
+
+            <!-- Source -->
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-source-plugin</artifactId>
+            </plugin>
+            <!-- Javadoc -->
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-javadoc-plugin</artifactId>
+            </plugin>
+            <!-- GPG -->
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-gpg-plugin</artifactId>
             </plugin>
         </plugins>
     </build>
