@@ -1,35 +1,39 @@
-# OAuth 配置
-plus:
-  oauth2:
-    client:
-      client-id: 877ce1dd5030000
-      client-secret: 1283d148237af330152929cfe05ec045b0a4e92d
-      api-endpoint: http://api.wgv
-      token-uri: http://api.wgv/v1/oauth/token
-    resource-server:
-      jwk-set-uri: http://api.wgv/v1/jwk
-      client-secret: none
-      client-id: none
-      uri: http://api.wgv/v1/token/validity
-      token-type: jwt
-  datacenter:
-    amqp:
-      exchange: datacenter-test
-      sync:
-        enabled: true
-        queue: flow-test
-        dead-letter-queue: flow-dead-test
+client:
+  id: "test"
+  secret: "e6423085f5165a58f8949e763c6691ffe44e2f86"
+  apiEndpoint: "https://api.dustlight.cn"
+  tokenUri: "https://api.dustlight.cn/v1/oauth/token"
+  checkTokenUri: "https://api.dustlight.cn/v1/token/validity"
+  jwkSetUri: "https://api.dustlight.cn/v1/jwk"
+
+dustlight:
+  auth:
+    oauth2:
+      client:
+        client-id: ${client.id}
+        client-secret: ${client.secret}
+        api-endpoint: ${client.apiEndpoint}
+        token-uri: ${client.tokenUri}
+      resource-server:
+        client-id: ${client.id}
+        client-secret: ${client.secret}
+        uri: ${client.checkTokenUri}
+        jwk-set-uri: ${client.jwkSetUri}
   flow:
-    authorization-endpoint: "http://accounts.wgv.ink/authorize"
+    authorization-endpoint: "https://accounts.dustlight.cn/authorize"
     zeebe:
-      address: zeebe.svc:26500
+      address: localhost:26500
       plaintext: true
       system-prefix:
-        - "system."
-  messenger:
-    client:
-      client-id: 8906c510dc30000
-      client-secret: dc09dbd5abeba019afbd678325961b05b1bfdbf0
+        - "csystem-"
+  datacenter:
+    amqp:
+      exchange: datacenter-my-dc
+      sync:
+        enabled: true
+        queue: my-flow
+        dead-letter-queue: my-flow-dead
+        dead-letter-routing-key: my-flow-SYNC-FAIL
 # SpringDoc 配置
 springdoc:
   api-docs:
@@ -38,21 +42,21 @@ springdoc:
   swagger-ui:
     path: /doc.html
     oauth:
-      client-id: 86c3e34e2030000
+      client-id: ${client.id}
       additional-query-string-params:
         jwt: true
 spring:
   rabbitmq:
-    addresses: rabbitmq.svc
+    addresses: localhost
     port: 5672
-    username: flow-test
-    password: flow-test
+    username: guest
+    password: guest
   data:
     elasticsearch:
       client:
         reactive:
           endpoints:
-            - elasticsearch.zeebe.svc
+            - localhost:9200
 logging:
   level:
-    plus.flow.*: debug
+    cn.dustlight.flow.*: debug

@@ -1,1 +1,1 @@
-org.springframework.boot.autoconfigure.EnableAutoConfiguration=plus.flow.datacenter.FlowDatacenterConfiguration
+org.springframework.boot.autoconfigure.EnableAutoConfiguration=cn.dustlight.flow.datacenter.FlowDatacenterConfiguration
