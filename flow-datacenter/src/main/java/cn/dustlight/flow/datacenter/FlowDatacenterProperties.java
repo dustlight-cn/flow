@@ -6,7 +6,7 @@ import org.springframework.boot.context.properties.ConfigurationProperties;
 
 @Getter
 @Setter
-@ConfigurationProperties(prefix = "plus.flow.datacenter")
+@ConfigurationProperties(prefix = "dustlight.flow.datacenter")
 public class FlowDatacenterProperties {
 
     private String endpoint = "https://api.json-schema.cloud";

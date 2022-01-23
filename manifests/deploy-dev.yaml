@@ -80,7 +80,7 @@ data:
                 - elasticsearch-master.zeebe
     logging:
       level:
-        plus.flow.*: debug
+        cn.dustlight.flow.*: debug
 ---
 # 创建 Deployment
 apiVersion: apps/v1

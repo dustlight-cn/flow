@@ -9,7 +9,7 @@ import java.util.Set;
 
 @Getter
 @Setter
-@ConfigurationProperties(prefix = "plus.flow.zeebe")
+@ConfigurationProperties(prefix = "dustlight.flow.zeebe")
 public class ZeebeProperties {
 
     private String address = "localhost:26500";

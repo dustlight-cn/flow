@@ -90,7 +90,7 @@ public class FlowZeebeConfiguration {
     }
 
     @Bean
-    @ConditionalOnProperty(prefix = "plus.flow.zeebe", name = "enable-user-task-worker", matchIfMissing = true)
+    @ConditionalOnProperty(prefix = "dustlight.flow.zeebe", name = "enable-user-task-worker", matchIfMissing = true)
     public UserTaskWorker userTaskWorkker(@Autowired ZeebeProperties properties,
                                           @Autowired ZeebeClient zeebeClient,
                                           @Autowired ReactiveElasticsearchOperations operations) {

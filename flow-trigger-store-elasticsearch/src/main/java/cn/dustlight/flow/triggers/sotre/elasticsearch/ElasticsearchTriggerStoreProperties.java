@@ -6,7 +6,7 @@ import org.springframework.boot.context.properties.ConfigurationProperties;
 
 @Getter
 @Setter
-@ConfigurationProperties(prefix = "plus.flow.triggers.store.elasticsearch")
+@ConfigurationProperties(prefix = "dustlight.flow.triggers.store.elasticsearch")
 public class ElasticsearchTriggerStoreProperties {
 
     private String index = "flow-triggers";
