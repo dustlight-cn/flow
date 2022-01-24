@@ -1,61 +1,54 @@
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: {{ include "flow-service.fullname" . }}
+  name: {{ .Release.Name }}-flow-service
   labels:
-    {{- include "flow-service.labels" . | nindent 4 }}
+    app: {{ .Release.Name }}-flow-service
 spec:
-  {{- if not .Values.autoscaling.enabled }}
   replicas: {{ .Values.replicaCount }}
-  {{- end }}
   selector:
     matchLabels:
-      {{- include "flow-service.selectorLabels" . | nindent 6 }}
+      app: {{ .Release.Name }}-flow-service
   template:
     metadata:
-      {{- with .Values.podAnnotations }}
-      annotations:
-        {{- toYaml . | nindent 8 }}
-      {{- end }}
       labels:
-        {{- include "flow-service.selectorLabels" . | nindent 8 }}
+        app: {{ .Release.Name }}-flow-service
     spec:
-      {{- with .Values.imagePullSecrets }}
-      imagePullSecrets:
-        {{- toYaml . | nindent 8 }}
-      {{- end }}
-      serviceAccountName: {{ include "flow-service.serviceAccountName" . }}
-      securityContext:
-        {{- toYaml .Values.podSecurityContext | nindent 8 }}
+      dnsPolicy: ClusterFirst
       containers:
-        - name: {{ .Chart.Name }}
-          securityContext:
-            {{- toYaml .Values.securityContext | nindent 12 }}
-          image: "{{ .Values.image.repository }}:{{ .Values.image.tag | default .Chart.AppVersion }}"
-          imagePullPolicy: {{ .Values.image.pullPolicy }}
-          ports:
-            - name: http
-              containerPort: 80
-              protocol: TCP
+        - name: {{ .Release.Name }}-flow-service
+          image: {{ .Values.image.repository }}:{{ .Values.image.tag }}
           livenessProbe:
+            failureThreshold: 3
             httpGet:
-              path: /
-              port: http
+              path: /actuator/health/liveness
+              port: 8080
+              scheme: HTTP
+            initialDelaySeconds: 70
+            periodSeconds: 70
+            successThreshold: 1
+            timeoutSeconds: 1
           readinessProbe:
+            failureThreshold: 1
             httpGet:
-              path: /
-              port: http
-          resources:
-            {{- toYaml .Values.resources | nindent 12 }}
-      {{- with .Values.nodeSelector }}
-      nodeSelector:
-        {{- toYaml . | nindent 8 }}
-      {{- end }}
-      {{- with .Values.affinity }}
-      affinity:
-        {{- toYaml . | nindent 8 }}
-      {{- end }}
-      {{- with .Values.tolerations }}
-      tolerations:
-        {{- toYaml . | nindent 8 }}
-      {{- end }}
+              path: /actuator/health/readiness
+              port: 8080
+              scheme: HTTP
+            initialDelaySeconds: 10
+            periodSeconds: 10
+            successThreshold: 1
+            timeoutSeconds: 1
+          ports:
+            - containerPort: 8080
+              name: http
+          volumeMounts:
+            - name: config
+              mountPath: /application.yaml
+              subPath: application.yaml
+      volumes:
+        - name: config
+          configMap:
+            name: {{ .Release.Name }}-flow-service-config
+            items:
+              - key: application.yaml
+                path: application.yaml

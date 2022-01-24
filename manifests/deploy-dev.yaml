@@ -1,10 +1,4 @@
-# 创建命名空间 flow
-apiVersion: v1
-kind: Namespace
-metadata:
-  name: flow
----
-# 创建 flow-service 配置文件
+
 apiVersion: v1
 kind: ConfigMap
 metadata:

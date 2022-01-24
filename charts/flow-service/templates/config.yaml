@@ -1,0 +1,70 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: {{ .Release.Name }}-flow-service-config
+data:
+  application.yaml: |-
+    client:
+      id: {{ .Values.config.auth.clientId | quote }}
+      secret: {{ .Values.config.auth.clientSecret | quote }}
+      apiEndpoint: {{ .Values.config.auth.apiEndpoint | quote }}
+      tokenUri: {{ .Values.config.auth.tokenUri | quote }}
+      checkTokenUri: {{ .Values.config.auth.checkTokenUri | quote }}
+      jwkSetUri: {{ .Values.config.auth.jwkSetUri | quote }}
+
+    dustlight:
+      auth:
+        oauth2:
+          client:
+            client-id: ${client.id}
+            client-secret: ${client.secret}
+            api-endpoint: ${client.apiEndpoint}
+            token-uri: ${client.tokenUri}
+          resource-server:
+            client-id: ${client.id}
+            client-secret: ${client.secret}
+            uri: ${client.checkTokenUri}
+            jwk-set-uri: ${client.jwkSetUri}
+      flow:
+        authorization-endpoint: {{ .Values.config.auth.authorizationEndpoint | quote }}
+        zeebe:
+          address: {{ .Values.config.zeebe.address | quote }}
+          plaintext: true
+          system-prefix:
+            - "csystem-"
+      datacenter:
+        amqp:
+          exchange: datacenter-{{ .Values.config.datacenter.releaseName }}
+          sync:
+            enabled: true
+            queue: {{ .Release.Name }}}-flow
+            dead-letter-queue: {{ .Release.Name }}}-flow-dead
+            dead-letter-routing-key: {{ .Release.Name }}}-flow-SYNC-FAIL
+    # SpringDoc 配置
+    springdoc:
+      api-docs:
+        enabled: on
+        path: /doc
+      swagger-ui:
+        path: /doc.html
+        oauth:
+          client-id: ${client.id}
+          additional-query-string-params:
+            jwt: true
+    spring:
+      rabbitmq:
+        addresses: {{ .Values.config.rabbitmq.host | quote }}
+        port: {{ .Values.config.rabbitmq.port }}
+        username: {{ .Values.config.rabbitmq.username | quote }}
+        password: {{ .Values.config.rabbitmq.password | quote }}
+      data:
+        elasticsearch:
+          client:
+            reactive:
+              endpoints:
+                {{- range .Values.config.elasticsearch.endpoints }}
+                - {{ . | quote }}
+                {{- end }}
+    logging:
+      level:
+        cn.dustlight.flow.*: {{ .Values.logging }}
