@@ -1,0 +1,41 @@
+name: Docker Image CI
+
+on:
+  push:
+    branches: [ main ]
+  pull_request:
+    branches: [ main ]
+
+jobs:
+
+  build:
+
+    runs-on: ubuntu-latest
+    steps:
+    - name: Login to DockerHub
+      uses: docker/login-action@v1.8.0
+      with:
+        username: ${{ secrets.DOCKERHUB_USERNAME }}
+        password: ${{ secrets.DOCKERHUB_TOKEN }}
+    - uses: actions/checkout@v2
+    - name: Build Service
+      run: mvn package -DskipTests
+    - name: Copy Jar
+      run: |
+        cd flow-service/target
+        find -name "*-sources.jar" -exec rm {} \;
+        find -name "*-javadoc.jar" -exec rm {} \;
+        jarName=`find *.jar`
+        tagName=${jarName%.jar}
+        tagName=${tagName#flow-service-}
+        cp $jarName ../../app.jar
+        echo "jarName=$jarName" >> $GITHUB_ENV
+        echo "tagName=$tagName" >> $GITHUB_ENV
+    - name: Build and push Service Docker images
+      uses: docker/build-push-action@v2.3.0
+      with:
+        context: .
+        push: true
+        tags: |
+          dustlightcn/flow-service:${{  env.tagName  }}
+          dustlightcn/flow-service:latest
