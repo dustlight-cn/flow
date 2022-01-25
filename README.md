@@ -1,11 +1,12 @@
 # Flow
-[简介](#简介) | [部署](#部署)
+[简介](#简介) | [部署](#部署) | [依赖](#依赖)
 
 ## 简介
 基于 Zeebe 的 BPM 服务。
 
 ## 部署
 > 此服务依赖 Elasticsearch、Zeebe、RabbitMQ 以及 Datacenter。
+
 ### Helm 部署
 选择此部署方式必须先安装 [Helm](https://helm.sh)。  
 请查看 Helm 的 [文档](https://helm.sh/docs) 获取更多信息。
@@ -53,3 +54,11 @@ config:
 
     helm delete my-flow
 
+## 依赖
+### Zeebe
+[部署文档](https://github.com/camunda-community-hub/camunda-cloud-helm/tree/main/charts/zeebe-cluster-helm)
+
+```bash
+helm repo add zeebe https://helm.camunda.io
+helm install zb zeebe/zeebe-cluster-helm
+```
