@@ -56,9 +56,17 @@ config:
 
 ## 依赖
 ### Zeebe
-[部署文档](https://github.com/camunda-community-hub/camunda-cloud-helm/tree/main/charts/zeebe-cluster-helm)
+[Zeebe 部署文档](https://github.com/camunda-community-hub/camunda-cloud-helm/tree/main/charts/zeebe-cluster-helm)
 
 ```bash
 helm repo add zeebe https://helm.camunda.io
 helm install zb zeebe/zeebe-cluster-helm
 ```
+
+### RabbitMQ
+
+[RabbitMQ 部署文档](https://www.rabbitmq.com/kubernetes/operator/operator-overview.html)
+
+### Datacenter
+
+[Datacenter 部署文档](https://dustlight-cn.github.io/datacenter)
