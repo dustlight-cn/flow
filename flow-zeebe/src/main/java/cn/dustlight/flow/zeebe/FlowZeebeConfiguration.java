@@ -1,9 +1,11 @@
 package cn.dustlight.flow.zeebe;
 
 import cn.dustlight.flow.zeebe.converters.InstantToStringConverter;
+import cn.dustlight.flow.zeebe.converters.ZeebeObjectMapperCover;
 import cn.dustlight.flow.zeebe.services.ZeebeInstanceService;
 import cn.dustlight.flow.zeebe.services.ZeebeMessageService;
 import cn.dustlight.flow.zeebe.services.ZeebeProcessService;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import io.camunda.zeebe.client.CredentialsProvider;
 import io.camunda.zeebe.client.ZeebeClient;
 import io.camunda.zeebe.client.ZeebeClientBuilder;
@@ -45,8 +47,10 @@ public class FlowZeebeConfiguration {
     @Bean
     @ConditionalOnMissingBean
     public ZeebeClient zeebeClient(@Autowired ZeebeProperties properties,
-                                   @Autowired CredentialsProvider provider) {
-        ZeebeClientBuilder builder = ZeebeClient.newClientBuilder();
+                                   @Autowired CredentialsProvider provider,
+                                   @Autowired ObjectMapper mapper) {
+        ZeebeClientBuilder builder = ZeebeClient.newClientBuilder()
+                .withJsonMapper(new ZeebeObjectMapperCover(mapper));
         builder.gatewayAddress(properties.getAddress())
                 .credentialsProvider(provider);
         if (properties.isPlaintext())
