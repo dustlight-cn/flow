@@ -37,9 +37,9 @@ data:
           exchange: datacenter-{{ .Values.config.datacenter.releaseName }}
           sync:
             enabled: true
-            queue: {{ .Release.Name }}}-flow
-            dead-letter-queue: {{ .Release.Name }}}-flow-dead
-            dead-letter-routing-key: {{ .Release.Name }}}-flow-SYNC-FAIL
+            queue: {{ .Release.Name }}-flow
+            dead-letter-queue: {{ .Release.Name }}-flow-dead
+            dead-letter-routing-key: {{ .Release.Name }}-flow-SYNC-FAIL
     # SpringDoc 配置
     springdoc:
       api-docs:
