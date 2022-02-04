@@ -82,4 +82,27 @@ public class InstanceController {
         return AuthPrincipalUtil.obtainClientId(reactiveAuthClient, clientId, principal)
                 .flatMap(cid -> instanceService.getVariables(cid, id, scope));
     }
+
+    @Operation(summary = "通过 ID 重试实例")
+    @PostMapping(value = "/instance/{id}/resolve/{scope}")
+    public Mono<Void> resolve(@PathVariable Long id,
+                              @PathVariable Long scope,
+                              @RequestParam(name = "cid", required = false) String clientId,
+                              ReactiveAuthClient reactiveAuthClient,
+                              AuthPrincipal principal) {
+        return AuthPrincipalUtil.obtainClientId(reactiveAuthClient, clientId, principal)
+                .flatMap(cid -> instanceService.resolve(cid, id, scope));
+    }
+
+    @Operation(summary = "设置实例变量")
+    @PutMapping(value = "/instance/{id}/variables/{scope}")
+    public Mono<Void> setInstanceVariables(@PathVariable Long id,
+                                           @PathVariable Long scope,
+                                           @RequestParam(name = "cid", required = false) String clientId,
+                                           @RequestBody Map<String, Object> variables,
+                                           ReactiveAuthClient reactiveAuthClient,
+                                           AuthPrincipal principal) {
+        return AuthPrincipalUtil.obtainClientId(reactiveAuthClient, clientId, principal)
+                .flatMap(cid -> instanceService.setVariables(cid, id, scope, variables));
+    }
 }

@@ -65,9 +65,10 @@ public interface InstanceService {
      *
      * @param client
      * @param id
+     * @param scope
      * @return
      */
-    Mono<Void> resolve(String client, Long id);
+    Mono<Void> resolve(String client, Long id, Long scope);
 
     /**
      * 获取变量
@@ -78,4 +79,15 @@ public interface InstanceService {
      * @return
      */
     Mono<Map<String, Object>> getVariables(String client, Long id, Long scope);
+
+    /**
+     * 设置变量
+     *
+     * @param client
+     * @param id
+     * @param scope
+     * @param variables
+     * @return
+     */
+    Mono<Void> setVariables(String client, Long id, Long scope, Map<String, Object> variables);
 }
