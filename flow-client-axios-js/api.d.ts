@@ -75,12 +75,6 @@ export interface InstanceObject {
     elementType?: string;
     /**
      *
-     * @type {InstanceError}
-     * @memberof InstanceObject
-     */
-    error?: InstanceError;
-    /**
-     *
      * @type {string}
      * @memberof InstanceObject
      */
@@ -103,6 +97,12 @@ export interface InstanceObject {
      * @memberof InstanceObject
      */
     updatedAt?: string;
+    /**
+     *
+     * @type {InstanceError}
+     * @memberof InstanceObject
+     */
+    error?: InstanceError;
 }
 /**
     * @export
@@ -222,12 +222,6 @@ export interface UserTask {
     target?: UserTaskTarget;
     /**
      *
-     * @type {number}
-     * @memberof UserTask
-     */
-    processId?: number;
-    /**
-     *
      * @type {string}
      * @memberof UserTask
      */
@@ -240,6 +234,12 @@ export interface UserTask {
     form?: string;
     /**
      *
+     * @type {number}
+     * @memberof UserTask
+     */
+    instanceId?: number;
+    /**
+     *
      * @type {string}
      * @memberof UserTask
      */
@@ -249,7 +249,7 @@ export interface UserTask {
      * @type {number}
      * @memberof UserTask
      */
-    instanceId?: number;
+    processId?: number;
 }
 /**
  *
@@ -262,13 +262,13 @@ export interface UserTaskTarget {
      * @type {Array<string>}
      * @memberof UserTaskTarget
      */
-    roles?: Array<string>;
+    users?: Array<string>;
     /**
      *
      * @type {Array<string>}
      * @memberof UserTaskTarget
      */
-    users?: Array<string>;
+    roles?: Array<string>;
 }
 /**
  * InstancesApi - axios parameter creator
@@ -328,6 +328,29 @@ export declare const InstancesApiAxiosParamCreator: (configuration?: Configurati
      * @throws {RequiredError}
      */
     getInstances: (name?: string, version?: number, status?: Set<'ACTIVE' | 'CANCELED' | 'COMPLETED' | 'INCIDENT' | 'RESOLVED'>, page?: number, size?: number, cid?: string, options?: any) => Promise<RequestArgs>;
+    /**
+     *
+     * @summary 通过 ID 重试实例
+     * @param {number} id
+     * @param {number} scope
+     * @param {string} [cid]
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     */
+    resolve: (id: number, scope: number, cid?: string, options?: any) => Promise<RequestArgs>;
+    /**
+     *
+     * @summary 设置实例变量
+     * @param {number} id
+     * @param {number} scope
+     * @param {{ [key: string]: object; }} requestBody
+     * @param {string} [cid]
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     */
+    setInstanceVariables: (id: number, scope: number, requestBody: {
+        [key: string]: object;
+    }, cid?: string, options?: any) => Promise<RequestArgs>;
 };
 /**
  * InstancesApi - functional programming interface
@@ -389,6 +412,29 @@ export declare const InstancesApiFp: (configuration?: Configuration) => {
      * @throws {RequiredError}
      */
     getInstances(name?: string, version?: number, status?: Set<'ACTIVE' | 'CANCELED' | 'COMPLETED' | 'INCIDENT' | 'RESOLVED'>, page?: number, size?: number, cid?: string, options?: any): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<QueryResultInstanceObject>>;
+    /**
+     *
+     * @summary 通过 ID 重试实例
+     * @param {number} id
+     * @param {number} scope
+     * @param {string} [cid]
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     */
+    resolve(id: number, scope: number, cid?: string, options?: any): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<void>>;
+    /**
+     *
+     * @summary 设置实例变量
+     * @param {number} id
+     * @param {number} scope
+     * @param {{ [key: string]: object; }} requestBody
+     * @param {string} [cid]
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     */
+    setInstanceVariables(id: number, scope: number, requestBody: {
+        [key: string]: object;
+    }, cid?: string, options?: any): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<void>>;
 };
 /**
  * InstancesApi - factory interface
@@ -450,6 +496,29 @@ export declare const InstancesApiFactory: (configuration?: Configuration, basePa
      * @throws {RequiredError}
      */
     getInstances(name?: string, version?: number, status?: Set<'ACTIVE' | 'CANCELED' | 'COMPLETED' | 'INCIDENT' | 'RESOLVED'>, page?: number, size?: number, cid?: string, options?: any): AxiosPromise<QueryResultInstanceObject>;
+    /**
+     *
+     * @summary 通过 ID 重试实例
+     * @param {number} id
+     * @param {number} scope
+     * @param {string} [cid]
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     */
+    resolve(id: number, scope: number, cid?: string, options?: any): AxiosPromise<void>;
+    /**
+     *
+     * @summary 设置实例变量
+     * @param {number} id
+     * @param {number} scope
+     * @param {{ [key: string]: object; }} requestBody
+     * @param {string} [cid]
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     */
+    setInstanceVariables(id: number, scope: number, requestBody: {
+        [key: string]: object;
+    }, cid?: string, options?: any): AxiosPromise<void>;
 };
 /**
  * InstancesApi - object-oriented interface
@@ -518,6 +587,31 @@ export declare class InstancesApi extends BaseAPI {
      * @memberof InstancesApi
      */
     getInstances(name?: string, version?: number, status?: Set<'ACTIVE' | 'CANCELED' | 'COMPLETED' | 'INCIDENT' | 'RESOLVED'>, page?: number, size?: number, cid?: string, options?: any): Promise<import("axios").AxiosResponse<QueryResultInstanceObject>>;
+    /**
+     *
+     * @summary 通过 ID 重试实例
+     * @param {number} id
+     * @param {number} scope
+     * @param {string} [cid]
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     * @memberof InstancesApi
+     */
+    resolve(id: number, scope: number, cid?: string, options?: any): Promise<import("axios").AxiosResponse<void>>;
+    /**
+     *
+     * @summary 设置实例变量
+     * @param {number} id
+     * @param {number} scope
+     * @param {{ [key: string]: object; }} requestBody
+     * @param {string} [cid]
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     * @memberof InstancesApi
+     */
+    setInstanceVariables(id: number, scope: number, requestBody: {
+        [key: string]: object;
+    }, cid?: string, options?: any): Promise<import("axios").AxiosResponse<void>>;
 }
 /**
  * MessagesApi - axios parameter creator

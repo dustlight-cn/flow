@@ -164,13 +164,13 @@ public class ZeebeInstanceService implements InstanceService {
     }
 
     @Override
-    public Mono<Void> resolve(String client, Long id) {
+    public Mono<Void> resolve(String client, Long id, Long scope) {
         return getEntity(client, id, instanceIndex)
-                .switchIfEmpty(Mono.error(ErrorEnum.RESOURCE_NOT_FOUND.getException()))
+                .switchIfEmpty(Mono.error(ErrorEnum.INSTANCE_NOT_FOUND.getException()))
                 .map(entity -> new ZeebeInstanceEvent(entity, entity))
                 .flatMap(instance -> Mono.create(sink ->
                         sink.onRequest(unused -> zeebeClient
-                                .newResolveIncidentCommand(instance.getId())
+                                .newResolveIncidentCommand(scope)
                                 .send()
                                 .whenComplete((unused2, e) -> {
                                     if (e == null)
@@ -211,6 +211,26 @@ public class ZeebeInstanceService implements InstanceService {
                     }
                     return result;
                 });
+    }
+
+    @Override
+    public Mono<Void> setVariables(String client, Long id, Long scope, Map<String, Object> variables) {
+        return getEntity(client, id, instanceIndex)
+                .switchIfEmpty(Mono.error(ErrorEnum.INSTANCE_NOT_FOUND.getException()))
+                .map(entity -> new ZeebeInstanceEvent(entity, entity))
+                .flatMap(instance -> Mono.create(sink ->
+                        sink.onRequest(unused -> zeebeClient
+                                .newSetVariablesCommand(scope)
+                                .variables(variables)
+                                .local(instance.getId() == scope)
+                                .send()
+                                .whenComplete((unused2, e) -> {
+                                    if (e == null)
+                                        sink.success();
+                                    else
+                                        sink.error(e);
+                                }))
+                ));
     }
 
     public Mono<QueryResult<Instance>> listInstance(String clientId,
