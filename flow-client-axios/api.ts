@@ -84,16 +84,22 @@ export interface InstanceObject {
     elementType?: string;
     /**
      * 
-     * @type {string}
+     * @type {InstanceError}
      * @memberof InstanceObject
      */
-    status?: InstanceObjectStatusEnum;
+    error?: InstanceError;
     /**
      * 
      * @type {string}
      * @memberof InstanceObject
      */
     createdAt?: string;
+    /**
+     * 
+     * @type {string}
+     * @memberof InstanceObject
+     */
+    status?: InstanceObjectStatusEnum;
     /**
      * 
      * @type {string}
@@ -106,12 +112,6 @@ export interface InstanceObject {
      * @memberof InstanceObject
      */
     updatedAt?: string;
-    /**
-     * 
-     * @type {InstanceError}
-     * @memberof InstanceObject
-     */
-    error?: InstanceError;
 }
 
 /**
@@ -233,16 +233,22 @@ export interface UserTask {
     target?: UserTaskTarget;
     /**
      * 
-     * @type {string}
+     * @type {number}
      * @memberof UserTask
      */
-    user?: string;
+    processId?: number;
     /**
      * 
      * @type {string}
      * @memberof UserTask
      */
     form?: string;
+    /**
+     * 
+     * @type {string}
+     * @memberof UserTask
+     */
+    user?: string;
     /**
      * 
      * @type {number}
@@ -255,12 +261,6 @@ export interface UserTask {
      * @memberof UserTask
      */
     completedAt?: string;
-    /**
-     * 
-     * @type {number}
-     * @memberof UserTask
-     */
-    processId?: number;
 }
 /**
  * 
@@ -1851,10 +1851,11 @@ export const UserTasksApiAxiosParamCreator = function (configuration?: Configura
          * @summary 完成用户任务
          * @param {number} id 
          * @param {{ [key: string]: object; }} requestBody 
+         * @param {string} [cid] 
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
-        completeUserTask: async (id: number, requestBody: { [key: string]: object; }, options: any = {}): Promise<RequestArgs> => {
+        completeUserTask: async (id: number, requestBody: { [key: string]: object; }, cid?: string, options: any = {}): Promise<RequestArgs> => {
             // verify required parameter 'id' is not null or undefined
             assertParamExists('completeUserTask', 'id', id)
             // verify required parameter 'requestBody' is not null or undefined
@@ -1876,6 +1877,10 @@ export const UserTasksApiAxiosParamCreator = function (configuration?: Configura
             // oauth required
             await setOAuthToObject(localVarHeaderParameter, "auth", [], configuration)
 
+            if (cid !== undefined) {
+                localVarQueryParameter['cid'] = cid;
+            }
+
 
     
             localVarHeaderParameter['Content-Type'] = 'application/json';
@@ -1894,10 +1899,11 @@ export const UserTasksApiAxiosParamCreator = function (configuration?: Configura
          * 
          * @summary 获取用户任务
          * @param {number} id 
+         * @param {string} [cid] 
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
-        getUserTask: async (id: number, options: any = {}): Promise<RequestArgs> => {
+        getUserTask: async (id: number, cid?: string, options: any = {}): Promise<RequestArgs> => {
             // verify required parameter 'id' is not null or undefined
             assertParamExists('getUserTask', 'id', id)
             const localVarPath = `/v1/task/{id}`
@@ -1917,6 +1923,10 @@ export const UserTasksApiAxiosParamCreator = function (configuration?: Configura
             // oauth required
             await setOAuthToObject(localVarHeaderParameter, "auth", [], configuration)
 
+            if (cid !== undefined) {
+                localVarQueryParameter['cid'] = cid;
+            }
+
 
     
             setSearchParams(localVarUrlObj, localVarQueryParameter, options.query);
@@ -1933,10 +1943,11 @@ export const UserTasksApiAxiosParamCreator = function (configuration?: Configura
          * @summary 获取用户任务
          * @param {number} [page] 
          * @param {number} [size] 
+         * @param {string} [cid] 
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
-        getUserTasks: async (page?: number, size?: number, options: any = {}): Promise<RequestArgs> => {
+        getUserTasks: async (page?: number, size?: number, cid?: string, options: any = {}): Promise<RequestArgs> => {
             const localVarPath = `/v1/tasks`;
             // use dummy base URL string because the URL constructor only accepts absolute URLs.
             const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL);
@@ -1959,6 +1970,10 @@ export const UserTasksApiAxiosParamCreator = function (configuration?: Configura
 
             if (size !== undefined) {
                 localVarQueryParameter['size'] = size;
+            }
+
+            if (cid !== undefined) {
+                localVarQueryParameter['cid'] = cid;
             }
 
 
@@ -1987,22 +2002,24 @@ export const UserTasksApiFp = function(configuration?: Configuration) {
          * @summary 完成用户任务
          * @param {number} id 
          * @param {{ [key: string]: object; }} requestBody 
+         * @param {string} [cid] 
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
-        async completeUserTask(id: number, requestBody: { [key: string]: object; }, options?: any): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<void>> {
-            const localVarAxiosArgs = await localVarAxiosParamCreator.completeUserTask(id, requestBody, options);
+        async completeUserTask(id: number, requestBody: { [key: string]: object; }, cid?: string, options?: any): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<void>> {
+            const localVarAxiosArgs = await localVarAxiosParamCreator.completeUserTask(id, requestBody, cid, options);
             return createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration);
         },
         /**
          * 
          * @summary 获取用户任务
          * @param {number} id 
+         * @param {string} [cid] 
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
-        async getUserTask(id: number, options?: any): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<UserTask>> {
-            const localVarAxiosArgs = await localVarAxiosParamCreator.getUserTask(id, options);
+        async getUserTask(id: number, cid?: string, options?: any): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<UserTask>> {
+            const localVarAxiosArgs = await localVarAxiosParamCreator.getUserTask(id, cid, options);
             return createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration);
         },
         /**
@@ -2010,11 +2027,12 @@ export const UserTasksApiFp = function(configuration?: Configuration) {
          * @summary 获取用户任务
          * @param {number} [page] 
          * @param {number} [size] 
+         * @param {string} [cid] 
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
-        async getUserTasks(page?: number, size?: number, options?: any): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<Array<UserTask>>> {
-            const localVarAxiosArgs = await localVarAxiosParamCreator.getUserTasks(page, size, options);
+        async getUserTasks(page?: number, size?: number, cid?: string, options?: any): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<Array<UserTask>>> {
+            const localVarAxiosArgs = await localVarAxiosParamCreator.getUserTasks(page, size, cid, options);
             return createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration);
         },
     }
@@ -2032,32 +2050,35 @@ export const UserTasksApiFactory = function (configuration?: Configuration, base
          * @summary 完成用户任务
          * @param {number} id 
          * @param {{ [key: string]: object; }} requestBody 
+         * @param {string} [cid] 
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
-        completeUserTask(id: number, requestBody: { [key: string]: object; }, options?: any): AxiosPromise<void> {
-            return localVarFp.completeUserTask(id, requestBody, options).then((request) => request(axios, basePath));
+        completeUserTask(id: number, requestBody: { [key: string]: object; }, cid?: string, options?: any): AxiosPromise<void> {
+            return localVarFp.completeUserTask(id, requestBody, cid, options).then((request) => request(axios, basePath));
         },
         /**
          * 
          * @summary 获取用户任务
          * @param {number} id 
+         * @param {string} [cid] 
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
-        getUserTask(id: number, options?: any): AxiosPromise<UserTask> {
-            return localVarFp.getUserTask(id, options).then((request) => request(axios, basePath));
+        getUserTask(id: number, cid?: string, options?: any): AxiosPromise<UserTask> {
+            return localVarFp.getUserTask(id, cid, options).then((request) => request(axios, basePath));
         },
         /**
          * 
          * @summary 获取用户任务
          * @param {number} [page] 
          * @param {number} [size] 
+         * @param {string} [cid] 
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
-        getUserTasks(page?: number, size?: number, options?: any): AxiosPromise<Array<UserTask>> {
-            return localVarFp.getUserTasks(page, size, options).then((request) => request(axios, basePath));
+        getUserTasks(page?: number, size?: number, cid?: string, options?: any): AxiosPromise<Array<UserTask>> {
+            return localVarFp.getUserTasks(page, size, cid, options).then((request) => request(axios, basePath));
         },
     };
 };
@@ -2074,24 +2095,26 @@ export class UserTasksApi extends BaseAPI {
      * @summary 完成用户任务
      * @param {number} id 
      * @param {{ [key: string]: object; }} requestBody 
+     * @param {string} [cid] 
      * @param {*} [options] Override http request option.
      * @throws {RequiredError}
      * @memberof UserTasksApi
      */
-    public completeUserTask(id: number, requestBody: { [key: string]: object; }, options?: any) {
-        return UserTasksApiFp(this.configuration).completeUserTask(id, requestBody, options).then((request) => request(this.axios, this.basePath));
+    public completeUserTask(id: number, requestBody: { [key: string]: object; }, cid?: string, options?: any) {
+        return UserTasksApiFp(this.configuration).completeUserTask(id, requestBody, cid, options).then((request) => request(this.axios, this.basePath));
     }
 
     /**
      * 
      * @summary 获取用户任务
      * @param {number} id 
+     * @param {string} [cid] 
      * @param {*} [options] Override http request option.
      * @throws {RequiredError}
      * @memberof UserTasksApi
      */
-    public getUserTask(id: number, options?: any) {
-        return UserTasksApiFp(this.configuration).getUserTask(id, options).then((request) => request(this.axios, this.basePath));
+    public getUserTask(id: number, cid?: string, options?: any) {
+        return UserTasksApiFp(this.configuration).getUserTask(id, cid, options).then((request) => request(this.axios, this.basePath));
     }
 
     /**
@@ -2099,12 +2122,13 @@ export class UserTasksApi extends BaseAPI {
      * @summary 获取用户任务
      * @param {number} [page] 
      * @param {number} [size] 
+     * @param {string} [cid] 
      * @param {*} [options] Override http request option.
      * @throws {RequiredError}
      * @memberof UserTasksApi
      */
-    public getUserTasks(page?: number, size?: number, options?: any) {
-        return UserTasksApiFp(this.configuration).getUserTasks(page, size, options).then((request) => request(this.axios, this.basePath));
+    public getUserTasks(page?: number, size?: number, cid?: string, options?: any) {
+        return UserTasksApiFp(this.configuration).getUserTasks(page, size, cid, options).then((request) => request(this.axios, this.basePath));
     }
 }
 

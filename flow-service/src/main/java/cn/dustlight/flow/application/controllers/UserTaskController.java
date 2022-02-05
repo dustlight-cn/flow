@@ -1,5 +1,7 @@
 package cn.dustlight.flow.application.controllers;
 
+import cn.dustlight.auth.client.reactive.ReactiveAuthClient;
+import cn.dustlight.auth.resources.AuthPrincipalUtil;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import io.swagger.v3.oas.annotations.tags.Tag;
@@ -26,28 +28,37 @@ public class UserTaskController {
     @Operation(summary = "获取用户任务")
     @GetMapping(value = "/task/{id}")
     public Mono<UserTask> getUserTask(@PathVariable(name = "id") Long id,
+                                      @RequestParam(name = "cid", required = false) String clientId,
+                                      ReactiveAuthClient reactiveAuthClient,
                                       AuthPrincipal principal) {
-        return userTaskService.getTask(principal.getClientId(), id);
+        return AuthPrincipalUtil.obtainClientId(reactiveAuthClient, clientId, principal)
+                .flatMap(cid -> userTaskService.getTask(cid, id));
     }
 
     @Operation(summary = "获取用户任务")
     @GetMapping(value = "/tasks")
     public Flux<UserTask> getUserTasks(@RequestParam(name = "page", required = false, defaultValue = "0") int page,
                                        @RequestParam(name = "size", required = false, defaultValue = "10") int size,
+                                       @RequestParam(name = "cid", required = false) String clientId,
+                                       ReactiveAuthClient reactiveAuthClient,
                                        AuthPrincipal principal) {
-        return userTaskService.getTasks(principal.getClientId(),
-                Set.of(principal.getUidString()),
-                getRoles(principal),
-                page,
-                size);
+        return AuthPrincipalUtil.obtainClientId(reactiveAuthClient, clientId, principal)
+                .flatMapMany(cid -> userTaskService.getTasks(cid,
+                        Set.of(principal.getUidString()),
+                        getRoles(principal),
+                        page,
+                        size));
     }
 
     @Operation(summary = "完成用户任务")
     @PostMapping(value = "/task/{id}/completion")
     public Mono<Void> completeUserTask(@PathVariable(name = "id") Long id,
                                        @RequestBody Map<String, Object> data,
+                                       @RequestParam(name = "cid", required = false) String clientId,
+                                       ReactiveAuthClient reactiveAuthClient,
                                        AuthPrincipal principal) {
-        return userTaskService.complete(principal.getClientId(), id, principal.getUidString(), data);
+        return AuthPrincipalUtil.obtainClientId(reactiveAuthClient, clientId, principal)
+                .flatMap(cid -> userTaskService.complete(cid, id, principal.getUidString(), data));
     }
 
     public static Collection<String> getRoles(AuthPrincipal principal) {

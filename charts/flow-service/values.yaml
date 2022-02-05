@@ -2,7 +2,7 @@ replicaCount: 1
 
 image:
   repository: dustlightcn/flow-service
-  tag: "0.1.5-alpha"
+  tag: "0.1.6-alpha"
 
 ingress:
   className: "nginx"
@@ -20,6 +20,7 @@ config:
     address: "zeebe-zeebe-gateway.zeebe:26500"
   datacenter:
     releaseName: "my-dc"
+    endpoint: "http://my-dc-datacenter-service"
   rabbitmq:
     host: "rabbitmq-svc"
     port: 5672
