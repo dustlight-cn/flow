@@ -1,5 +1,6 @@
 package cn.dustlight.flow.core.flow.usertask;
 
+import cn.dustlight.flow.core.flow.QueryResult;
 import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
 
@@ -11,11 +12,11 @@ import java.util.Map;
  */
 public interface UserTaskService<T extends UserTask> {
 
-    Flux<T> getTasks(String clientId,
-                            Collection<String> users,
-                            Collection<String> roles,
-                            int page,
-                            int size);
+    Mono<QueryResult<T>> getTasks(String clientId,
+                               Collection<String> users,
+                               Collection<String> roles,
+                               int page,
+                               int size);
 
     Mono<T> getTask(String clientId, Long id);
 

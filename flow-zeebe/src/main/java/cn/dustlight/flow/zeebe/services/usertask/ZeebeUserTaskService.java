@@ -1,14 +1,20 @@
 package cn.dustlight.flow.zeebe.services.usertask;
 
+import cn.dustlight.flow.core.exceptions.FlowException;
+import cn.dustlight.flow.core.flow.QueryResult;
 import cn.dustlight.flow.zeebe.entities.ZeebeUserTask;
 import cn.dustlight.flow.zeebe.entities.ZeebeUserTaskEntity;
 import io.camunda.zeebe.client.ZeebeClient;
+import io.grpc.Status;
+import io.grpc.StatusRuntimeException;
 import lombok.Getter;
 import lombok.Setter;
 import org.elasticsearch.index.query.BoolQueryBuilder;
 import org.elasticsearch.index.query.PrefixQueryBuilder;
 import org.elasticsearch.index.query.TermQueryBuilder;
 import org.elasticsearch.index.query.TermsQueryBuilder;
+import org.elasticsearch.search.aggregations.metrics.CardinalityAggregationBuilder;
+import org.elasticsearch.search.aggregations.metrics.ParsedCardinality;
 import org.springframework.beans.factory.InitializingBean;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.elasticsearch.core.ReactiveElasticsearchOperations;
@@ -58,20 +64,27 @@ public class ZeebeUserTaskService extends AbstractUserTaskService<ZeebeUserTask>
                         .send()
                         .whenComplete((completeJobResponse, throwable) -> {
                             if (throwable != null)
-                                sink.error(ErrorEnum.UNKNOWN.details(throwable).getException());
+                                sink.error(throwable instanceof StatusRuntimeException &&
+                                        ((StatusRuntimeException) throwable).getStatus().getCode().equals(Status.NOT_FOUND.getCode()) ?
+                                        ErrorEnum.USER_TASK_NOT_FOUND.details(throwable).getException() :
+                                        ErrorEnum.UNKNOWN.details(throwable).getException());
                             else
                                 sink.success(System.currentTimeMillis());
                         })))
+                .onErrorResume(e -> e instanceof FlowException &&
+                        ((FlowException) e).getErrorDetails().getCode() == ErrorEnum.USER_TASK_NOT_FOUND.getCode() ?
+                        operations.delete(userTask.entity(), IndexCoordinates.of(index)).then(Mono.error(e))
+                        : Mono.error(e))
                 .flatMap((unused) -> operations.save(userTask.complete(user, data).entity(), IndexCoordinates.of(index)))
                 .then();
     }
 
     @Override
-    public Flux<ZeebeUserTask> getTasks(String clientId,
-                                        Collection<String> users,
-                                        Collection<String> roles,
-                                        int page,
-                                        int size) {
+    public Mono<QueryResult<ZeebeUserTask>> getTasks(String clientId,
+                                                     Collection<String> users,
+                                                     Collection<String> roles,
+                                                     int page,
+                                                     int size) {
         BoolQueryBuilder boolQueryBuilder = new BoolQueryBuilder();
         boolQueryBuilder.filter(new PrefixQueryBuilder("bpmnProcessId.keyword", String.format("c%s-", clientId)));
         if (users != null && users.size() > 0)
@@ -81,10 +94,18 @@ public class ZeebeUserTaskService extends AbstractUserTaskService<ZeebeUserTask>
         NativeSearchQuery query = new NativeSearchQueryBuilder()
                 .withQuery(boolQueryBuilder)
                 .withPageable(Pageable.ofSize(size).withPage(page))
+                .addAggregation(new CardinalityAggregationBuilder("count").field("key"))
                 .build();
         return operations.searchForPage(query, ZeebeUserTaskEntity.class, IndexCoordinates.of(index))
-                .flatMapMany(searchHits -> Flux.fromIterable(searchHits.getContent()))
-                .map(zeebeUserTaskEntitySearchHit -> new ZeebeUserTask(zeebeUserTaskEntitySearchHit.getContent()));
+                .flatMap(searchHits -> {
+                    long count = searchHits.getSearchHits().getAggregations().get("count") instanceof ParsedCardinality ?
+                            ((ParsedCardinality) searchHits.getSearchHits().getAggregations().get("count")).getValue() :
+                            searchHits.getTotalElements();
+                    return Flux.fromIterable(searchHits.getContent())
+                            .map(hit -> new ZeebeUserTask(hit.getContent()))
+                            .collectList()
+                            .map(zeebeUserTasks -> new QueryResult<>(count, zeebeUserTasks));
+                });
     }
 
     @Override

@@ -2,6 +2,7 @@ package cn.dustlight.flow.application.controllers;
 
 import cn.dustlight.auth.client.reactive.ReactiveAuthClient;
 import cn.dustlight.auth.resources.AuthPrincipalUtil;
+import cn.dustlight.flow.core.flow.QueryResult;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import io.swagger.v3.oas.annotations.tags.Tag;
@@ -10,7 +11,6 @@ import org.springframework.web.bind.annotation.*;
 import cn.dustlight.auth.resources.core.AuthPrincipal;
 import cn.dustlight.flow.core.flow.usertask.UserTask;
 import cn.dustlight.flow.core.flow.usertask.UserTaskService;
-import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
 
 import java.util.*;
@@ -37,13 +37,13 @@ public class UserTaskController {
 
     @Operation(summary = "获取用户任务")
     @GetMapping(value = "/tasks")
-    public Flux<UserTask> getUserTasks(@RequestParam(name = "page", required = false, defaultValue = "0") int page,
-                                       @RequestParam(name = "size", required = false, defaultValue = "10") int size,
-                                       @RequestParam(name = "cid", required = false) String clientId,
-                                       ReactiveAuthClient reactiveAuthClient,
-                                       AuthPrincipal principal) {
+    public Mono<QueryResult<UserTask>> getUserTasks(@RequestParam(name = "page", required = false, defaultValue = "0") int page,
+                                             @RequestParam(name = "size", required = false, defaultValue = "10") int size,
+                                             @RequestParam(name = "cid", required = false) String clientId,
+                                             ReactiveAuthClient reactiveAuthClient,
+                                             AuthPrincipal principal) {
         return AuthPrincipalUtil.obtainClientId(reactiveAuthClient, clientId, principal)
-                .flatMapMany(cid -> userTaskService.getTasks(cid,
+                .flatMap(cid -> userTaskService.getTasks(cid,
                         Set.of(principal.getUidString()),
                         getRoles(principal),
                         page,

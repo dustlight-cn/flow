@@ -20,6 +20,7 @@ public enum ErrorEnum {
     PROCESS_EXISTS(3001, "Process already exists"),
     INSTANCE_EXISTS(3002, "Instance already exists"),
     USER_TASK_EXISTS(3003, "User task already exists"),
+    USER_TASK_ALREADY_DONE(3004, "User task already done"),
 
     CREATE_RESOURCE_FAILED(4000, "Fail to create resource"),
     CREATE_PROCESS_FAILED(4001, "Fail to create process"),
