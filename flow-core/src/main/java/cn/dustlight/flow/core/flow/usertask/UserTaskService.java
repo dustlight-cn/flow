@@ -12,11 +12,17 @@ import java.util.Map;
  */
 public interface UserTaskService<T extends UserTask> {
 
+    enum TaskStatus {
+        DONE,
+        ACTIVE
+    }
+
     Mono<QueryResult<T>> getTasks(String clientId,
-                               Collection<String> users,
-                               Collection<String> roles,
-                               int page,
-                               int size);
+                                  Collection<String> users,
+                                  Collection<String> roles,
+                                  TaskStatus status,
+                                  int page,
+                                  int size);
 
     Mono<T> getTask(String clientId, Long id);
 

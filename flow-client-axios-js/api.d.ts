@@ -75,22 +75,16 @@ export interface InstanceObject {
     elementType?: string;
     /**
      *
-     * @type {InstanceError}
+     * @type {string}
      * @memberof InstanceObject
      */
-    error?: InstanceError;
+    status?: InstanceObjectStatusEnum;
     /**
      *
      * @type {string}
      * @memberof InstanceObject
      */
     createdAt?: string;
-    /**
-     *
-     * @type {string}
-     * @memberof InstanceObject
-     */
-    status?: InstanceObjectStatusEnum;
     /**
      *
      * @type {string}
@@ -103,6 +97,12 @@ export interface InstanceObject {
      * @memberof InstanceObject
      */
     updatedAt?: string;
+    /**
+     *
+     * @type {InstanceError}
+     * @memberof InstanceObject
+     */
+    error?: InstanceError;
 }
 /**
     * @export
@@ -147,12 +147,6 @@ export interface ProcessObject {
     version?: number;
     /**
      *
-     * @type {object}
-     * @memberof ProcessObject
-     */
-    data?: object;
-    /**
-     *
      * @type {string}
      * @memberof ProcessObject
      */
@@ -163,6 +157,12 @@ export interface ProcessObject {
      * @memberof ProcessObject
      */
     createdAt?: string;
+    /**
+     *
+     * @type {object}
+     * @memberof ProcessObject
+     */
+    data?: object;
 }
 /**
  *
@@ -205,6 +205,25 @@ export interface QueryResultProcessObject {
 /**
  *
  * @export
+ * @interface QueryResultUserTask
+ */
+export interface QueryResultUserTask {
+    /**
+     *
+     * @type {number}
+     * @memberof QueryResultUserTask
+     */
+    count?: number;
+    /**
+     *
+     * @type {Array<UserTask>}
+     * @memberof QueryResultUserTask
+     */
+    data?: Array<UserTask>;
+}
+/**
+ *
+ * @export
  * @interface UserTask
  */
 export interface UserTask {
@@ -222,16 +241,12 @@ export interface UserTask {
     target?: UserTaskTarget;
     /**
      *
-     * @type {number}
+     * @type {{ [key: string]: object; }}
      * @memberof UserTask
      */
-    processId?: number;
-    /**
-     *
-     * @type {string}
-     * @memberof UserTask
-     */
-    form?: string;
+    variables?: {
+        [key: string]: object;
+    };
     /**
      *
      * @type {string}
@@ -240,16 +255,28 @@ export interface UserTask {
     user?: string;
     /**
      *
+     * @type {string}
+     * @memberof UserTask
+     */
+    completedAt?: string;
+    /**
+     *
+     * @type {string}
+     * @memberof UserTask
+     */
+    form?: string;
+    /**
+     *
      * @type {number}
      * @memberof UserTask
      */
     instanceId?: number;
     /**
      *
-     * @type {string}
+     * @type {number}
      * @memberof UserTask
      */
-    completedAt?: string;
+    processId?: number;
 }
 /**
  *
@@ -262,13 +289,13 @@ export interface UserTaskTarget {
      * @type {Array<string>}
      * @memberof UserTaskTarget
      */
-    users?: Array<string>;
+    roles?: Array<string>;
     /**
      *
      * @type {Array<string>}
      * @memberof UserTaskTarget
      */
-    roles?: Array<string>;
+    users?: Array<string>;
 }
 /**
  * InstancesApi - axios parameter creator
@@ -1081,13 +1108,14 @@ export declare const UserTasksApiAxiosParamCreator: (configuration?: Configurati
     /**
      *
      * @summary 获取用户任务
+     * @param {'DONE' | 'ACTIVE'} [status]
      * @param {number} [page]
      * @param {number} [size]
      * @param {string} [cid]
      * @param {*} [options] Override http request option.
      * @throws {RequiredError}
      */
-    getUserTasks: (page?: number, size?: number, cid?: string, options?: any) => Promise<RequestArgs>;
+    getUserTasks: (status?: 'DONE' | 'ACTIVE', page?: number, size?: number, cid?: string, options?: any) => Promise<RequestArgs>;
 };
 /**
  * UserTasksApi - functional programming interface
@@ -1118,13 +1146,14 @@ export declare const UserTasksApiFp: (configuration?: Configuration) => {
     /**
      *
      * @summary 获取用户任务
+     * @param {'DONE' | 'ACTIVE'} [status]
      * @param {number} [page]
      * @param {number} [size]
      * @param {string} [cid]
      * @param {*} [options] Override http request option.
      * @throws {RequiredError}
      */
-    getUserTasks(page?: number, size?: number, cid?: string, options?: any): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<Array<UserTask>>>;
+    getUserTasks(status?: 'DONE' | 'ACTIVE', page?: number, size?: number, cid?: string, options?: any): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<QueryResultUserTask>>;
 };
 /**
  * UserTasksApi - factory interface
@@ -1155,13 +1184,14 @@ export declare const UserTasksApiFactory: (configuration?: Configuration, basePa
     /**
      *
      * @summary 获取用户任务
+     * @param {'DONE' | 'ACTIVE'} [status]
      * @param {number} [page]
      * @param {number} [size]
      * @param {string} [cid]
      * @param {*} [options] Override http request option.
      * @throws {RequiredError}
      */
-    getUserTasks(page?: number, size?: number, cid?: string, options?: any): AxiosPromise<Array<UserTask>>;
+    getUserTasks(status?: 'DONE' | 'ACTIVE', page?: number, size?: number, cid?: string, options?: any): AxiosPromise<QueryResultUserTask>;
 };
 /**
  * UserTasksApi - object-oriented interface
@@ -1196,6 +1226,7 @@ export declare class UserTasksApi extends BaseAPI {
     /**
      *
      * @summary 获取用户任务
+     * @param {'DONE' | 'ACTIVE'} [status]
      * @param {number} [page]
      * @param {number} [size]
      * @param {string} [cid]
@@ -1203,5 +1234,5 @@ export declare class UserTasksApi extends BaseAPI {
      * @throws {RequiredError}
      * @memberof UserTasksApi
      */
-    getUserTasks(page?: number, size?: number, cid?: string, options?: any): Promise<import("axios").AxiosResponse<UserTask[]>>;
+    getUserTasks(status?: 'DONE' | 'ACTIVE', page?: number, size?: number, cid?: string, options?: any): Promise<import("axios").AxiosResponse<QueryResultUserTask>>;
 }

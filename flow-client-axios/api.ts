@@ -84,22 +84,16 @@ export interface InstanceObject {
     elementType?: string;
     /**
      * 
-     * @type {InstanceError}
+     * @type {string}
      * @memberof InstanceObject
      */
-    error?: InstanceError;
+    status?: InstanceObjectStatusEnum;
     /**
      * 
      * @type {string}
      * @memberof InstanceObject
      */
     createdAt?: string;
-    /**
-     * 
-     * @type {string}
-     * @memberof InstanceObject
-     */
-    status?: InstanceObjectStatusEnum;
     /**
      * 
      * @type {string}
@@ -112,6 +106,12 @@ export interface InstanceObject {
      * @memberof InstanceObject
      */
     updatedAt?: string;
+    /**
+     * 
+     * @type {InstanceError}
+     * @memberof InstanceObject
+     */
+    error?: InstanceError;
 }
 
 /**
@@ -158,12 +158,6 @@ export interface ProcessObject {
     version?: number;
     /**
      * 
-     * @type {object}
-     * @memberof ProcessObject
-     */
-    data?: object;
-    /**
-     * 
      * @type {string}
      * @memberof ProcessObject
      */
@@ -174,6 +168,12 @@ export interface ProcessObject {
      * @memberof ProcessObject
      */
     createdAt?: string;
+    /**
+     * 
+     * @type {object}
+     * @memberof ProcessObject
+     */
+    data?: object;
 }
 /**
  * 
@@ -216,6 +216,25 @@ export interface QueryResultProcessObject {
 /**
  * 
  * @export
+ * @interface QueryResultUserTask
+ */
+export interface QueryResultUserTask {
+    /**
+     * 
+     * @type {number}
+     * @memberof QueryResultUserTask
+     */
+    count?: number;
+    /**
+     * 
+     * @type {Array<UserTask>}
+     * @memberof QueryResultUserTask
+     */
+    data?: Array<UserTask>;
+}
+/**
+ * 
+ * @export
  * @interface UserTask
  */
 export interface UserTask {
@@ -233,16 +252,10 @@ export interface UserTask {
     target?: UserTaskTarget;
     /**
      * 
-     * @type {number}
+     * @type {{ [key: string]: object; }}
      * @memberof UserTask
      */
-    processId?: number;
-    /**
-     * 
-     * @type {string}
-     * @memberof UserTask
-     */
-    form?: string;
+    variables?: { [key: string]: object; };
     /**
      * 
      * @type {string}
@@ -251,16 +264,28 @@ export interface UserTask {
     user?: string;
     /**
      * 
+     * @type {string}
+     * @memberof UserTask
+     */
+    completedAt?: string;
+    /**
+     * 
+     * @type {string}
+     * @memberof UserTask
+     */
+    form?: string;
+    /**
+     * 
      * @type {number}
      * @memberof UserTask
      */
     instanceId?: number;
     /**
      * 
-     * @type {string}
+     * @type {number}
      * @memberof UserTask
      */
-    completedAt?: string;
+    processId?: number;
 }
 /**
  * 
@@ -273,13 +298,13 @@ export interface UserTaskTarget {
      * @type {Array<string>}
      * @memberof UserTaskTarget
      */
-    users?: Array<string>;
+    roles?: Array<string>;
     /**
      * 
      * @type {Array<string>}
      * @memberof UserTaskTarget
      */
-    roles?: Array<string>;
+    users?: Array<string>;
 }
 
 /**
@@ -1941,13 +1966,14 @@ export const UserTasksApiAxiosParamCreator = function (configuration?: Configura
         /**
          * 
          * @summary 获取用户任务
+         * @param {'DONE' | 'ACTIVE'} [status] 
          * @param {number} [page] 
          * @param {number} [size] 
          * @param {string} [cid] 
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
-        getUserTasks: async (page?: number, size?: number, cid?: string, options: any = {}): Promise<RequestArgs> => {
+        getUserTasks: async (status?: 'DONE' | 'ACTIVE', page?: number, size?: number, cid?: string, options: any = {}): Promise<RequestArgs> => {
             const localVarPath = `/v1/tasks`;
             // use dummy base URL string because the URL constructor only accepts absolute URLs.
             const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL);
@@ -1963,6 +1989,10 @@ export const UserTasksApiAxiosParamCreator = function (configuration?: Configura
             // authentication auth required
             // oauth required
             await setOAuthToObject(localVarHeaderParameter, "auth", [], configuration)
+
+            if (status !== undefined) {
+                localVarQueryParameter['status'] = status;
+            }
 
             if (page !== undefined) {
                 localVarQueryParameter['page'] = page;
@@ -2025,14 +2055,15 @@ export const UserTasksApiFp = function(configuration?: Configuration) {
         /**
          * 
          * @summary 获取用户任务
+         * @param {'DONE' | 'ACTIVE'} [status] 
          * @param {number} [page] 
          * @param {number} [size] 
          * @param {string} [cid] 
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
-        async getUserTasks(page?: number, size?: number, cid?: string, options?: any): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<Array<UserTask>>> {
-            const localVarAxiosArgs = await localVarAxiosParamCreator.getUserTasks(page, size, cid, options);
+        async getUserTasks(status?: 'DONE' | 'ACTIVE', page?: number, size?: number, cid?: string, options?: any): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<QueryResultUserTask>> {
+            const localVarAxiosArgs = await localVarAxiosParamCreator.getUserTasks(status, page, size, cid, options);
             return createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration);
         },
     }
@@ -2071,14 +2102,15 @@ export const UserTasksApiFactory = function (configuration?: Configuration, base
         /**
          * 
          * @summary 获取用户任务
+         * @param {'DONE' | 'ACTIVE'} [status] 
          * @param {number} [page] 
          * @param {number} [size] 
          * @param {string} [cid] 
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
-        getUserTasks(page?: number, size?: number, cid?: string, options?: any): AxiosPromise<Array<UserTask>> {
-            return localVarFp.getUserTasks(page, size, cid, options).then((request) => request(axios, basePath));
+        getUserTasks(status?: 'DONE' | 'ACTIVE', page?: number, size?: number, cid?: string, options?: any): AxiosPromise<QueryResultUserTask> {
+            return localVarFp.getUserTasks(status, page, size, cid, options).then((request) => request(axios, basePath));
         },
     };
 };
@@ -2120,6 +2152,7 @@ export class UserTasksApi extends BaseAPI {
     /**
      * 
      * @summary 获取用户任务
+     * @param {'DONE' | 'ACTIVE'} [status] 
      * @param {number} [page] 
      * @param {number} [size] 
      * @param {string} [cid] 
@@ -2127,8 +2160,8 @@ export class UserTasksApi extends BaseAPI {
      * @throws {RequiredError}
      * @memberof UserTasksApi
      */
-    public getUserTasks(page?: number, size?: number, cid?: string, options?: any) {
-        return UserTasksApiFp(this.configuration).getUserTasks(page, size, cid, options).then((request) => request(this.axios, this.basePath));
+    public getUserTasks(status?: 'DONE' | 'ACTIVE', page?: number, size?: number, cid?: string, options?: any) {
+        return UserTasksApiFp(this.configuration).getUserTasks(status, page, size, cid, options).then((request) => request(this.axios, this.basePath));
     }
 }
 

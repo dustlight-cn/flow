@@ -37,15 +37,17 @@ public class UserTaskController {
 
     @Operation(summary = "获取用户任务")
     @GetMapping(value = "/tasks")
-    public Mono<QueryResult<UserTask>> getUserTasks(@RequestParam(name = "page", required = false, defaultValue = "0") int page,
-                                             @RequestParam(name = "size", required = false, defaultValue = "10") int size,
-                                             @RequestParam(name = "cid", required = false) String clientId,
-                                             ReactiveAuthClient reactiveAuthClient,
-                                             AuthPrincipal principal) {
+    public Mono<QueryResult<UserTask>> getUserTasks(@RequestParam(name = "status", required = false) UserTaskService.TaskStatus status,
+                                                    @RequestParam(name = "page", required = false, defaultValue = "0") int page,
+                                                    @RequestParam(name = "size", required = false, defaultValue = "10") int size,
+                                                    @RequestParam(name = "cid", required = false) String clientId,
+                                                    ReactiveAuthClient reactiveAuthClient,
+                                                    AuthPrincipal principal) {
         return AuthPrincipalUtil.obtainClientId(reactiveAuthClient, clientId, principal)
                 .flatMap(cid -> userTaskService.getTasks(cid,
                         Set.of(principal.getUidString()),
                         getRoles(principal),
+                        status,
                         page,
                         size));
     }

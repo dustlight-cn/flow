@@ -1574,13 +1574,14 @@ const UserTasksApiAxiosParamCreator = function (configuration) {
         /**
          *
          * @summary 获取用户任务
+         * @param {'DONE' | 'ACTIVE'} [status]
          * @param {number} [page]
          * @param {number} [size]
          * @param {string} [cid]
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
-        getUserTasks: (page, size, cid, options = {}) => __awaiter(this, void 0, void 0, function* () {
+        getUserTasks: (status, page, size, cid, options = {}) => __awaiter(this, void 0, void 0, function* () {
             const localVarPath = `/v1/tasks`;
             // use dummy base URL string because the URL constructor only accepts absolute URLs.
             const localVarUrlObj = new URL(localVarPath, common_1.DUMMY_BASE_URL);
@@ -1594,6 +1595,9 @@ const UserTasksApiAxiosParamCreator = function (configuration) {
             // authentication auth required
             // oauth required
             yield (0, common_1.setOAuthToObject)(localVarHeaderParameter, "auth", [], configuration);
+            if (status !== undefined) {
+                localVarQueryParameter['status'] = status;
+            }
             if (page !== undefined) {
                 localVarQueryParameter['page'] = page;
             }
@@ -1653,15 +1657,16 @@ const UserTasksApiFp = function (configuration) {
         /**
          *
          * @summary 获取用户任务
+         * @param {'DONE' | 'ACTIVE'} [status]
          * @param {number} [page]
          * @param {number} [size]
          * @param {string} [cid]
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
-        getUserTasks(page, size, cid, options) {
+        getUserTasks(status, page, size, cid, options) {
             return __awaiter(this, void 0, void 0, function* () {
-                const localVarAxiosArgs = yield localVarAxiosParamCreator.getUserTasks(page, size, cid, options);
+                const localVarAxiosArgs = yield localVarAxiosParamCreator.getUserTasks(status, page, size, cid, options);
                 return (0, common_1.createRequestFunction)(localVarAxiosArgs, axios_1.default, base_1.BASE_PATH, configuration);
             });
         },
@@ -1701,14 +1706,15 @@ const UserTasksApiFactory = function (configuration, basePath, axios) {
         /**
          *
          * @summary 获取用户任务
+         * @param {'DONE' | 'ACTIVE'} [status]
          * @param {number} [page]
          * @param {number} [size]
          * @param {string} [cid]
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
-        getUserTasks(page, size, cid, options) {
-            return localVarFp.getUserTasks(page, size, cid, options).then((request) => request(axios, basePath));
+        getUserTasks(status, page, size, cid, options) {
+            return localVarFp.getUserTasks(status, page, size, cid, options).then((request) => request(axios, basePath));
         },
     };
 };
@@ -1748,6 +1754,7 @@ class UserTasksApi extends base_1.BaseAPI {
     /**
      *
      * @summary 获取用户任务
+     * @param {'DONE' | 'ACTIVE'} [status]
      * @param {number} [page]
      * @param {number} [size]
      * @param {string} [cid]
@@ -1755,8 +1762,8 @@ class UserTasksApi extends base_1.BaseAPI {
      * @throws {RequiredError}
      * @memberof UserTasksApi
      */
-    getUserTasks(page, size, cid, options) {
-        return (0, exports.UserTasksApiFp)(this.configuration).getUserTasks(page, size, cid, options).then((request) => request(this.axios, this.basePath));
+    getUserTasks(status, page, size, cid, options) {
+        return (0, exports.UserTasksApiFp)(this.configuration).getUserTasks(status, page, size, cid, options).then((request) => request(this.axios, this.basePath));
     }
 }
 exports.UserTasksApi = UserTasksApi;

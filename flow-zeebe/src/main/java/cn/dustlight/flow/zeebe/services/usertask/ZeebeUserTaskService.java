@@ -9,10 +9,7 @@ import io.grpc.Status;
 import io.grpc.StatusRuntimeException;
 import lombok.Getter;
 import lombok.Setter;
-import org.elasticsearch.index.query.BoolQueryBuilder;
-import org.elasticsearch.index.query.PrefixQueryBuilder;
-import org.elasticsearch.index.query.TermQueryBuilder;
-import org.elasticsearch.index.query.TermsQueryBuilder;
+import org.elasticsearch.index.query.*;
 import org.elasticsearch.search.aggregations.metrics.CardinalityAggregationBuilder;
 import org.elasticsearch.search.aggregations.metrics.ParsedCardinality;
 import org.springframework.beans.factory.InitializingBean;
@@ -83,6 +80,7 @@ public class ZeebeUserTaskService extends AbstractUserTaskService<ZeebeUserTask>
     public Mono<QueryResult<ZeebeUserTask>> getTasks(String clientId,
                                                      Collection<String> users,
                                                      Collection<String> roles,
+                                                     TaskStatus status,
                                                      int page,
                                                      int size) {
         BoolQueryBuilder boolQueryBuilder = new BoolQueryBuilder();
@@ -91,6 +89,17 @@ public class ZeebeUserTaskService extends AbstractUserTaskService<ZeebeUserTask>
             boolQueryBuilder.filter(new TermsQueryBuilder("target.users", users));
         if (roles != null && roles.size() > 0)
             boolQueryBuilder.filter(new TermsQueryBuilder("target.roles", roles));
+        if (status != null) {
+            switch (status) {
+                case DONE:
+                    boolQueryBuilder.must(new ExistsQueryBuilder("doneAt"));
+                    break;
+                case ACTIVE:
+                default:
+                    boolQueryBuilder.mustNot(new ExistsQueryBuilder("doneAt"));
+                    break;
+            }
+        }
         NativeSearchQuery query = new NativeSearchQueryBuilder()
                 .withQuery(boolQueryBuilder)
                 .withPageable(Pageable.ofSize(size).withPage(page))
