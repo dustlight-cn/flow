@@ -67,4 +67,9 @@ public class ZeebeUserTask implements UserTask {
         return entity == null ? null : entity.getTarget();
     }
 
+    @Override
+    public Map<String, Object> getVariables() {
+        return entity == null ? null : entity.getVariables();
+    }
+
 }

@@ -1,6 +1,7 @@
 package cn.dustlight.flow.core.flow.usertask;
 
 import java.time.Instant;
+import java.util.Map;
 
 public interface UserTask {
 
@@ -18,4 +19,5 @@ public interface UserTask {
 
     UserTaskTarget getTarget();
 
+    Map<String,Object> getVariables();
 }
