@@ -26,6 +26,8 @@ dustlight:
       plaintext: true
       system-prefix:
         - "csystem-"
+    datacenter:
+      endpoint: "https://datacenter.dustlight.cn"
   datacenter:
     amqp:
       exchange: datacenter-my-dc

@@ -16,6 +16,7 @@ import cn.dustlight.flow.core.flow.trigger.TriggerStore;
 import reactor.core.publisher.Mono;
 
 import java.util.Collection;
+import java.util.Collections;
 import java.util.Set;
 
 @RestController
@@ -45,12 +46,15 @@ public class TriggerController {
         if (!trigger.getSupportOperations().contains(operation))
             return Mono.error(ErrorEnum.TRIGGER_OPERATION_NOT_FOUND.getException());
         return AuthPrincipalUtil.obtainClientId(client, clientId, principal)
-                .flatMap(cid ->
+                .flatMap(cid -> processes != null && processes.size() > 0 ?
                         processService.isProcessExists(cid, processes)
                                 .flatMap(flag -> (Boolean) flag ?
                                         triggerStore.setSubscription(cid, key, operation, processes) :
                                         Mono.error(ErrorEnum.PROCESS_NOT_FOUND.getException())
-                                ));
+                                )
+                        :
+                        triggerStore.setSubscription(cid, key, operation, Collections.emptySet())
+                );
     }
 
     @Operation(summary = "获取触发器的目标流程")

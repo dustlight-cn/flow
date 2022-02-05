@@ -32,6 +32,8 @@ data:
           plaintext: true
           system-prefix:
             - "csystem-"
+        datacenter:
+          endpoint: {{ .Values.config.datacenter.endpoint | quote }}
       datacenter:
         amqp:
           exchange: datacenter-{{ .Values.config.datacenter.releaseName }}

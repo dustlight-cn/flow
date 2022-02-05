@@ -75,16 +75,22 @@ export interface InstanceObject {
     elementType?: string;
     /**
      *
-     * @type {string}
+     * @type {InstanceError}
      * @memberof InstanceObject
      */
-    status?: InstanceObjectStatusEnum;
+    error?: InstanceError;
     /**
      *
      * @type {string}
      * @memberof InstanceObject
      */
     createdAt?: string;
+    /**
+     *
+     * @type {string}
+     * @memberof InstanceObject
+     */
+    status?: InstanceObjectStatusEnum;
     /**
      *
      * @type {string}
@@ -97,12 +103,6 @@ export interface InstanceObject {
      * @memberof InstanceObject
      */
     updatedAt?: string;
-    /**
-     *
-     * @type {InstanceError}
-     * @memberof InstanceObject
-     */
-    error?: InstanceError;
 }
 /**
     * @export
@@ -222,16 +222,22 @@ export interface UserTask {
     target?: UserTaskTarget;
     /**
      *
-     * @type {string}
+     * @type {number}
      * @memberof UserTask
      */
-    user?: string;
+    processId?: number;
     /**
      *
      * @type {string}
      * @memberof UserTask
      */
     form?: string;
+    /**
+     *
+     * @type {string}
+     * @memberof UserTask
+     */
+    user?: string;
     /**
      *
      * @type {number}
@@ -244,12 +250,6 @@ export interface UserTask {
      * @memberof UserTask
      */
     completedAt?: string;
-    /**
-     *
-     * @type {number}
-     * @memberof UserTask
-     */
-    processId?: number;
 }
 /**
  *
@@ -1062,29 +1062,32 @@ export declare const UserTasksApiAxiosParamCreator: (configuration?: Configurati
      * @summary 完成用户任务
      * @param {number} id
      * @param {{ [key: string]: object; }} requestBody
+     * @param {string} [cid]
      * @param {*} [options] Override http request option.
      * @throws {RequiredError}
      */
     completeUserTask: (id: number, requestBody: {
         [key: string]: object;
-    }, options?: any) => Promise<RequestArgs>;
+    }, cid?: string, options?: any) => Promise<RequestArgs>;
     /**
      *
      * @summary 获取用户任务
      * @param {number} id
+     * @param {string} [cid]
      * @param {*} [options] Override http request option.
      * @throws {RequiredError}
      */
-    getUserTask: (id: number, options?: any) => Promise<RequestArgs>;
+    getUserTask: (id: number, cid?: string, options?: any) => Promise<RequestArgs>;
     /**
      *
      * @summary 获取用户任务
      * @param {number} [page]
      * @param {number} [size]
+     * @param {string} [cid]
      * @param {*} [options] Override http request option.
      * @throws {RequiredError}
      */
-    getUserTasks: (page?: number, size?: number, options?: any) => Promise<RequestArgs>;
+    getUserTasks: (page?: number, size?: number, cid?: string, options?: any) => Promise<RequestArgs>;
 };
 /**
  * UserTasksApi - functional programming interface
@@ -1096,29 +1099,32 @@ export declare const UserTasksApiFp: (configuration?: Configuration) => {
      * @summary 完成用户任务
      * @param {number} id
      * @param {{ [key: string]: object; }} requestBody
+     * @param {string} [cid]
      * @param {*} [options] Override http request option.
      * @throws {RequiredError}
      */
     completeUserTask(id: number, requestBody: {
         [key: string]: object;
-    }, options?: any): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<void>>;
+    }, cid?: string, options?: any): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<void>>;
     /**
      *
      * @summary 获取用户任务
      * @param {number} id
+     * @param {string} [cid]
      * @param {*} [options] Override http request option.
      * @throws {RequiredError}
      */
-    getUserTask(id: number, options?: any): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<UserTask>>;
+    getUserTask(id: number, cid?: string, options?: any): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<UserTask>>;
     /**
      *
      * @summary 获取用户任务
      * @param {number} [page]
      * @param {number} [size]
+     * @param {string} [cid]
      * @param {*} [options] Override http request option.
      * @throws {RequiredError}
      */
-    getUserTasks(page?: number, size?: number, options?: any): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<Array<UserTask>>>;
+    getUserTasks(page?: number, size?: number, cid?: string, options?: any): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<Array<UserTask>>>;
 };
 /**
  * UserTasksApi - factory interface
@@ -1130,29 +1136,32 @@ export declare const UserTasksApiFactory: (configuration?: Configuration, basePa
      * @summary 完成用户任务
      * @param {number} id
      * @param {{ [key: string]: object; }} requestBody
+     * @param {string} [cid]
      * @param {*} [options] Override http request option.
      * @throws {RequiredError}
      */
     completeUserTask(id: number, requestBody: {
         [key: string]: object;
-    }, options?: any): AxiosPromise<void>;
+    }, cid?: string, options?: any): AxiosPromise<void>;
     /**
      *
      * @summary 获取用户任务
      * @param {number} id
+     * @param {string} [cid]
      * @param {*} [options] Override http request option.
      * @throws {RequiredError}
      */
-    getUserTask(id: number, options?: any): AxiosPromise<UserTask>;
+    getUserTask(id: number, cid?: string, options?: any): AxiosPromise<UserTask>;
     /**
      *
      * @summary 获取用户任务
      * @param {number} [page]
      * @param {number} [size]
+     * @param {string} [cid]
      * @param {*} [options] Override http request option.
      * @throws {RequiredError}
      */
-    getUserTasks(page?: number, size?: number, options?: any): AxiosPromise<Array<UserTask>>;
+    getUserTasks(page?: number, size?: number, cid?: string, options?: any): AxiosPromise<Array<UserTask>>;
 };
 /**
  * UserTasksApi - object-oriented interface
@@ -1166,30 +1175,33 @@ export declare class UserTasksApi extends BaseAPI {
      * @summary 完成用户任务
      * @param {number} id
      * @param {{ [key: string]: object; }} requestBody
+     * @param {string} [cid]
      * @param {*} [options] Override http request option.
      * @throws {RequiredError}
      * @memberof UserTasksApi
      */
     completeUserTask(id: number, requestBody: {
         [key: string]: object;
-    }, options?: any): Promise<import("axios").AxiosResponse<void>>;
+    }, cid?: string, options?: any): Promise<import("axios").AxiosResponse<void>>;
     /**
      *
      * @summary 获取用户任务
      * @param {number} id
+     * @param {string} [cid]
      * @param {*} [options] Override http request option.
      * @throws {RequiredError}
      * @memberof UserTasksApi
      */
-    getUserTask(id: number, options?: any): Promise<import("axios").AxiosResponse<UserTask>>;
+    getUserTask(id: number, cid?: string, options?: any): Promise<import("axios").AxiosResponse<UserTask>>;
     /**
      *
      * @summary 获取用户任务
      * @param {number} [page]
      * @param {number} [size]
+     * @param {string} [cid]
      * @param {*} [options] Override http request option.
      * @throws {RequiredError}
      * @memberof UserTasksApi
      */
-    getUserTasks(page?: number, size?: number, options?: any): Promise<import("axios").AxiosResponse<UserTask[]>>;
+    getUserTasks(page?: number, size?: number, cid?: string, options?: any): Promise<import("axios").AxiosResponse<UserTask[]>>;
 }
