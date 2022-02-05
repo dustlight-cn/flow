@@ -5,7 +5,7 @@
     <packaging>pom</packaging>
     <groupId>cn.dustlight.flow</groupId>
     <artifactId>flow-parent</artifactId>
-    <version>0.1.6-alpha</version>
+    <version>0.1.7-alpha</version>
     <name>flow-parent</name>
     <description>流程服务</description>
 
