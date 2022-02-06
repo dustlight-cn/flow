@@ -36,6 +36,7 @@ config:
     address: "zeebe-zeebe-gateway.zeebe:26500" # Zeebe 网关
   datacenter:
     releaseName: "my-dc" # Datacenter 的 ReleaseName
+    endpoint: "http://datacenter-service" # datacenter 地址
   rabbitmq:
     host: "rabbitmq-svc" # RabbitMQ 服务地址
     port: 5672 # RabbitMQ 服务端口
