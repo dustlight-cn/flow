@@ -21,6 +21,22 @@ public class ZeebeUserTask implements UserTask {
     }
 
     @Override
+    public String getProcessName() {
+        return entity == null ? null : ZeebeProcess.getSuffix(entity.getBpmnProcessId(), '-');
+    }
+
+    @Override
+    public String getClientId() {
+        String clientId = entity == null ? null : ZeebeProcess.getPrefix(entity.getBpmnProcessId(), '-');
+        return clientId == null ? null : clientId.substring(1);
+    }
+
+    @Override
+    public String getElementId() {
+        return entity == null ? null : ZeebeProcess.getSuffix(entity.getElementId(), '-');
+    }
+
+    @Override
     public Long getProcessId() {
         return entity == null ? null : entity.getProcessDefinitionKey();
     }

@@ -7,6 +7,12 @@ public interface UserTask {
 
     String getForm();
 
+    String getProcessName();
+
+    String getClientId();
+
+    String getElementId();
+
     Long getProcessId();
 
     Long getInstanceId();
