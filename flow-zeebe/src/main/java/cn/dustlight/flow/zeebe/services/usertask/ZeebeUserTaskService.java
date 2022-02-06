@@ -22,6 +22,7 @@ import org.springframework.util.Assert;
 import cn.dustlight.flow.core.exceptions.ErrorEnum;
 import cn.dustlight.flow.core.flow.usertask.AbstractUserTaskService;
 import cn.dustlight.flow.core.flow.usertask.UserTaskDataValidator;
+import org.springframework.util.StringUtils;
 import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
 
@@ -77,14 +78,21 @@ public class ZeebeUserTaskService extends AbstractUserTaskService<ZeebeUserTask>
     }
 
     @Override
-    public Mono<QueryResult<ZeebeUserTask>> getTasks(String clientId,
+    public Mono<QueryResult<ZeebeUserTask>> getTasks(String name,
+                                                     Integer version,
+                                                     String clientId,
                                                      Collection<String> users,
                                                      Collection<String> roles,
                                                      TaskStatus status,
                                                      int page,
                                                      int size) {
         BoolQueryBuilder boolQueryBuilder = new BoolQueryBuilder();
-        boolQueryBuilder.filter(new PrefixQueryBuilder("bpmnProcessId.keyword", String.format("c%s-", clientId)));
+        if (StringUtils.hasText(name))
+            boolQueryBuilder.filter(new TermQueryBuilder("bpmnProcessId.keyword", String.format("c%s-%s", clientId, name.trim())));
+        else
+            boolQueryBuilder.filter(new PrefixQueryBuilder("bpmnProcessId.keyword", String.format("c%s-", clientId)));
+        if (version != null)
+            boolQueryBuilder.filter(new TermQueryBuilder("processDefinitionVersion", version));
         if (users != null && users.size() > 0)
             boolQueryBuilder.filter(new TermsQueryBuilder("target.users", users));
         if (roles != null && roles.size() > 0)

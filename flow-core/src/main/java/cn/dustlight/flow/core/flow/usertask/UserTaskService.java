@@ -17,7 +17,9 @@ public interface UserTaskService<T extends UserTask> {
         ACTIVE
     }
 
-    Mono<QueryResult<T>> getTasks(String clientId,
+    Mono<QueryResult<T>> getTasks(String name,
+                                  Integer version,
+                                  String clientId,
                                   Collection<String> users,
                                   Collection<String> roles,
                                   TaskStatus status,
