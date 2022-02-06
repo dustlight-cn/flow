@@ -2,7 +2,7 @@
 [简介](#简介) | [部署](#部署) | [依赖](#依赖)
 
 ## 简介
-基于 Zeebe 的 BPM 服务。
+基于 Zeebe 的 BPM 流程服务。
 
 ## 部署
 > 此服务依赖 Elasticsearch、Zeebe、RabbitMQ 以及 Datacenter。
