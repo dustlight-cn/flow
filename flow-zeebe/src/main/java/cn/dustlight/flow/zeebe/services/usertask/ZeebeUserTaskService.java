@@ -94,9 +94,10 @@ public class ZeebeUserTaskService extends AbstractUserTaskService<ZeebeUserTask>
         if (version != null)
             boolQueryBuilder.filter(new TermQueryBuilder("processDefinitionVersion", version));
         if (users != null && users.size() > 0)
-            boolQueryBuilder.filter(new TermsQueryBuilder("target.users", users));
+            boolQueryBuilder.should(new TermsQueryBuilder("target.users", users));
         if (roles != null && roles.size() > 0)
-            boolQueryBuilder.filter(new TermsQueryBuilder("target.roles", roles));
+            boolQueryBuilder.should(new TermsQueryBuilder("target.roles", roles));
+        boolQueryBuilder.minimumShouldMatch(1);
         if (status != null) {
             switch (status) {
                 case DONE:
