@@ -39,9 +39,9 @@ public class DatacenterRecordValidator implements UserTaskDataValidator {
     }
 
     @Override
-    public Mono<Boolean> verify(String form, Map<String, Object> data) {
+    public Mono<Boolean> verify(String form, String clientId, Map<String, Object> data) {
         return webClient.post()
-                .uri("/v1/validation")
+                .uri("/v1/validation?cid={cid}", clientId)
                 .header(HttpHeaders.CONTENT_TYPE, MediaType.APPLICATION_JSON_VALUE)
                 .bodyValue(new Record(form, data).toJson())
                 .exchangeToMono(clientResponse -> clientResponse.statusCode() == HttpStatus.OK ?

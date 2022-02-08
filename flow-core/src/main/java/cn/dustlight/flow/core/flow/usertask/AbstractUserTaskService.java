@@ -19,7 +19,7 @@ public abstract class AbstractUserTaskService<T extends UserTask> implements Use
                 .flatMap(userTask ->
                         userTask.getCompletedAt() != null ?
                                 Mono.error(ErrorEnum.USER_TASK_ALREADY_DONE.getException()) :
-                                validator.verify(userTask.getForm(), data)
+                                validator.verify(userTask.getForm(), clientId, data)
                                         .flatMap(flag -> flag ?
                                                 doComplete(clientId, id, user, data, userTask) :
                                                 Mono.error(ErrorEnum.USER_TASK_DATA_INVALID.getException())))
