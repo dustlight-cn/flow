@@ -2,6 +2,16 @@ apiVersion: v1
 entries:
   flow-service:
   - apiVersion: v2
+    appVersion: 0.1.8-alpha-1
+    created: "2022-02-08T11:25:08.028216791Z"
+    description: BPM service based on Zeebe
+    digest: 5e21dddfc348485e39c785a193347b212c5b84ae76aa9e5ed5530676fa3a4d86
+    name: flow-service
+    type: application
+    urls:
+    - https://github.com/dustlight-cn/flow/releases/download/flow-service-0.1.8/flow-service-0.1.8.tgz
+    version: 0.1.8
+  - apiVersion: v2
     appVersion: 0.1.8-alpha
     created: "2022-02-06T12:19:51.707461866Z"
     description: BPM service based on Zeebe
@@ -81,4 +91,4 @@ entries:
     urls:
     - https://github.com/dustlight-cn/flow/releases/download/flow-service-0.1.0/flow-service-0.1.0.tgz
     version: 0.1.0
-generated: "2022-02-06T12:19:51.707556868Z"
+generated: "2022-02-08T11:25:08.028294797Z"
