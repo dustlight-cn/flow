@@ -26,4 +26,6 @@ public interface UserTask {
     UserTaskTarget getTarget();
 
     Map<String,Object> getVariables();
+
+    Map<String,Object> getData();
 }

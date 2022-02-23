@@ -2,7 +2,7 @@ replicaCount: 1
 
 image:
   repository: dustlightcn/flow-service
-  tag: "0.1.8-alpha-1"
+  tag: "0.1.8-alpha-2"
 
 ingress:
   className: "nginx"
