@@ -17,5 +17,7 @@ spec:
           - path: /
             pathType: ImplementationSpecific
             backend:
-              serviceName: {{ .Release.Name }}-flow-service
-              servicePort: 80
+              service:
+                name: {{ .Release.Name }}-flow-service
+                port:
+                  number: 80
